@@ -1,0 +1,232 @@
+﻿;確認ダイアログ前面の場合アクティブ化しない
+WinGetClass, classDialog, A
+If not (classDialog = "#32770"
+		OR classDialog = "OperationStatusWindow")
+{
+	MouseGetPos, , , underMouseID2
+	WinActivate, ahk_id %underMouseID2%
+}
+
+
+;--------------------
+;長押しで音量変更
+
+;音量+
+
+step = +1			;-100～+100(符号付き)
+speed = 1			;1～10
+remDelay = 1500	;0～
+
+mySoundFunction(step, speed, remDelay)
+
+;音量-
+
+step = -1			;-100～+100(符号付き)
+speed = 1			;1～10
+remDelay = 1500	;0～
+
+mySoundFunction(step, speed, remDelay)
+
+;※サブルーチン
+mySoundFunction(step, speed, remDelay) {
+	MG_StopNavi()
+	Setformat, Float, 1.0			;ツールチップを整数表示
+
+	While (GetKeyState("RButton", "P")) {
+		SoundSet, %step%		;stepで指定した相対値で音量を変更
+		SoundGet, vol
+		ToolTip, 音量 : %vol%		;ツールチップ関数を用いるとTimerが重複するため使用しない
+		Sleep, 110 - (speed * 10)	;speedは1-10で指定(大きくなる程早くなるようにした)
+	}
+	SetTimer, RemoveToolTip, -%remDelay%
+}
+
+
+;--------------------
+;Win + 数字
+
+;Win + [長押しカウンタ]
+
+speed := 7	;1～10
+
+MG_StopNavi()
+While (GetKeyState("RButton", "P")) {
+	n += 1
+	If ((n = 10) || (GetKeyState("LButton", "P") = 0)) {
+		ToolTip, キャンセル
+		Goto, Cancel
+	}
+	ToolTip, Win + %n%
+	Sleep, 550 - (speed * 50)
+}
+Send, #{%n%}
+
+Cancel:
+SetTimer, RemoveToolTip, -1500
+n =
+
+
+;Win + [ホイール]
+
+MG_StopNavi()
+Hotkey, WheelUp, nMinus_Win, Off
+Hotkey, WheelDown, nPlus_Win, Off
+Hotkey, WheelUp, On
+Hotkey, WheelDown, On
+n := 1
+ToolTip, Win + 1
+While (GetKeyState("RButton", "P") = TRUE) {
+	Sleep, 50
+}
+Send, #{%n%}
+SetTimer, RemoveToolTip, -1500
+n =
+Hotkey, WheelUp,  Off
+Hotkey, WheelDown, Off
+Return
+
+nPlus_Win:
+	n += 1
+	If ((n <= 0) OR (n >= 10)) {
+		n -= 1
+	}
+	ToolTip, Win + %n%
+Return
+nMinus_Win:
+	n -= 1
+	If ((n <= 0) OR (n >= 10)) {
+		n += 1
+	}
+	ToolTip, Win + %n%
+Return
+
+;--------------------
+;Shiftキートグル RB_LB_に設定していた
+;文字列範囲選択に用いる
+
+If (GetKeyState("Shift")) {
+	Send, {Shift Up}
+	myChaseToolTip("off")
+} Else {
+	Send, {Shift Down}
+	myChaseToolTip("on")
+}
+;******↓ツールチップがマウスを追跡↓******
+myChaseToolTip(flag)
+{
+	If (flag = "off")
+	{
+		SetTimer, ToolTip_Shift, Off	;ツールチップの追跡を停止
+		ToolTip, 	;表示中のツールチップを削除
+	} Else
+	{
+		SetTimer, ToolTip_Shift, 50	;ツールチップの追跡を開始
+	}
+}
+
+ToolTip_Shift:
+	ToolTip, Shift
+	Return
+
+;******↑ツールチップがマウスを追跡↑******
+;--------------------
+;(Ctrl+)Alt+Tab RB_DLD_に設定していた
+
+;タスク切り替え
+;timeミリ秒間のマウス移動量がmoved以下ならAlt+Tab
+
+time := 150
+moved := 100
+
+Send, ^!{Tab}
+If (myMouseMove(time) <= moved)
+{
+	Send, {Enter} ;Enterの送信でAlt+Tabの挙動になる
+}
+
+;--------------------
+;連続入力関数
+
+myContinuousKeysFunction(key)
+{
+	Send, %key%
+	Sleep, 150	;右クリック再押下待ち
+	While (GetKeyState("RButton", "P"))
+	{
+		If (GetKeyState("LButton", "P"))
+		{
+			If (cnt = 0)	;長押しでのキー送信を防ぐ(連打のみ許可)
+			{
+				Send, %key%
+			}
+			cnt := 1
+		}
+		Else
+		{
+			cnt := 0
+		}
+	}
+}
+
+;--------------------
+;ウィンドウ移動
+
+If (WinActive("ahk_class WorkerW"))
+{	;デスクトップでは無効
+	MG_StopNavi()
+	KeyWait, RButton
+} Else
+{
+	CoordMode,Mouse,Screen
+	MouseGetPos,sx,sy,mh
+	WinGetPos,wx,wy,,,ahk_id %mh%
+	SetWinDelay, 1
+	while(GetKeyState("RButton","P"))
+	{
+		MouseGetPos,mx,my
+		WinMove,ahk_id %mh%,,wx-(sx-mx),wy-(sy-my)
+	}
+}
+
+;--------------------
+;バックグラウンドクリック(RB_LB_)
+
+MG_StopNavi()
+startVarKey := "Shift"
+If (GetKeyState(startVarKey, "P"))
+{	;記録
+	CoordMode, Mouse, Relative
+	MouseGetPos, startRelativeX, startRelativeY, startWinID
+	myToolTipFunction("座標を記録しました", 1000)
+	memorized := true
+} Else If (memorized == true)
+{	;クリック
+	WinGetClass, oldWinClass, A
+	If (oldWinClass == "Progman"
+		OR oldWinClass == "WorkerW") 
+	{
+		Send, !{Tab}
+		Sleep, 200
+	}
+	WinGet, oldWinID, ID, A
+	WinActivate, ahk_id %startWinID%
+	ControlClick, x%startRelativeX% y%startRelativeY%, ahk_id %startWinID%
+	WinActivate, ahk_id %oldWinID%
+}
+
+;--------------------
+;同種ウィンドウを閉じる(RB_↑↓→_)
+
+WinGetClass, sameClass, A
+start := A_TickCount
+While(WinExist("ahk_class " . sameClass))
+{
+	WinClose, ahk_class %sameClass%
+	If (A_TickCount-start > 2000)
+		{
+			Break
+		}
+}
+
+;--------------------
+

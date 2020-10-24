@@ -1,0 +1,116 @@
+;ScrollLockで電卓を開く
+	ScrollLock::Run, calc.exe
+	Return
+
+
+;Win+Eでデスクトップフォルダを開く
+	#e::Run, %A_Desktop%
+	Return
+
+
+;無変換+cで1行コピー
+	vk1D & c::Send, {Home}{Shift Down}{End}{Shift Up}{Ctrl Down}c{Ctrl Up}{End}
+	Return
+
+
+;無変換+上下左右→ 上下左右の矢印入力(旧版:クリップボード経由)
+	Send_byClip(in_text)
+	{
+	bak_clipboard := Clipboard
+	Clipboard := in_text
+	Sleep, 200 ;クリップボード送信までのウェイト
+	send, ^{v}
+	Clipboard := bak_clipboard
+	}
+
+	vk1D & Up::
+		Send_byClip("↑")
+		Return
+
+	vk1D & Down::
+		Send_byClip("↓")
+		Return
+
+	vk1D & Left::
+		Send_byClip("←")
+		Return
+
+	vk1D & Right::
+		Send_byClip("→")
+		Return
+
+
+;無変換+Shift+R→現在のマウス座標を記録
+;無変換+Shift+C→記録したマウス座標を左クリック
+	vk1D & r::
+	if (GetKeyState("Shift", "P")) {
+		CoordMode, Mouse, Screen
+		MouseGetPos, mouseX, mouseY
+	}else{
+		;Numpad9はここに移動
+		Send, {Numpad9}
+	}
+	Return
+
+	vk1D & c::
+	if (GetKeyState("Shift", "P")) {
+		;記録した座標をクリック後、元の座標に戻る
+		CoordMode, Mouse, Screen
+		MouseGetPos, tempX, tempY
+		MouseClick, Left, mouseX, mouseY
+		MouseMove, tempX, tempY
+	}else{
+		;Numpad2はここに移動
+		Send, {Numpad2}
+	}
+	Return
+
+
+;Alt+左ドラッグ→ウィンドウ内ドラッグでウィンドウ移動
+!LButton::
+	CoordMode,Mouse,Screen
+	MouseGetPos,sx,sy,mh
+	WinGetPos,wx,wy,,,ahk_id %mh%
+	SetWinDelay, 1
+	while(GetKeyState("LButton","P"))
+	{
+		MouseGetPos,mx,my
+		WinMove,ahk_id %mh%,,wx-(sx-mx),wy-(sy-my)
+	}
+Return
+
+
+; ディレクトリが格納された変数nowDirのファイル数の変化を検知し次第、ループを抜けるやつ
+while (1) {
+	num++	; Loop回数
+	cnt := ComObjCreate("Scripting.FileSystemObject").GetFolder(nowDir).Files.Count
+	tmp := cnt
+
+	; 1回目はファイル数カウント初回であるため、cnt==0だからスキップしないと必ずcnt!=tmpとなってしまう。
+	; そのためLoop回数を記録するnum変数を上で用意した。
+	if (cnt != tmp || num != 1)
+		break
+
+	; msgbox, NG %num%
+}
+
+
+; メニュー
+	; サブメニュー生成
+	Menu, MySubMenu, Add, スクリプトフォルダを開く, SubMenu0
+	Menu, MySubMenu, Add
+	Menu, MySubMenu, Add, 雑多.ahk, SubMenu1
+
+	; Scriptsメニュー内にMySubMenuの項目を登録
+	Menu, Tray, Add, Scripts, :MySubMenu
+
+	; ここまではAuto-executeセクションに配置
+  Return
+
+	; メニュー用サブルーチン
+	SubMenu0:
+		Run, %A_ScriptDir%\
+	Return
+	SubMenu1:
+		Run, %A_ScriptDir%\Scripts\雑多.ahk
+	Return
