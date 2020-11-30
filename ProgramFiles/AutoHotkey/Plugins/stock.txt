@@ -3,11 +3,6 @@
 	Return
 
 
-;Win+Eでデスクトップフォルダを開く
-	#e::Run, %A_Desktop%
-	Return
-
-
 ;無変換+cで1行コピー
 	vk1D & c::Send, {Home}{Shift Down}{End}{Shift Up}{Ctrl Down}c{Ctrl Up}{End}
 	Return

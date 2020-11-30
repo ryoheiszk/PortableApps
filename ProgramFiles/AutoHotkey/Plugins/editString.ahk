@@ -42,17 +42,29 @@
 
 
 ; 無変換 + Space ;; Backspace
-	vk1D & Space::
-	Send, {Blind}{Backspace}
+	vk1D & Space::Send, {Blind}{Backspace}
 /*
 	num := keyAccel(4)
 	Send,{Blind}{Backspace %num%}
 */
-Return
+
+
+;無変換 + / ;; Enter
+	vk1D & /::Send, {Blind}{Enter}
 
 
 ; 無変換 + 変換 ;; Delete
 	vk1D & vk1C::Send,{Blind}{Delete}
+
+
+; 無変換 + Enter ;; 行挿入
+	vk1D & Enter::
+		if (GetKeyState("Ctrl", "P")) {
+			Send, {Up}{End}{Enter}
+		} else {
+			Send, {End}{Enter}
+		}
+	Return
 
 
 ; 無変換 + ローマ字キー ;; 半角英数入力モード
@@ -63,16 +75,8 @@ Return
 	vk1D & 1::Send, {F2}
 
 
-;無変換 + ・ ;; /
-	vk1D & /::Send, {vkF3}{/}{vkF2}
-
-
 ; 無変換 + 矢印 ;; 矢印入力
-	vk1D & Up::Send, {vkF2}{vkF3}↑{vkF2}
-
-	vk1D & Down::Send, {vkF2}{vkF3}↓{vkF2}
-
-	vk1D & Left::Send, {vkF2}{vkF3}←{vkF2}
-
-	vk1D & Right::Send, {vkF2}{vkF3}→{vkF2}
-
+ 	vk1D & Up::Send, {vkF2}{vkF3}↑{vkF2}
+ 	vk1D & Down::Send, {vkF2}{vkF3}↓{vkF2}
+ 	vk1D & Left::Send, {vkF2}{vkF3}←{vkF2}
+ 	vk1D & Right::Send, {vkF2}{vkF3}→{vkF2}

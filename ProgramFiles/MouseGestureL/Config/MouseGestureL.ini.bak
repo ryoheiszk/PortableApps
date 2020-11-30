@@ -167,12 +167,10 @@ Default=;下スクロール<MG_CR><MG_CR>Send, {Blind}{PgDn}{PgDn}
 
 [RB_→↑_]
 G=RB_RU_
-G=PK_RU_
 Default=;上端スクロール<MG_CR><MG_CR>Send,^{Home}
 
 [RB_→↓_]
 G=RB_RD_
-G=PK_RD_
 Default=;下端スクロール<MG_CR><MG_CR>Send,^{End}
 
 [RB_←_]
@@ -209,7 +207,13 @@ Default=;閉じたタブを復元<MG_CR><MG_CR>Send, +^t
 
 [RB_↓→_]
 G=RB_DR_
-G=PK_DR_
+Default=;タブ・ウィンドウを閉じる<MG_CR><MG_CR>Send, !{F4}
+ブラウザ=;タブを閉じる<MG_CR><MG_CR>Send, ^w
+個別/VSCode=;タブを閉じる<MG_CR><MG_CR>Send, ^w
+個別/CatMemoNote=;Ctrl+W<MG_CR>Send, ^w
+
+[MB_↓→_]
+G=MB_DR_
 Default=;タブ・ウィンドウを閉じる<MG_CR><MG_CR>Send, !{F4}
 ブラウザ=;タブを閉じる<MG_CR><MG_CR>Send, ^w
 個別/VSCode=;タブを閉じる<MG_CR><MG_CR>Send, ^w
@@ -459,7 +463,7 @@ Default=;PrintScreen<MG_CR><MG_CR>Send, {PrintScreen}
 
 [RB_↓↑↓↑←_]
 G=RB_DUDUL_
-Default=;映像授業用Prsc<MG_CR><MG_CR>CoordMode, Screen<MG_CR><MG_CR>; PrintScreen(ScreenPresso)<MG_CR>GoSub, MG_Gesture_RB_DUDU_<MG_CR><MG_CR>Sleep, 500<MG_CR><MG_CR>; 初期座標記録<MG_CR>MouseGetPos, oldMouseX, oldMouseY<MG_CR><MG_CR>; カーソルを上のモニタへ<MG_CR>MouseMove, 200, -1000, 0<MG_CR><MG_CR>While (1) {<MG_CR>	If (GetKeyState("LButton", "P")) {<MG_CR>		Send, {LButton Down}<MG_CR>		MouseMove, 1700, -300, 0<MG_CR>		While (1) {<MG_CR>			If (!GetKeyState("LButton", "P")) {<MG_CR>				Send, {LButton Up}<MG_CR>				Goto, PrscEnd<MG_CR>			}<MG_CR><MG_CR>			Sleep, 50<MG_CR>		}<MG_CR>	}<MG_CR>	<MG_CR>	If (GetKeyState("RButton", "P")) {<MG_CR>		Goto, PrscEnd<MG_CR>	}<MG_CR>	<MG_CR>	Sleep, 50<MG_CR>}<MG_CR><MG_CR>PrscEnd:<MG_CR>; (変更前)MouseMove, oldMouseX, oldMouseY<MG_CR>MouseMove, 1500, 850, 0
+Default=;映像授業用Prsc<MG_CR><MG_CR>CoordMode, Screen<MG_CR><MG_CR>; PrintScreen(ScreenPresso)<MG_CR>GoSub, MG_Gesture_RB_DUDU_<MG_CR><MG_CR>Sleep, 500<MG_CR><MG_CR>; 初期座標記録<MG_CR>MouseGetPos, oldMouseX, oldMouseY<MG_CR><MG_CR>; カーソルを上のモニタへ<MG_CR>MouseMove, 200, -1000, 0<MG_CR><MG_CR>While (1) {<MG_CR>	If (GetKeyState("LButton", "P")) {<MG_CR>		Send, {LButton Down}<MG_CR>		MouseMove, 1700, -200, 0<MG_CR>		While (1) {<MG_CR>			If (!GetKeyState("LButton", "P")) {<MG_CR>				Send, {LButton Up}<MG_CR>				Goto, PrscEnd<MG_CR>			}<MG_CR><MG_CR>			Sleep, 50<MG_CR>		}<MG_CR>	}<MG_CR>	<MG_CR>	If (GetKeyState("RButton", "P")) {<MG_CR>		Goto, PrscEnd<MG_CR>	}<MG_CR>	<MG_CR>	Sleep, 50<MG_CR>}<MG_CR><MG_CR>PrscEnd:<MG_CR>; (変更前)MouseMove, oldMouseX, oldMouseY<MG_CR>MouseMove, 1500, 850, 0
 
 [RB_↓↑←_]
 G=RB_DUL_

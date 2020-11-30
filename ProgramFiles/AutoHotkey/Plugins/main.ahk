@@ -2,6 +2,11 @@
 vkF0::Return
 
 
+;Win+Eでデスクトップフォルダを開く
+	#e::Run, %A_Desktop%
+	Return
+
+
 ; 無変換,F1 ;; 選択文字列でGoogle検索
 vk1D & F1::
 	ClipSaved := ClipboardAll
@@ -18,10 +23,10 @@ Return
 	AppsKey::Send,{AppsKey}
 
 	;App + 上 = ボリュームを上げる
-	AppsKey & Up::Send,{Volume_Up 2}
+	AppsKey & Up::Send,{Volume_Up 1}
 
 	;App + 下 = ボリュームを下げる
-	AppsKey & Down::Send,{Volume_Down 2}
+	AppsKey & Down::Send,{Volume_Down 1}
 
 	;App + 左 = ミュート
 	AppsKey & Left::Send,{Volume_Mute}

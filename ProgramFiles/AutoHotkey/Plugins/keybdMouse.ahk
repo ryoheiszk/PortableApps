@@ -2,7 +2,7 @@ vk1C & m::
 
 ; キー設定///////////////////////////////////
 hotKeyL	  	:= "vk1C"	; トリガー1 (A_ThisHotkeyから取得したい。正規表現とやらを使うのかな？)
-hotKeyR		:= "m"		; トリガー2 (同上)
+hotKeyR			:= "m"		; トリガー2 (同上)
 
 mouseUp	  	:= "e"		; ↑
 mouseDown  	:= "d"		; ↓
@@ -11,7 +11,7 @@ mouseRight	:= "f"		; →
 mouseLB	  	:= "j"		; 左クリック
 mouseRB	  	:= "l"		; 右クリック
 mouseMB	  	:= "vkBC"	; 中クリック
-mouseGes	:= "p"		; MGL用トリガーキー
+mouseGes		:= "p"		; MGL用トリガーキー
 scrollUp  	:= "i"		; 上スクロール
 scrollDown	:= "k"		; 下スクロール
 
@@ -22,7 +22,7 @@ slowKey	   	:= "vk1C"	; カーソル減速
 defSpeed   	:= 4		; 規定のカーソル移動速度
 accelVol  	:= 8		; accelKey押下時のカーソル移動速度の増加量
 slowVol   	:= 1		; slowKey押下時のカーソル移動速度
-moveRatio	:= 16 / 9	; 縦横移動量倍率 (1なら45度方向にカーソルが移動)
+moveRatio		:= 16 / 9	; 縦横移動量倍率 (1なら45度方向にカーソルが移動)
 
 chaseToolTip	:= false	; ツールチップの有効/無効
 

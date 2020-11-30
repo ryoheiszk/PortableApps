@@ -68,7 +68,7 @@ MG_LogFontSize=10
 MG_LogFont=MS UI Gothic
 MG_HotkeyEnable=
 MG_HotkeyNavi=
-MG_ScriptEditor=F:\Desktop\Tools\Source\VSCode\Code.exe
+MG_ScriptEditor=C:\tools\vscode\Code.exe
 MG_UserName=
 MG_Password=
 MG_TraySubmenu=0
@@ -397,26 +397,22 @@ MG_GetAction_RB_D_:
 return
 
 MG_Gesture_RB_RU_:
-MG_Gesture_PK_RU_:
 	;上端スクロール
 	
 	Send,^{Home}
 return
 
 MG_GetAction_RB_RU_:
-MG_GetAction_PK_RU_:
 	MG_ActionStr := "上端スクロール"
 return
 
 MG_Gesture_RB_RD_:
-MG_Gesture_PK_RD_:
 	;下端スクロール
 	
 	Send,^{End}
 return
 
 MG_GetAction_RB_RD_:
-MG_GetAction_PK_RD_:
 	MG_ActionStr := "下端スクロール"
 return
 
@@ -549,7 +545,6 @@ MG_GetAction_RB_DL_:
 return
 
 MG_Gesture_RB_DR_:
-MG_Gesture_PK_DR_:
 	if(MG_IsTarget4()){
 		;タブを閉じる
 		
@@ -569,7 +564,37 @@ MG_Gesture_PK_DR_:
 return
 
 MG_GetAction_RB_DR_:
-MG_GetAction_PK_DR_:
+	if(MG_IsTarget4()){
+		MG_ActionStr := "タブを閉じる"
+	}else if(MG_IsTarget6()){
+		MG_ActionStr := "タブを閉じる"
+	}else if(MG_IsTarget11()){
+		MG_ActionStr := "Ctrl+W"
+	}else{
+		MG_ActionStr := "タブ・ウィンドウを閉じる"
+	}
+return
+
+MG_Gesture_MB_DR_:
+	if(MG_IsTarget4()){
+		;タブを閉じる
+		
+		Send, ^w
+	}else if(MG_IsTarget6()){
+		;タブを閉じる
+		
+		Send, ^w
+	}else if(MG_IsTarget11()){
+		;Ctrl+W
+		Send, ^w
+	}else{
+		;タブ・ウィンドウを閉じる
+		
+		Send, !{F4}
+	}
+return
+
+MG_GetAction_MB_DR_:
 	if(MG_IsTarget4()){
 		MG_ActionStr := "タブを閉じる"
 	}else if(MG_IsTarget6()){
