@@ -1,5 +1,4 @@
-$app_list = @('AutoHotkey', 'MouseGestureL', 'Clibor', 'Kazaguru', 'CLaunch')
-
+$app_list=(Get-ChildItem .\*.lnk).BaseName
 $check_app = Get-Process | ? {$_.ProcessName -eq $app_list[0]}
 if($check_app -ne $null) {
 	Get-Process | ? {$_.ProcessName -in $app_list} | % { Stop-Process $_}
