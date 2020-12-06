@@ -1,1 +1,1 @@
-powershell -NoProfile -ExecutionPolicy Unrestricted .\ProgramFiles\AppSwitcher.ps1
+powershell -NoProfile -ExecutionPolicy Bypass .\ProgramFiles\AppSwitcher.ps1
