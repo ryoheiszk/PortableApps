@@ -2,7 +2,7 @@
 
 ; ˆê”Ê
 ::hsuzuki::
-  Send, {vkF3}{vkF2}—é–Ø{Enter}{Space}—Á•½{Enter}
+  Send, —é–Ø—Á•½
 Return
 
 ; ƒuƒƒO·•M—p
