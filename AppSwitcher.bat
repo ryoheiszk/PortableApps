@@ -1,0 +1,1 @@
+powershell -NoProfile -ExecutionPolicy Unrestricted .\ProgramFiles\AppSwitcher.ps1

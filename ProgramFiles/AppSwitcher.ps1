@@ -1,4 +1,4 @@
-$app_list = @('AutoHotkey', 'MouseGestureL', 'Clibor', 'Kazaguru')
+$app_list = @('AutoHotkey', 'MouseGestureL', 'Clibor', 'Kazaguru', 'CLaunch')
 
 $check_app = Get-Process | ? {$_.ProcessName -eq $app_list[0]}
 if($check_app -ne $null) {
