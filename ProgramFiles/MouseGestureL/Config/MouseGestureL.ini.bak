@@ -69,7 +69,7 @@ LogFontSize=10
 LogFont=MS UI Gothic
 HotkeyEnable=
 HotkeyNavi=
-ScriptEditor=F:\Desktop\Tools\Source\VSCode\Code.exe
+ScriptEditor=C:\tools\vscode\Code.exe
 UserName=
 Password=
 TraySubmenu=0
@@ -476,6 +476,14 @@ Default=;隣のモニタにカーソル移動<MG_CR><MG_CR>MouseGetPos, oldMouse
 [RB_→↓←↑]
 G=RB_RDLU
 Default=;BlockInput<MG_CR><MG_CR>BlockInput, MouseMove<MG_CR>KeyWait, RButton, U<MG_CR>BlockInput, MouseMoveOff
+
+[WU_]
+G=WU_
+Default=WheelRedirect()
+
+[WD_]
+G=WD_
+Default=WheelRedirect()
 
 [***トリガ設定***]
 G=
