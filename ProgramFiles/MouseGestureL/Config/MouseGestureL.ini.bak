@@ -477,14 +477,6 @@ Default=;隣のモニタにカーソル移動<MG_CR><MG_CR>MouseGetPos, oldMouse
 G=RB_RDLU
 Default=;BlockInput<MG_CR><MG_CR>BlockInput, MouseMove<MG_CR>KeyWait, RButton, U<MG_CR>BlockInput, MouseMoveOff
 
-[WU_]
-G=WU_
-Default=WheelRedirect()
-
-[WD_]
-G=WD_
-Default=WheelRedirect()
-
 [***トリガ設定***]
 G=
 

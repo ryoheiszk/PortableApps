@@ -997,43 +997,30 @@ MG_GetAction_RB_RDLD:
 	MG_ActionStr := "音量変更"
 return
 
-MG_Gesture_RB_UDLU_:
-	;Ctrl+Shift+7
-	;(AudioSwitcher)
-	
-	Send, ^+7
-	
-	myToolTipFunction("Ctrl+Shift+7", 750)
-return
-
-MG_GetAction_RB_UDLU_:
-	MG_ActionStr := "Ctrl+Shift+7"
-return
-
 MG_Gesture_RB_UDLR_:
-	;Ctrl+Shift+8
+	;Ctrl+Shift+F8
 	;(AudioSwitcher)
 	
-	Send, ^+8
+	Send, ^+{F8}
 	
-	myToolTipFunction("Ctrl+Shift+8", 750)
+	myToolTipFunction("Ctrl+Shift+F8", 750)
 return
 
 MG_GetAction_RB_UDLR_:
-	MG_ActionStr := "Ctrl+Shift+8"
+	MG_ActionStr := "Ctrl+Shift+F8"
 return
 
 MG_Gesture_RB_UDLD_:
-	;Ctrl+Shift+9
+	;Ctrl+Shift+F7
 	;(AudioSwitcher)
 	
-	Send, ^+9
+	Send, ^+{F7}
 	
-	myToolTipFunction("Ctrl+Shift+9", 750)
+	myToolTipFunction("Ctrl+Shift+F7", 750)
 return
 
 MG_GetAction_RB_UDLD_:
-	MG_ActionStr := "Ctrl+Shift+9"
+	MG_ActionStr := "Ctrl+Shift+F7"
 return
 
 
