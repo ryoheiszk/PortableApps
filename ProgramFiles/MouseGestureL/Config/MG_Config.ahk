@@ -1388,6 +1388,7 @@ MG_Gesture_RB_:
 		MouseGetPos, , , underMouseID1
 		WinActivate, ahk_id %underMouseID1%
 	}
+	
 return
 
 MG_GetAction_RB_:

@@ -346,17 +346,13 @@ G=
 G=RB_RDLD
 Default=;音量変更<MG_CR><MG_CR>step := 2<MG_CR><MG_CR>MG_StopNavi()<MG_CR>Hotkey, WheelUp, nPlus_vol, Off<MG_CR>Hotkey, WheelDown, nMinus_vol, Off<MG_CR>Hotkey, WheelUp, On<MG_CR>Hotkey, WheelDown, On<MG_CR>Sleep, 500<MG_CR>KeyWait, RButton, Up<MG_CR>SetTimer, RemoveToolTip, -500<MG_CR>n = <MG_CR>vol =<MG_CR>Hotkey, WheelUp, Off<MG_CR>Hotkey, WheelDown, Off<MG_CR>Return<MG_CR><MG_CR>nPlus_vol:<MG_CR>	n := 0<MG_CR>	n += %step%<MG_CR>	myTempFunction_Vol(n) <MG_CR>Return<MG_CR>nMinus_vol:<MG_CR>	n := 0<MG_CR>	n -= %step%<MG_CR>	myTempFunction_Vol(n) <MG_CR>Return<MG_CR><MG_CR>myTempFunction_Vol(n)<MG_CR>{<MG_CR>	SoundGet, vol<MG_CR>	Setformat, Float, 1.0	<MG_CR>	vol += n	;まずボリューム変更<MG_CR>	If (vol < 0)<MG_CR>	{<MG_CR>		vol := 0<MG_CR>	}<MG_CR>	If (vol > 100)<MG_CR>	{<MG_CR>		vol := 100<MG_CR>	}<MG_CR>	SoundSet, vol<MG_CR>	ToolTip, 音量  :  %vol%<MG_CR>	Return<MG_CR>}
 
-[RB_↑↓←↑_]
-G=RB_UDLU_
-Default=;Ctrl+Shift+7<MG_CR>;(AudioSwitcher)<MG_CR><MG_CR>Send, ^+7<MG_CR><MG_CR>myToolTipFunction("Ctrl+Shift+7", 750)
-
 [RB_↑↓←→_]
 G=RB_UDLR_
-Default=;Ctrl+Shift+8<MG_CR>;(AudioSwitcher)<MG_CR><MG_CR>Send, ^+8<MG_CR><MG_CR>myToolTipFunction("Ctrl+Shift+8", 750)
+Default=;Ctrl+Shift+F8<MG_CR>;(AudioSwitcher)<MG_CR><MG_CR>Send, ^+{F8}<MG_CR><MG_CR>myToolTipFunction("Ctrl+Shift+F8", 750)
 
 [RB_↑↓←↓_]
 G=RB_UDLD_
-Default=;Ctrl+Shift+9<MG_CR>;(AudioSwitcher)<MG_CR><MG_CR>Send, ^+9<MG_CR><MG_CR>myToolTipFunction("Ctrl+Shift+9", 750)
+Default=;Ctrl+Shift+F7<MG_CR>;(AudioSwitcher)<MG_CR><MG_CR>Send, ^+{F7}<MG_CR><MG_CR>myToolTipFunction("Ctrl+Shift+F7", 750)
 
 [***Win+数字***]
 G=
@@ -482,7 +478,7 @@ G=
 
 [RB_]
 G=RB_
-Default=;アクティブ化処理<MG_CR><MG_CR>;指定サイズ未満でアクティブ化しない<MG_CR>minWidth := 500<MG_CR>minHeight := 200<MG_CR>WinGetPos, , , width, height, A<MG_CR>If ((width > minWidth) OR (height > minHeight))<MG_CR>{<MG_CR>	MouseGetPos, , , underMouseID1<MG_CR>	WinActivate, ahk_id %underMouseID1%<MG_CR>}
+Default=<MG_CR>WinActivate
 
 [RB_LB_]
 G=RB_LB_
