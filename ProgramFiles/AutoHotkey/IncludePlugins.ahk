@@ -1,5 +1,6 @@
 #Include %A_ScriptDir%\Plugins\brackets.ahk
 #Include %A_ScriptDir%\Plugins\edit.ahk
+#Include %A_ScriptDir%\Plugins\git_alias.ahk
 #Include %A_ScriptDir%\Plugins\google.ahk
 #Include %A_ScriptDir%\Plugins\hotstring.ahk
 #Include %A_ScriptDir%\Plugins\keybdMouse.ahk
