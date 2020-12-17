@@ -292,7 +292,7 @@ MG_IsTarget3(){
 
 MG_IsTarget4(){
 	global
-	return ((MG_Exe="iexplore.exe") || (MG_Exe="chrome.exe") || (MG_Exe="firefox.exe"))
+	return ((MG_Exe="iexplore.exe") || (MG_Exe="chrome.exe") || (MG_Exe="firefox.exe") || (MG_Exe="Biscuit.exe"))
 }
 
 MG_IsTarget5(){

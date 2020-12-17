@@ -478,7 +478,7 @@ G=
 
 [RB_]
 G=RB_
-Default=<MG_CR>WinActivate
+Default=;アクティブ化処理<MG_CR><MG_CR>;指定サイズ未満でアクティブ化しない<MG_CR>minWidth := 500<MG_CR>minHeight := 200<MG_CR>WinGetPos, , , width, height, A<MG_CR>If ((width > minWidth) OR (height > minHeight))<MG_CR>{<MG_CR>	MouseGetPos, , , underMouseID1<MG_CR>	WinActivate, ahk_id %underMouseID1%<MG_CR>}<MG_CR>
 
 [RB_LB_]
 G=RB_LB_
