@@ -1,0 +1,357 @@
+;ScrollLockで電卓を開く
+  ScrollLock::Run, calc.exe
+  Return
+
+
+;無変換+cで1行コピー
+  vk1D & c::Send, {Home}{Shift Down}{End}{Shift Up}{Ctrl Down}c{Ctrl Up}{End}
+  Return
+
+
+;無変換+上下左右→ 上下左右の矢印入力(旧版:クリップボード経由)
+  Send_byClip(in_text)
+  {
+  bak_clipboard := Clipboard
+  Clipboard := in_text
+  Sleep, 200 ;クリップボード送信までのウェイト
+  send, ^{v}
+  Clipboard := bak_clipboard
+  }
+
+  vk1D & Up::
+    Send_byClip("↑")
+    Return
+
+  vk1D & Down::
+    Send_byClip("↓")
+    Return
+
+  vk1D & Left::
+    Send_byClip("←")
+    Return
+
+  vk1D & Right::
+    Send_byClip("→")
+    Return
+
+
+;無変換+Shift+R→現在のマウス座標を記録
+;無変換+Shift+C→記録したマウス座標を左クリック
+  vk1D & r::
+  if (GetKeyState("Shift", "P")) {
+    CoordMode, Mouse, Screen
+    MouseGetPos, mouseX, mouseY
+  }else{
+    ;Numpad9はここに移動
+    Send, {Numpad9}
+  }
+  Return
+
+  vk1D & c::
+  if (GetKeyState("Shift", "P")) {
+    ;記録した座標をクリック後、元の座標に戻る
+    CoordMode, Mouse, Screen
+    MouseGetPos, tempX, tempY
+    MouseClick, Left, mouseX, mouseY
+    MouseMove, tempX, tempY
+  }else{
+    ;Numpad2はここに移動
+    Send, {Numpad2}
+  }
+  Return
+
+
+;Alt+左ドラッグ→ウィンドウ内ドラッグでウィンドウ移動
+!LButton::
+  CoordMode,Mouse,Screen
+  MouseGetPos,sx,sy,mh
+  WinGetPos,wx,wy,,,ahk_id %mh%
+  SetWinDelay, 1
+  while(GetKeyState("LButton","P"))
+  {
+    MouseGetPos,mx,my
+    WinMove,ahk_id %mh%,,wx-(sx-mx),wy-(sy-my)
+  }
+Return
+
+
+; ディレクトリが格納された変数current_dirのファイル数の変化を検知し次第、ループを抜けるやつ
+while (1) {
+  num++  ; Loop回数
+  cnt := ComObjCreate("Scripting.FileSystemObject").GetFolder(current_dir).Files.Count
+  tmp := cnt
+
+  ; 1回目はファイル数カウント初回であるため、cnt==0だからスキップしないと必ずcnt!=tmpとなってしまう。
+  ; そのためLoop回数を記録するnum変数を上で用意した。
+  if (cnt != tmp || num != 1)
+    break
+
+  ; msgbox, NG %num%
+}
+
+
+; メニュー
+  ; サブメニュー生成
+  Menu, MySubMenu, Add, スクリプトフォルダを開く, SubMenu0
+  Menu, MySubMenu, Add
+  Menu, MySubMenu, Add, 雑多.ahk, SubMenu1
+
+  ; Scriptsメニュー内にMySubMenuの項目を登録
+  Menu, Tray, Add, Scripts, :MySubMenu
+
+  ; ここまではAuto-executeセクションに配置
+  Return
+
+  ; メニュー用サブルーチン
+  SubMenu0:
+    Run, %A_ScriptDir%\
+  Return
+  SubMenu1:
+    Run, %A_ScriptDir%\Scripts\雑多.ahk
+  Return
+
+  ; ////////toggle.ahk
+  vk1C::Send, {vk1C}
+
+;==============================
+#If toggle_KeyMouse != true
+
+
+vk1C & a::toggleChange(toggle_a, "AHK")
+vk1C & p::toggleChange(toggle_p, "プログラミング")
+vk1C & e::toggleChange(toggle_e, "Edit")
+
+
+#If
+
+
+toggleChange(ByRef toggle, name)
+{
+  toggle := !toggle
+  my_tooltip_function("カスタムモード(" . name . "): " . (toggle = true ? "ON" : "OFF"), 1000)
+
+  CoordMode, ToolTip, Screen
+  ToolTip, % (toggle = true ?  "カスタムモード(" . name . "): ON" : ""), 0, 0, 20
+  CoordMode, ToolTip, Relative
+}
+
+
+;==============================
+; AutoHotkey///////////////////
+
+#If, toggle_a = true
+
+
+; AHKを閉じる
+e::
+  Run, taskkill /F /IM MouseGestureL.exe, , Hide
+  ExitApp
+
+Return
+
+
+; AHKをリロード
+r::Reload
+
+
+; 実行ファイルのフォルダを開く
+o::
+  Run, %A_ScriptDir%
+  toggleChange(toggle_a, "AHK")
+Return
+
+
+; AHKWiki(日本語)を開く
+h::
+  Run, http://ahkwiki.net/Top
+  toggleChange(toggle_a, "AHK")
+Return
+
+
+; WindowSpyを開く
+w::
+  Run, %A_ScriptDir%\AutoHotkey.exe %A_ScriptDir%\WindowSpy.ahk
+  toggleChange(toggle_a, "AHK")
+Return
+
+
+#If
+
+;==============================
+
+; プログラミング///////////////
+
+#If, toggle_p = true
+
+
+; javaコンパイルの定型文
+j::
+  Send, {vkF2}{vkF3}javac -encoding utf-8 .java{Left 5}
+  toggleChange(toggle_p, "プログラミング")
+Return
+
+; C言語コンパイルの定型文
+c::
+  Send, {vkF2}{vkF3}gcc -o a .c{Left 2}
+  toggleChange(toggle_p, "プログラミング")
+Return
+
+
+#If
+
+;==============================
+; 編集/////////////////////////
+
+#If, toggle_e = true
+
+
+; 1行コピー
+c::
+  Send, {Home}+{End}^c{Right}
+  toggleChange(toggle_e, "Edit")
+Return
+
+
+; 1行挿入
+l::
+  Send, {Home}{Enter}{Up}
+  toggleChange(toggle_e, "Edit")
+Return
+
+
+; 1行削除
+e::
+  Send, {End}+{Home}{Delete}
+  toggleChange(toggle_e, "Edit")
+Return
+
+
+; キャレット以下1行削除
+Delete::
+  Send, +{End}{Delete}
+  toggleChange(toggle_e, "Edit")
+Return
+
+
+; キャレット以前1行削除
+Backspace::
+  Send, +{Home}{Backspace}
+  toggleChange(toggle_e, "Edit")
+Return
+
+
+#If
+
+;==============================
+
+;映像授業用Prsc
+Numpad0::
+  CoordMode, Screen
+
+  Send, {PrintScreen}
+
+  Sleep, 500
+
+  ; 初期座標記録
+  MouseGetPos, oldMouseX, oldMouseY
+
+  ; カーソルを隣のモニタへ
+  MouseMove, 100, 200, 0
+
+  While (1) {
+    If (GetKeyState("LButton", "P")) {
+      Send, {LButton Down}
+      MouseMove, 1100, 800, 0
+      While (1) {
+        If (!GetKeyState("LButton", "P")) {
+          Send, {LButton Up}
+          Goto, PrscEnd
+        }
+
+        Sleep, 50
+      }
+    }
+
+    If (GetKeyState("RButton", "P")) {
+      Goto, PrscEnd
+    }
+
+    Sleep, 50
+  }
+
+  PrscEnd:
+  ; (変更前)MouseMove, oldMouseX, oldMouseY
+  MouseMove, 3000, 850, 0
+Return
+
+/*OBS Ctrl + Numpad--------------------
+---------------------------------------
+---------------------------------------
+*/
+#If, WinActive("ahk_exe obs64.exe")
+
+;Numpad0::tenkeyHotkey("obs64" ,"+!#0") ;Duplicate??
+
+Numpad1::tenkeyHotkey("obs64" ,"+!#1")
+
+Numpad2::tenkeyHotkey("obs64" ,"+!#2")
+
+Numpad3::tenkeyHotkey("obs64" ,"+!#3")
+
+Numpad4::tenkeyHotkey("obs64" ,"+!#4")
+
+Numpad5::tenkeyHotkey("obs64" ,"+!#5")
+
+Numpad6::tenkeyHotkey("obs64" ,"+!#6")
+
+Numpad7::tenkeyHotkey("obs64" ,"+!#7")
+
+Numpad8::tenkeyHotkey("obs64" ,"+!#8")
+
+Numpad9::tenkeyHotkey("obs64" ,"+!#9")
+
+NumpadDot::tenkeyHotkey("obs64" ,"+!#{F1}")
+
+NumpadAdd::tenkeyHotkey("obs64" ,"+!#{NumpadAdd}")
+
+NumpadSub::tenkeyHotkey("obs64" ,"+!#{NumpadSub}")
+
+NumpadMult::tenkeyHotkey("obs64" ,"+!#{NumpadMult}")
+
+NumpadDiv::tenkeyHotkey("obs64" ,"+!#{NumpadDiv}")
+
+NumpadEnter::tenkeyHotkey("obs64" ,"+!#{NumpadEnter}")
+
+#If
+
+/*サブルーチン-------------------------
+---------------------------------------
+---------------------------------------
+*/
+; 一瞬アクティブ化してからキーを送信し、非アクティブ化する関数
+;例)obsは非アクティブ状態で反応しない
+tenkeyHotkey(appName ,sendKey)
+{
+  #WinActivateForce  ;強制アクティブ化
+  WinGetTitle, oldTitle, A  ;現在アクティブなウィンドウを記憶
+  WinActivate, ahk_exe %appName%.exe  ;対象アプリをアクティブ化
+
+  ;OBSアクティブまで待機
+  WinGet, appID, ID, ahk_exe %appName%.exe  ;対象アプリのID取得
+  oldTime := A_TickCount
+  While (true)
+  {
+  WinGet, activeID,ID, A
+  If (appID == activeID)
+    Break
+
+  ; 一応タイムアウト設定
+  If (A_TickCount - oldTime > 3000)
+    Break
+  }
+
+  Sleep, 50
+  Send, %sendKey%  ;ホットキーを送信
+  Sleep, 50
+  WinActivate, %oldTitle%  ;記憶したウィンドウを再度アクティブ化
+}

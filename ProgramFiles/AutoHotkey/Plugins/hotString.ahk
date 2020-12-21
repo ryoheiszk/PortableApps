@@ -1,11 +1,11 @@
-#Hotstring *C
+#Hotstring *C K-1 Z
 ; C: 大文字小文字を区別する
 ; *: 終了文字無しで発動する
+; Kn: キーの入力間隔を調整する
+; Z : 発動時点でキー入力のバッファをクリアする
+; R : 特殊キーをそのまま入力する(個別設定)
 
 ; 一般
 ::hsuzuki::
   Send, 鈴木涼平
 Return
-
-; ブログ執筆用
-::spanclass::<span class=""></span>{Left 9}

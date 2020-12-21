@@ -1,132 +1,91 @@
-/*初期化--------------------------------
----------------------------------------
----------------------------------------
-*/
 #Persistent
 #NoEnv
-;#UseHook
+#UseHook
+#MaxHotkeysPerInterval 100
 Process, Priority,, High
 SendMode, Input
 SetTitleMatchMode, 2
 SetKeyDelay, , 10
-#MaxHotkeysPerInterval 100
 
-; 共通変数↓
-	allKeys := "0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,vkBB,vkBA,vkBC,Space,Tab,Enter,BS,vkF3,vkF4,vk1D,vkF2,vkF0"
-; 共通変数↑
+; 変数の初期化
+#Include, %A_ScriptDir%\Variables.ahk
 
-; PluginsのInclude↓
-	; MG_Plugin.ahkにプラグインをリスト化して、まとめてインクルード/////////////////////////////////
-	if (SearchPlugins()) {
-		Reload
-	}
-	#Include %A_ScriptDir%\IncludePlugins.ahk	; AutoExexuteここまで
-
-	SearchPlugins()
-	{
-		; nowPluginNameに、Pluginsフォルダ内のAHKスクリプトを整形して改行区切りリストとして格納///////////
-		nowPluginName := ""
-		Loop, %A_ScriptDir%\Plugins\*.ahk
-		{
-			nowPluginName .= "#" . "Include %A_ScriptDir%\Plugins\" . A_LoopFileName . "`n"
-		}
-		if (nowPluginName == "") {
-			return 0
-		}
-		; oldPluginNameに、現在のIncludePlugins.ahkの内容を格納/////////////////////////////////
-		file := FileOpen(A_ScriptDir . "\IncludePlugins.ahk", "r `n", "CP932")
-		if (file)
-		{
-			oldPluginName := file.Read(file.Length)
-			file.Close
-			if (oldPluginName == nowPluginName) {
-				return 0
-			}
-		}
-		; oldPluginNameをnowPluginNameに書き換える////////////////////////////////////////////
-		file := FileOpen(A_ScriptDir . "\IncludePlugins.ahk", "w `n", "CP932")
-		if (!file) {
-			return 0
-		}
-		file.Write(nowPluginName)
-		file.Close
-		return 1
-	}
-; PluginsのInclude↑
-
-
-/*共通サブルーチン---------------------------------
------------------------------------------------
------------------------------------------------
-*/
-; ツールチップ/////////////////////////////////
-myToolTipFunction(str, delay)
-{
-	ToolTip, %str%
-	SetTimer, RemoveToolTip, -%delay%
+; プラグインの検出・取り込み
+if (search_plugins()) {
+  Reload
 }
 
-
-RemoveToolTip:
-	ToolTip
-Return
-
-
-RemoveToolTipAll:
-	SetTimer, RemoveToolTip, Off	; 保険
-	Loop, 20
-		ToolTip, , , , % A_Index
-Return
-
-;////////////////////////////////////////////
-;カレントディレクトリ取得//////////////////////////
-; 使用するときは、nowDir := GetActiveExplorerPath()のように。
-GetActiveExplorerPath() {
-    explorerHwnd := WinActive("ahk_class CabinetWClass")
-    if (explorerHwnd)
-    {
-        for window in ComObjCreate("Shell.Application").Windows
-        {
-            if (window.hwnd==explorerHwnd)
-                return window.Document.Folder.Self.Path
-        }
+search_plugins() {
+  ; Pluginsフォルダ内のAHKスクリプト名を整形してpluginsに格納
+  plugins := ""
+  Loop, %A_ScriptDir%\Plugins\*.ahk {
+    plugins .= "#" . "Include *i %A_ScriptDir%\Plugins\" . A_LoopFileName . "`n"
+  }
+  if (plugins == "") {
+    return 0
+  }
+  ; Pluginsの変更点を認識
+  file := FileOpen(A_ScriptDir . "\PluginList.ahk", "r `n", "CP932")
+  if (file) {
+    plugin_list_old := file.Read(file.Length)
+    file.Close
+    if (plugin_list_old == plugins) {
+      return 0
     }
+  }
+  ; plugin_list_oldをpluginsに書き換える
+  file := FileOpen(A_ScriptDir . "\PluginList.ahk", "w `n", "CP932")
+  if (!file) {
+    return 0
+  }
+  file.Write(plugins)
+  file.Close
+  return 1
 }
 
+; (AutoExexuteここまで)
 
-;////////////////////////////////////////////
-;キー有効・無効/////////////////////////////////
-allKeyDisable:
-	Loop, PARSE, allKeys, `,
-	Hotkey, %A_LoopField%, allKeyDisable_Label, On
+#Include %A_ScriptDir%\PluginList.ahk
+
+; 共通サブルーチン
+; ツールチップ
+my_tooltip_function(str, delay)
+{
+  ToolTip, %str%
+  SetTimer, remove_tooltip, -%delay%
+}
+
+remove_tooltip:
+  ToolTip
 Return
 
+remove_tooltip_all:
+  SetTimer, remove_tooltip, Off  ; 念の為
+  Loop, 20
+  ToolTip, , , , % A_Index
+Return
+
+;カレントディレクトリ取得
+get_current_dir() {
+  explorerHwnd := WinActive("ahk_class CabinetWClass")
+  if (explorerHwnd) {
+    for window in ComObjCreate("Shell.Application").Windows {
+      if (window.hwnd==explorerHwnd)
+      return window.Document.Folder.Self.Path
+    }
+  }
+}
+
+;キー有効・無効
+allKeyDisable:
+  Loop, PARSE, allKeys, `,
+  Hotkey, %A_LoopField%, allKeyDisable_Label, On
+Return
 
 allKeyEnable:
-	Loop, PARSE, allKeys, `,
-	Hotkey, %A_LoopField%, allKeyDisable_Label, Off
+  Loop, PARSE, allKeys, `,
+  Hotkey, %A_LoopField%, allKeyDisable_Label, Off
 Return
-
 
 allKeyDisable_Label:
 Return
-
-
-;////////////////////////////////////////////
-;キー送信量増加/////////////////////////////////
-/*
-keyAccel(vol)
-{
-num := 1
-
-; コロンで加速
-If (GetKeyState("vkBA", "P"))
-	num += vol
-Return num
-}
-
-vkBA::Return
-vk1D & vkBA::Return
-*/
-
-;////////////////////////////////////////////
