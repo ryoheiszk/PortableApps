@@ -1,7 +1,7 @@
-; OneNote, Excel
+ï»¿; OneNote, Excel
 #If, WinActive("ahk_exe ONENOTE.EXE")
     OR WinActive("ahk_exe EXCEL.EXE")
-  ; –³•ÏŠ· + Shift + R ;; •¶š‚ğÔF‚É‚·‚é
+  ; ç„¡å¤‰æ› + Shift + R ;; æ–‡å­—ã‚’èµ¤è‰²ã«ã™ã‚‹
   +r::
     If(GetKeyState("vk1D", "P"))
     {
@@ -13,7 +13,7 @@
     }
   Return
 
-  ; –³•ÏŠ· + Shift + B ;; •¶š‚ğ•F‚É‚·‚é
+  ; ç„¡å¤‰æ› + Shift + B ;; æ–‡å­—ã‚’é»’è‰²ã«ã™ã‚‹
   +b::
     If(GetKeyState("vk1D", "P"))
     {
@@ -25,7 +25,7 @@
     }
   Return
 
-  ; –³•ÏŠ· + Shift + G ;; •¶š‚ğ[—ÎF‚É‚·‚é
+  ; ç„¡å¤‰æ› + Shift + G ;; æ–‡å­—ã‚’æ·±ç·‘è‰²ã«ã™ã‚‹
   +g::
     If(GetKeyState("vk1D", "P"))
     {
@@ -41,7 +41,7 @@
 
 ; OneNote
 #If, WinActive("ahk_exe ONENOTE.EXE")
-  ;ã‰ºƒL[
+  ;ä¸Šä¸‹ã‚­ãƒ¼
   vk1D & i::ControlSend, OneNote::DocumentCanvas1, {Blind}{Up}
   vk1D & k::ControlSend, OneNote::DocumentCanvas1, {Blind}{Down}
   vk1D & 8::ControlSend, OneNote::DocumentCanvas1, {Blind}{Up 4}

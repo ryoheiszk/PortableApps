@@ -1,4 +1,4 @@
-; ˆê”Ê
+ï»¿; ä¸€èˆ¬
 Numpad1::
 Return
 
@@ -45,8 +45,8 @@ NumpadEnter::
 Return
 
 
-; ƒeƒ“ƒL[
-; CüƒL[‚Æ–³•ÏŠ·‚Ì‘g‚İ‡‚í‚¹‚ÌƒgƒŠƒK[‚ğ—LŒø‚É‚·‚é(—á: ^{vk1D}r::OneNoteÔ•¶š)
+; ãƒ†ãƒ³ã‚­ãƒ¼
+; ä¿®é£¾ã‚­ãƒ¼ã¨ç„¡å¤‰æ›ã®çµ„ã¿åˆã‚ã›ã®ãƒˆãƒªã‚¬ãƒ¼ã‚’æœ‰åŠ¹ã«ã™ã‚‹(ä¾‹: ^{vk1D}r::OneNoteèµ¤æ–‡å­—)
 #If, !(GetKeyState("Ctrl", "P")
   || GetKeyState("Shift", "P")
     || GetKeyState("Alt", "P")

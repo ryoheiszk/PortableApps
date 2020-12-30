@@ -1,10 +1,10 @@
-; ‰p”ƒL[–³Œø
+ï»¿; è‹±æ•°ã‚­ãƒ¼ç„¡åŠ¹
 vkF0::Return
 
-;ƒfƒXƒNƒgƒbƒvƒtƒHƒ‹ƒ_‚ğŠJ‚­
+;ãƒ‡ã‚¹ã‚¯ãƒˆãƒƒãƒ—ãƒ•ã‚©ãƒ«ãƒ€ã‚’é–‹ã
 #e::Run, %A_Desktop%
 
-; ‘I‘ğ•¶š—ñ‚ÅGoogleŒŸõ
+; é¸æŠæ–‡å­—åˆ—ã§Googleæ¤œç´¢
 vk1D & F1::
   ClipSaved := ClipboardAll
   Send, ^c
@@ -14,53 +14,53 @@ vk1D & F1::
   ClipSaved =
 Return
 
-; ‰¹—Ê•ÏX
-; ’P‘Ì‰Ÿ‰º‚Ì“®ìw’è
+; éŸ³é‡å¤‰æ›´
+; å˜ä½“æŠ¼ä¸‹ã®å‹•ä½œæŒ‡å®š
 AppsKey::Send,{AppsKey}
 
-; ƒ{ƒŠƒ…[ƒ€‚ğã‚°‚é
+; ãƒœãƒªãƒ¥ãƒ¼ãƒ ã‚’ä¸Šã’ã‚‹
 AppsKey & Up::Send,{Volume_Up 1}
 
-; ƒ{ƒŠƒ…[ƒ€‚ğ‰º‚°‚é
+; ãƒœãƒªãƒ¥ãƒ¼ãƒ ã‚’ä¸‹ã’ã‚‹
 AppsKey & Down::Send,{Volume_Down 1}
 
-; ƒ~ƒ…[ƒg
+; ãƒŸãƒ¥ãƒ¼ãƒˆ
 AppsKey & Left::Send,{Volume_Mute}
 
-; ƒRƒs[‚µ‚½‚çƒc[ƒ‹ƒ`ƒbƒv‚ğ•\¦
+; ã‚³ãƒ”ãƒ¼ã—ãŸã‚‰ãƒ„ãƒ¼ãƒ«ãƒãƒƒãƒ—ã‚’è¡¨ç¤º
 OnClipboardChange:
-  ToolTip ƒRƒs[‚µ‚Ü‚µ‚½B
+  ToolTip ã‚³ãƒ”ãƒ¼ã—ã¾ã—ãŸã€‚
   SetTimer, remove_tooltip, 200
 Return
 
-; ƒ^ƒCƒ€ƒVƒtƒg˜^‰æ‚µ‚½‚ç•Û‘¶ƒtƒHƒ‹ƒ_‚ğŠJ‚­
+; ã‚¿ã‚¤ãƒ ã‚·ãƒ•ãƒˆéŒ²ç”»ã—ãŸã‚‰ä¿å­˜ãƒ•ã‚©ãƒ«ãƒ€ã‚’é–‹ã
 ~!F10::Goto, ^!F9
 
-; ˜^‰æ‚Ì•Û‘¶ƒtƒHƒ‹ƒ_‚ğŠJ‚­
+; éŒ²ç”»ã®ä¿å­˜ãƒ•ã‚©ãƒ«ãƒ€ã‚’é–‹ã
 ^!F9::Run, F:\Videos\GeforceExperience
 
-; ƒJƒŒƒ“ƒgƒfƒBƒŒƒNƒgƒŠ‚ÌƒpƒX‚ğæ“¾
+; ã‚«ãƒ¬ãƒ³ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®ãƒ‘ã‚¹ã‚’å–å¾—
 ^+!p::Clipboard := get_current_dir()
 
-; “ú•t“ü—Í
+; æ—¥ä»˜å…¥åŠ›
 ^vkBB::
   FormatTime, dateStr, , yyyy-MM-dd
   Send, {vkF2}{vkF3}%dateStr%
 Return
 
-; V‚µ‚¢ƒuƒ‰ƒ“ƒNƒtƒ@ƒCƒ‹‚ğì¬
+; æ–°ã—ã„ãƒ–ãƒ©ãƒ³ã‚¯ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä½œæˆ
 ^+!f::
-  ; ƒGƒNƒXƒvƒ[ƒ‰‚ªƒAƒNƒeƒBƒu‚Å‚È‚¯‚ê‚Î’†’f
+  ; ã‚¨ã‚¯ã‚¹ãƒ—ãƒ­ãƒ¼ãƒ©ãŒã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã§ãªã‘ã‚Œã°ä¸­æ–­
   If (!WinActive("ahk_class CabinetWClass")) {
-    MsgBox, ƒGƒNƒXƒvƒ[ƒ‰‚ªƒAƒNƒeƒBƒu‚Å‚Í‚ ‚è‚Ü‚¹‚ñ
+    MsgBox, ã‚¨ã‚¯ã‚¹ãƒ—ãƒ­ãƒ¼ãƒ©ãŒã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã§ã¯ã‚ã‚Šã¾ã›ã‚“
     Return
   }
-  ; Œ»İ•\¦’†‚ÌƒfƒBƒŒƒNƒgƒŠ
+  ; ç¾åœ¨è¡¨ç¤ºä¸­ã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
   current_dir := get_current_dir()
-  ; ƒtƒ@ƒCƒ‹‚ğ¶¬(d•¡‚µ‚È‚¢–¼‘O)
+  ; ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç”Ÿæˆ(é‡è¤‡ã—ãªã„åå‰)
   Gui, Add, Edit, vStr w380
   Gui, Add, Button, Default, Append
-  Gui, Show, Center w400, ƒtƒ@ƒCƒ‹–¼
+  Gui, Show, Center w400, ãƒ•ã‚¡ã‚¤ãƒ«å
   Send, {vkF2}{vkF3}
 Return
 ButtonAppend:

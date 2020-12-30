@@ -1,58 +1,57 @@
-vk1C & m::
-  ; ƒL[İ’è///////////////////////////////////
-  hotKeyL       := "vk1C"   ; ƒgƒŠƒK[1
-  hotKeyR       := "m"      ; ƒgƒŠƒK[2
+ï»¿vk1C & m::
+  ; ã‚­ãƒ¼è¨­å®š///////////////////////////////////
+  hotKeyL       := "vk1C"   ; ãƒˆãƒªã‚¬ãƒ¼1
+  hotKeyR       := "m"      ; ãƒˆãƒªã‚¬ãƒ¼2
 
-  mouseUp       := "e"      ; ª
-  mouseDown     := "d"      ; «
-  mouseLeft     := "s"      ; ©
-  mouseRight    := "f"      ; ¨
-  mouseLB       := "j"      ; ¶ƒNƒŠƒbƒN
-  mouseRB       := "l"      ; ‰EƒNƒŠƒbƒN
-  mouseMB       := "vkBC"   ; ’†ƒNƒŠƒbƒN
-  scrollUp      := "i"      ; ãƒXƒNƒ[ƒ‹
-  scrollDown    := "k"      ; ‰ºƒXƒNƒ[ƒ‹
+  mouseUp       := "e"      ; â†‘
+  mouseDown     := "d"      ; â†“
+  mouseLeft     := "s"      ; â†
+  mouseRight    := "f"      ; â†’
+  mouseLB       := "j"      ; å·¦ã‚¯ãƒªãƒƒã‚¯
+  mouseRB       := "l"      ; å³ã‚¯ãƒªãƒƒã‚¯
+  mouseMB       := "vkBC"   ; ä¸­ã‚¯ãƒªãƒƒã‚¯
+  scrollUp      := "i"      ; ä¸Šã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«
+  scrollDown    := "k"      ; ä¸‹ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«
 
-  accelKey1     := "o"      ; ƒJ[ƒ\ƒ‹‰Á‘¬
-  accelKey2     := "vkBB"   ; ƒJ[ƒ\ƒ‹‰Á‘¬
-  slowKey       := "vk1C"   ; ƒJ[ƒ\ƒ‹Œ¸‘¬
+  accelKey1     := "o"      ; ã‚«ãƒ¼ã‚½ãƒ«åŠ é€Ÿ
+  accelKey2     := "vkBB"   ; ã‚«ãƒ¼ã‚½ãƒ«åŠ é€Ÿ
+  slowKey       := "vk1C"   ; ã‚«ãƒ¼ã‚½ãƒ«æ¸›é€Ÿ
 
-  defSpeed      := 4        ; ‹K’è‚ÌƒJ[ƒ\ƒ‹ˆÚ“®‘¬“x
-  accelVol      := 8        ; accelKey‰Ÿ‰º‚ÌƒJ[ƒ\ƒ‹ˆÚ“®‘¬“x‚Ì‘‰Á—Ê
-  slowVol       := 1        ; slowKey‰Ÿ‰º‚ÌƒJ[ƒ\ƒ‹ˆÚ“®‘¬“x
-  moveRatio     := 16 / 9   ; c‰¡ˆÚ“®—Ê”{—¦
+  defSpeed      := 4        ; è¦å®šã®ã‚«ãƒ¼ã‚½ãƒ«ç§»å‹•é€Ÿåº¦
+  accelVol      := 8        ; accelKeyæŠ¼ä¸‹æ™‚ã®ã‚«ãƒ¼ã‚½ãƒ«ç§»å‹•é€Ÿåº¦ã®å¢—åŠ é‡
+  slowVol       := 1        ; slowKeyæŠ¼ä¸‹æ™‚ã®ã‚«ãƒ¼ã‚½ãƒ«ç§»å‹•é€Ÿåº¦
+  moveRatio     := 16 / 9   ; ç¸¦æ¨ªç§»å‹•é‡å€ç‡
 
-  chaseToolTip  := false    ; ƒc[ƒ‹ƒ`ƒbƒv‚Ì—LŒø/–³Œø
+  chaseToolTip  := false    ; ãƒ„ãƒ¼ãƒ«ãƒãƒƒãƒ—ã®æœ‰åŠ¹/ç„¡åŠ¹
 
   ;////////////////////////////////////////////
 
   KeyWait, %hotKeyL%
   KeyWait, %hotKeyR%
 
-  GoSub, allKeyEnable  ; ‚±‚ê‚ğ‚©‚Ü‚¹‚ÄƒzƒbƒgƒL[‚ğ‘¶İ‚³‚¹‚é
-  GoSub, allKeyDisable  ; ã‚Å’è‹`‚³‚ê‚½ƒzƒbƒgƒL[‚ğ—LŒø‚É‚·‚é
-  GoSub, toggle_KeyMouse  ; ‘€ìƒ‚[ƒh‚ğƒgƒOƒ‹‚·‚é
+  GoSub, allKeyDisable
+  GoSub, toggle_KeyMouse
 
-  SetTimer, toggleCheck, 100      ; ƒgƒOƒ‹ó‘Ô‚ğƒ`ƒFƒbƒN
-  SetTimer, mouseClickChecker, 50      ; ƒ}ƒEƒXƒNƒŠƒbƒN‚ğƒ`ƒFƒbƒN
-  if (chaseToolTip <> false)
-    SetTimer, mouseToolTipMaker, 20    ; ƒc[ƒ‹ƒ`ƒbƒv‚ğ’ÇÕ‚³‚¹‚é
+  SetTimer, toggleCheck, 100
+  SetTimer, mouseClickChecker, 50
+  if (chaseToolTip != false)
+    SetTimer, mouseToolTipMaker, 20
 
   While (toggle_KeyMouse = true) {
-    ; ‘¬“xİ’è///////////////////////////
+    ; é€Ÿåº¦è¨­å®š///////////////////////////
     speed := defSpeed
     moveX := 0
     moveY := 0
 
     if (GetKeyState(accelKey1, "P"))
-      speed += accelVol    ; ‰Á‘¬
+      speed += accelVol
     if (GetKeyState(accelKey2, "P"))
-      speed += accelVol    ; ‰Á‘¬
+      speed += accelVol
     if (GetKeyState(slowKey, "P"))
-      speed := slowVol    ; ’á‘¬
+      speed := slowVol
     ;////////////////////////////////////
 
-    ; ˆÚ“®•ûŒüİ’è///////////////////////
+    ; ç§»å‹•æ–¹å‘è¨­å®š///////////////////////
     if (GetKeyState(mouseUp, "P"))
       moveY += speed
     if (GetKeyState(mouseDown, "P"))
@@ -63,7 +62,7 @@ vk1C & m::
       moveX += speed * moveRatio
     ;////////////////////////////////////
 
-    ; ˆÚ“®///////////////////////////////
+    ; ç§»å‹•///////////////////////////////
     MouseMove, moveX, -moveY, 0, R
     ; ///////////////////////////////////
   }
@@ -78,16 +77,15 @@ Return
 
 
 ;////////////////////////////////////////////
-;ƒTƒuƒ‹[ƒ`ƒ“////////////////////////////////
+;ã‚µãƒ–ãƒ«ãƒ¼ãƒãƒ³////////////////////////////////
 ;////////////////////////////////////////////
 
-; ƒgƒOƒ‹/////////////////////////////////////
+; ãƒˆã‚°ãƒ«/////////////////////////////////////
 toggleCheck:
   if (GetKeyState(hotKeyL, "P") AND GetKeyState(hotKeyR, "P")) {
     KeyWait, %hotKeyL%
     KeyWait, %hotKeyR%
 
-    ; ‘€ìƒ‚[ƒh‚ğƒgƒOƒ‹‚·‚é
     GoSub, toggle_KeyMouse
   }
 Return
@@ -95,23 +93,23 @@ Return
 toggle_KeyMouse:
   toggle_KeyMouse := !toggle_KeyMouse
 
-  my_tooltip_function("ƒ}ƒEƒXƒ‚[ƒh: " . (toggle_KeyMouse = true ? "ON" : "OFF"), 1000)
+  my_tooltip_function("ãƒã‚¦ã‚¹ãƒ¢ãƒ¼ãƒ‰: " . (toggle_KeyMouse = true ? "ON" : "OFF"), 1000)
 
-  ; ƒ^ƒXƒNƒo[‚Ì‚‚³‚ğæ“¾
+  ; ã‚¿ã‚¹ã‚¯ãƒãƒ¼ã®é«˜ã•ã‚’å–å¾—
   WinGetPos, , , , taskbarHeight, ahk_class Shell_TrayWnd
 
-  ; ‰E‰º‚Éƒc[ƒ‹ƒ`ƒbƒv
+  ; å³ä¸‹ã«ãƒ„ãƒ¼ãƒ«ãƒãƒƒãƒ—
   CoordMode, ToolTip, Screen
-  ToolTip, % "ƒ}ƒEƒXƒ‚[ƒh: " . (toggle_KeyMouse = true ? "ON" : "OFF")
-      ,A_ScreenWidth, A_ScreenHeight - (taskbarHeight + 21), 2  ; ƒc[ƒ‹ƒ`ƒbƒv‚Ì‚‚³: 20
+  ToolTip, % "ãƒã‚¦ã‚¹ãƒ¢ãƒ¼ãƒ‰: " . (toggle_KeyMouse = true ? "ON" : "OFF")
+      ,A_ScreenWidth, A_ScreenHeight - (taskbarHeight + 21), 2  ; ãƒ„ãƒ¼ãƒ«ãƒãƒƒãƒ—ã®é«˜ã•: 20
   CoordMode, ToolTip, Relative
 Return
 ;////////////////////////////////////////////
 
 
-; ƒ}ƒEƒX/////////////////////////////////////
+; ãƒã‚¦ã‚¹/////////////////////////////////////
 mouseClickChecker:
-  ; ƒ}ƒEƒX/////////////////////////////
+  ; ãƒã‚¦ã‚¹/////////////////////////////
   KeyMouseClick(mouseLB, "L")
   KeyMouseClick(mouseMB, "M")
   KeyMouseClick(mouseRB, "R")
@@ -122,26 +120,26 @@ Return
 
 
 KeyMouseClick(key, button) {
-  ;ˆø”‚É‚Â‚¢‚Ä////////////////////////
-  ;// key:= "j", button:= "L" ‚Ìê‡ //
-  ;// j ‚ğ‰Ÿ‚·‚Æ LButton‚ª‘—M‚³‚ê‚é //
+  ;å¼•æ•°ã«ã¤ã„ã¦////////////////////////
+  ;// key:= "j", button:= "L" ã®å ´åˆ //
+  ;// j ã‚’æŠ¼ã™ã¨ LButtonãŒé€ä¿¡ã•ã‚Œã‚‹ //
   ;////////////////////////////////////
 
-  ; •Ï”%button%B_down‚Ì’l‚ğˆø‚«Œp‚®
-  ; %button%B_down‚Í’¼‘O‚É‰Ÿ‚µ‚½‚©—£‚µ‚½‚©‚ğ‹L˜^
+  ; å¤‰æ•°%button%B_downã®å€¤ã‚’å¼•ãç¶™ã
+  ; %button%B_downã¯ç›´å‰ã«æŠ¼ã—ãŸã‹é›¢ã—ãŸã‹ã‚’è¨˜éŒ²
   Global
 
-  ; ã‹L•Ï”‚ğ—p‚¢‚½˜A‘Å‘Îô///////////
+  ; ä¸Šè¨˜å¤‰æ•°ã‚’ç”¨ã„ãŸé€£æ‰“å¯¾ç­–///////////
   if (GetKeyState(key, "P") = true) {
-    ;‰Ÿ‚·‚Æ‚«
+    ;æŠ¼ã™ã¨ã
     if (%button%B_down != true) {
       Send, {Blind}{%button%Button Down}
       %button%B_down := true
 
-      ; ‰Ÿ‰º‚µ‚½‚çˆêuƒJ[ƒ\ƒ‹‚ğ~‚ß‚é
+      ; æŠ¼ä¸‹ã—ãŸã‚‰ä¸€ç¬ã‚«ãƒ¼ã‚½ãƒ«ã‚’æ­¢ã‚ã‚‹
       Sleep, 150
     }
-  } else {  ;—£‚·‚Æ‚«
+  } else {  ;é›¢ã™ã¨ã
     if (%button%B_down = true) {
       Send, {Blind}{%button%Button Up}
       %button%B_down := false
@@ -153,11 +151,11 @@ KeyMouseClick(key, button) {
 
 KeyMouseScroll(key, scroll, accelKey1, accelKey2, slowKey, accelVol) {
   While (GetKeyState(key, "P")) {
-    ; ƒXƒNƒ[ƒ‹’†‚ÍƒJ[ƒ\ƒ‹‚ğŒÅ’è
+    ; ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ä¸­ã¯ã‚«ãƒ¼ã‚½ãƒ«ã‚’å›ºå®š
     if (GetKeyState(key, "P"))
       Send, {Blind}{Wheel%scroll%}
 
-    ; ƒXƒNƒ[ƒ‹‘¬“x‚Ìİ’è
+    ; ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«é€Ÿåº¦ã®è¨­å®š
     scrollWait := 100
     if (GetKeyState(accelKey1, "P"))
       scrollWait -= accelVol * 5
@@ -172,6 +170,6 @@ KeyMouseScroll(key, scroll, accelKey1, accelKey2, slowKey, accelVol) {
 
 
 mouseToolTipMaker:
-  ToolTip, ƒ}ƒEƒXƒ‚[ƒh: ON
+  ToolTip, ãƒã‚¦ã‚¹ãƒ¢ãƒ¼ãƒ‰: ON
 Return
 ;////////////////////////////////////////////

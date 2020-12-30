@@ -1,67 +1,67 @@
-;ScrollLock‚Å“d‘ì‚ğŠJ‚­
+ï»¿;ScrollLockã§é›»å“ã‚’é–‹ã
   ScrollLock::Run, calc.exe
   Return
 
 
-;–³•ÏŠ·+c‚Å1sƒRƒs[
+;ç„¡å¤‰æ›+cã§1è¡Œã‚³ãƒ”ãƒ¼
   vk1D & c::Send, {Home}{Shift Down}{End}{Shift Up}{Ctrl Down}c{Ctrl Up}{End}
   Return
 
 
-;–³•ÏŠ·+ã‰º¶‰E¨ ã‰º¶‰E‚Ì–îˆó“ü—Í(‹Œ”Å:ƒNƒŠƒbƒvƒ{[ƒhŒo—R)
+;ç„¡å¤‰æ›+ä¸Šä¸‹å·¦å³â†’ ä¸Šä¸‹å·¦å³ã®çŸ¢å°å…¥åŠ›(æ—§ç‰ˆ:ã‚¯ãƒªãƒƒãƒ—ãƒœãƒ¼ãƒ‰çµŒç”±)
   Send_byClip(in_text)
   {
   bak_clipboard := Clipboard
   Clipboard := in_text
-  Sleep, 200 ;ƒNƒŠƒbƒvƒ{[ƒh‘—M‚Ü‚Å‚ÌƒEƒFƒCƒg
+  Sleep, 200 ;ã‚¯ãƒªãƒƒãƒ—ãƒœãƒ¼ãƒ‰é€ä¿¡ã¾ã§ã®ã‚¦ã‚§ã‚¤ãƒˆ
   send, ^{v}
   Clipboard := bak_clipboard
   }
 
   vk1D & Up::
-    Send_byClip("ª")
+    Send_byClip("â†‘")
     Return
 
   vk1D & Down::
-    Send_byClip("«")
+    Send_byClip("â†“")
     Return
 
   vk1D & Left::
-    Send_byClip("©")
+    Send_byClip("â†")
     Return
 
   vk1D & Right::
-    Send_byClip("¨")
+    Send_byClip("â†’")
     Return
 
 
-;–³•ÏŠ·+Shift+R¨Œ»İ‚Ìƒ}ƒEƒXÀ•W‚ğ‹L˜^
-;–³•ÏŠ·+Shift+C¨‹L˜^‚µ‚½ƒ}ƒEƒXÀ•W‚ğ¶ƒNƒŠƒbƒN
+;ç„¡å¤‰æ›+Shift+Râ†’ç¾åœ¨ã®ãƒã‚¦ã‚¹åº§æ¨™ã‚’è¨˜éŒ²
+;ç„¡å¤‰æ›+Shift+Câ†’è¨˜éŒ²ã—ãŸãƒã‚¦ã‚¹åº§æ¨™ã‚’å·¦ã‚¯ãƒªãƒƒã‚¯
   vk1D & r::
   if (GetKeyState("Shift", "P")) {
     CoordMode, Mouse, Screen
     MouseGetPos, mouseX, mouseY
   }else{
-    ;Numpad9‚Í‚±‚±‚ÉˆÚ“®
+    ;Numpad9ã¯ã“ã“ã«ç§»å‹•
     Send, {Numpad9}
   }
   Return
 
   vk1D & c::
   if (GetKeyState("Shift", "P")) {
-    ;‹L˜^‚µ‚½À•W‚ğƒNƒŠƒbƒNŒãAŒ³‚ÌÀ•W‚É–ß‚é
+    ;è¨˜éŒ²ã—ãŸåº§æ¨™ã‚’ã‚¯ãƒªãƒƒã‚¯å¾Œã€å…ƒã®åº§æ¨™ã«æˆ»ã‚‹
     CoordMode, Mouse, Screen
     MouseGetPos, tempX, tempY
     MouseClick, Left, mouseX, mouseY
     MouseMove, tempX, tempY
   }else{
-    ;Numpad2‚Í‚±‚±‚ÉˆÚ“®
+    ;Numpad2ã¯ã“ã“ã«ç§»å‹•
     Send, {Numpad2}
   }
   Return
 
 
-;Alt+¶ƒhƒ‰ƒbƒO¨ƒEƒBƒ“ƒhƒE“àƒhƒ‰ƒbƒO‚ÅƒEƒBƒ“ƒhƒEˆÚ“®
+;Alt+å·¦ãƒ‰ãƒ©ãƒƒã‚°â†’ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦å†…ãƒ‰ãƒ©ãƒƒã‚°ã§ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ç§»å‹•
 !LButton::
   CoordMode,Mouse,Screen
   MouseGetPos,sx,sy,mh
@@ -75,14 +75,14 @@
 Return
 
 
-; ƒfƒBƒŒƒNƒgƒŠ‚ªŠi”[‚³‚ê‚½•Ï”current_dir‚Ìƒtƒ@ƒCƒ‹”‚Ì•Ï‰»‚ğŒŸ’m‚µŸ‘æAƒ‹[ƒv‚ğ”²‚¯‚é‚â‚Â
+; ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãŒæ ¼ç´ã•ã‚ŒãŸå¤‰æ•°current_dirã®ãƒ•ã‚¡ã‚¤ãƒ«æ•°ã®å¤‰åŒ–ã‚’æ¤œçŸ¥ã—æ¬¡ç¬¬ã€ãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹ã‚„ã¤
 while (1) {
-  num++  ; Loop‰ñ”
+  num++  ; Loopå›æ•°
   cnt := ComObjCreate("Scripting.FileSystemObject").GetFolder(current_dir).Files.Count
   tmp := cnt
 
-  ; 1‰ñ–Ú‚Íƒtƒ@ƒCƒ‹”ƒJƒEƒ“ƒg‰‰ñ‚Å‚ ‚é‚½‚ßAcnt==0‚¾‚©‚çƒXƒLƒbƒv‚µ‚È‚¢‚Æ•K‚¸cnt!=tmp‚Æ‚È‚Á‚Ä‚µ‚Ü‚¤B
-  ; ‚»‚Ì‚½‚ßLoop‰ñ”‚ğ‹L˜^‚·‚énum•Ï”‚ğã‚Å—pˆÓ‚µ‚½B
+  ; 1å›ç›®ã¯ãƒ•ã‚¡ã‚¤ãƒ«æ•°ã‚«ã‚¦ãƒ³ãƒˆåˆå›ã§ã‚ã‚‹ãŸã‚ã€cnt==0ã ã‹ã‚‰ã‚¹ã‚­ãƒƒãƒ—ã—ãªã„ã¨å¿…ãšcnt!=tmpã¨ãªã£ã¦ã—ã¾ã†ã€‚
+  ; ãã®ãŸã‚Loopå›æ•°ã‚’è¨˜éŒ²ã™ã‚‹numå¤‰æ•°ã‚’ä¸Šã§ç”¨æ„ã—ãŸã€‚
   if (cnt != tmp || num != 1)
     break
 
@@ -90,24 +90,24 @@ while (1) {
 }
 
 
-; ƒƒjƒ…[
-  ; ƒTƒuƒƒjƒ…[¶¬
-  Menu, MySubMenu, Add, ƒXƒNƒŠƒvƒgƒtƒHƒ‹ƒ_‚ğŠJ‚­, SubMenu0
+; ãƒ¡ãƒ‹ãƒ¥ãƒ¼
+  ; ã‚µãƒ–ãƒ¡ãƒ‹ãƒ¥ãƒ¼ç”Ÿæˆ
+  Menu, MySubMenu, Add, ã‚¹ã‚¯ãƒªãƒ—ãƒˆãƒ•ã‚©ãƒ«ãƒ€ã‚’é–‹ã, SubMenu0
   Menu, MySubMenu, Add
-  Menu, MySubMenu, Add, G‘½.ahk, SubMenu1
+  Menu, MySubMenu, Add, é›‘å¤š.ahk, SubMenu1
 
-  ; Scriptsƒƒjƒ…[“à‚ÉMySubMenu‚Ì€–Ú‚ğ“o˜^
+  ; Scriptsãƒ¡ãƒ‹ãƒ¥ãƒ¼å†…ã«MySubMenuã®é …ç›®ã‚’ç™»éŒ²
   Menu, Tray, Add, Scripts, :MySubMenu
 
-  ; ‚±‚±‚Ü‚Å‚ÍAuto-executeƒZƒNƒVƒ‡ƒ“‚É”z’u
+  ; ã“ã“ã¾ã§ã¯Auto-executeã‚»ã‚¯ã‚·ãƒ§ãƒ³ã«é…ç½®
   Return
 
-  ; ƒƒjƒ…[—pƒTƒuƒ‹[ƒ`ƒ“
+  ; ãƒ¡ãƒ‹ãƒ¥ãƒ¼ç”¨ã‚µãƒ–ãƒ«ãƒ¼ãƒãƒ³
   SubMenu0:
     Run, %A_ScriptDir%\
   Return
   SubMenu1:
-    Run, %A_ScriptDir%\Scripts\G‘½.ahk
+    Run, %A_ScriptDir%\Scripts\é›‘å¤š.ahk
   Return
 
   ; ////////toggle.ahk
@@ -118,7 +118,7 @@ while (1) {
 
 
 vk1C & a::toggleChange(toggle_a, "AHK")
-vk1C & p::toggleChange(toggle_p, "ƒvƒƒOƒ‰ƒ~ƒ“ƒO")
+vk1C & p::toggleChange(toggle_p, "ãƒ—ãƒ­ã‚°ãƒ©ãƒŸãƒ³ã‚°")
 vk1C & e::toggleChange(toggle_e, "Edit")
 
 
@@ -128,10 +128,10 @@ vk1C & e::toggleChange(toggle_e, "Edit")
 toggleChange(ByRef toggle, name)
 {
   toggle := !toggle
-  my_tooltip_function("ƒJƒXƒ^ƒ€ƒ‚[ƒh(" . name . "): " . (toggle = true ? "ON" : "OFF"), 1000)
+  my_tooltip_function("ã‚«ã‚¹ã‚¿ãƒ ãƒ¢ãƒ¼ãƒ‰(" . name . "): " . (toggle = true ? "ON" : "OFF"), 1000)
 
   CoordMode, ToolTip, Screen
-  ToolTip, % (toggle = true ?  "ƒJƒXƒ^ƒ€ƒ‚[ƒh(" . name . "): ON" : ""), 0, 0, 20
+  ToolTip, % (toggle = true ?  "ã‚«ã‚¹ã‚¿ãƒ ãƒ¢ãƒ¼ãƒ‰(" . name . "): ON" : ""), 0, 0, 20
   CoordMode, ToolTip, Relative
 }
 
@@ -142,7 +142,7 @@ toggleChange(ByRef toggle, name)
 #If, toggle_a = true
 
 
-; AHK‚ğ•Â‚¶‚é
+; AHKã‚’é–‰ã˜ã‚‹
 e::
   Run, taskkill /F /IM MouseGestureL.exe, , Hide
   ExitApp
@@ -150,25 +150,25 @@ e::
 Return
 
 
-; AHK‚ğƒŠƒ[ƒh
+; AHKã‚’ãƒªãƒ­ãƒ¼ãƒ‰
 r::Reload
 
 
-; Àsƒtƒ@ƒCƒ‹‚ÌƒtƒHƒ‹ƒ_‚ğŠJ‚­
+; å®Ÿè¡Œãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ•ã‚©ãƒ«ãƒ€ã‚’é–‹ã
 o::
   Run, %A_ScriptDir%
   toggleChange(toggle_a, "AHK")
 Return
 
 
-; AHKWiki(“ú–{Œê)‚ğŠJ‚­
+; AHKWiki(æ—¥æœ¬èª)ã‚’é–‹ã
 h::
   Run, http://ahkwiki.net/Top
   toggleChange(toggle_a, "AHK")
 Return
 
 
-; WindowSpy‚ğŠJ‚­
+; WindowSpyã‚’é–‹ã
 w::
   Run, %A_ScriptDir%\AutoHotkey.exe %A_ScriptDir%\WindowSpy.ahk
   toggleChange(toggle_a, "AHK")
@@ -179,61 +179,61 @@ Return
 
 ;==============================
 
-; ƒvƒƒOƒ‰ƒ~ƒ“ƒO///////////////
+; ãƒ—ãƒ­ã‚°ãƒ©ãƒŸãƒ³ã‚°///////////////
 
 #If, toggle_p = true
 
 
-; javaƒRƒ“ƒpƒCƒ‹‚Ì’èŒ^•¶
+; javaã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã®å®šå‹æ–‡
 j::
   Send, {vkF2}{vkF3}javac -encoding utf-8 .java{Left 5}
-  toggleChange(toggle_p, "ƒvƒƒOƒ‰ƒ~ƒ“ƒO")
+  toggleChange(toggle_p, "ãƒ—ãƒ­ã‚°ãƒ©ãƒŸãƒ³ã‚°")
 Return
 
-; CŒ¾ŒêƒRƒ“ƒpƒCƒ‹‚Ì’èŒ^•¶
+; Cè¨€èªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã®å®šå‹æ–‡
 c::
   Send, {vkF2}{vkF3}gcc -o a .c{Left 2}
-  toggleChange(toggle_p, "ƒvƒƒOƒ‰ƒ~ƒ“ƒO")
+  toggleChange(toggle_p, "ãƒ—ãƒ­ã‚°ãƒ©ãƒŸãƒ³ã‚°")
 Return
 
 
 #If
 
 ;==============================
-; •ÒW/////////////////////////
+; ç·¨é›†/////////////////////////
 
 #If, toggle_e = true
 
 
-; 1sƒRƒs[
+; 1è¡Œã‚³ãƒ”ãƒ¼
 c::
   Send, {Home}+{End}^c{Right}
   toggleChange(toggle_e, "Edit")
 Return
 
 
-; 1s‘}“ü
+; 1è¡ŒæŒ¿å…¥
 l::
   Send, {Home}{Enter}{Up}
   toggleChange(toggle_e, "Edit")
 Return
 
 
-; 1síœ
+; 1è¡Œå‰Šé™¤
 e::
   Send, {End}+{Home}{Delete}
   toggleChange(toggle_e, "Edit")
 Return
 
 
-; ƒLƒƒƒŒƒbƒgˆÈ‰º1síœ
+; ã‚­ãƒ£ãƒ¬ãƒƒãƒˆä»¥ä¸‹1è¡Œå‰Šé™¤
 Delete::
   Send, +{End}{Delete}
   toggleChange(toggle_e, "Edit")
 Return
 
 
-; ƒLƒƒƒŒƒbƒgˆÈ‘O1síœ
+; ã‚­ãƒ£ãƒ¬ãƒƒãƒˆä»¥å‰1è¡Œå‰Šé™¤
 Backspace::
   Send, +{Home}{Backspace}
   toggleChange(toggle_e, "Edit")
@@ -244,7 +244,7 @@ Return
 
 ;==============================
 
-;‰f‘œö‹Æ—pPrsc
+;æ˜ åƒæˆæ¥­ç”¨Prsc
 Numpad0::
   CoordMode, Screen
 
@@ -252,10 +252,10 @@ Numpad0::
 
   Sleep, 500
 
-  ; ‰ŠúÀ•W‹L˜^
+  ; åˆæœŸåº§æ¨™è¨˜éŒ²
   MouseGetPos, oldMouseX, oldMouseY
 
-  ; ƒJ[ƒ\ƒ‹‚ğ—×‚Ìƒ‚ƒjƒ^‚Ö
+  ; ã‚«ãƒ¼ã‚½ãƒ«ã‚’éš£ã®ãƒ¢ãƒ‹ã‚¿ã¸
   MouseMove, 100, 200, 0
 
   While (1) {
@@ -280,7 +280,7 @@ Numpad0::
   }
 
   PrscEnd:
-  ; (•ÏX‘O)MouseMove, oldMouseX, oldMouseY
+  ; (å¤‰æ›´å‰)MouseMove, oldMouseX, oldMouseY
   MouseMove, 3000, 850, 0
 Return
 
@@ -324,20 +324,20 @@ NumpadEnter::tenkeyHotkey("obs64" ,"+!#{NumpadEnter}")
 
 #If
 
-/*ƒTƒuƒ‹[ƒ`ƒ“-------------------------
+/*ã‚µãƒ–ãƒ«ãƒ¼ãƒãƒ³-------------------------
 ---------------------------------------
 ---------------------------------------
 */
-; ˆêuƒAƒNƒeƒBƒu‰»‚µ‚Ä‚©‚çƒL[‚ğ‘—M‚µA”ñƒAƒNƒeƒBƒu‰»‚·‚éŠÖ”
-;—á)obs‚Í”ñƒAƒNƒeƒBƒuó‘Ô‚Å”½‰‚µ‚È‚¢
+; ä¸€ç¬ã‚¢ã‚¯ãƒ†ã‚£ãƒ–åŒ–ã—ã¦ã‹ã‚‰ã‚­ãƒ¼ã‚’é€ä¿¡ã—ã€éã‚¢ã‚¯ãƒ†ã‚£ãƒ–åŒ–ã™ã‚‹é–¢æ•°
+;ä¾‹)obsã¯éã‚¢ã‚¯ãƒ†ã‚£ãƒ–çŠ¶æ…‹ã§åå¿œã—ãªã„
 tenkeyHotkey(appName ,sendKey)
 {
-  #WinActivateForce  ;‹­§ƒAƒNƒeƒBƒu‰»
-  WinGetTitle, oldTitle, A  ;Œ»İƒAƒNƒeƒBƒu‚ÈƒEƒBƒ“ƒhƒE‚ğ‹L‰¯
-  WinActivate, ahk_exe %appName%.exe  ;‘ÎÛƒAƒvƒŠ‚ğƒAƒNƒeƒBƒu‰»
+  #WinActivateForce  ;å¼·åˆ¶ã‚¢ã‚¯ãƒ†ã‚£ãƒ–åŒ–
+  WinGetTitle, oldTitle, A  ;ç¾åœ¨ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’è¨˜æ†¶
+  WinActivate, ahk_exe %appName%.exe  ;å¯¾è±¡ã‚¢ãƒ—ãƒªã‚’ã‚¢ã‚¯ãƒ†ã‚£ãƒ–åŒ–
 
-  ;OBSƒAƒNƒeƒBƒu‚Ü‚Å‘Ò‹@
-  WinGet, appID, ID, ahk_exe %appName%.exe  ;‘ÎÛƒAƒvƒŠ‚ÌIDæ“¾
+  ;OBSã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã¾ã§å¾…æ©Ÿ
+  WinGet, appID, ID, ahk_exe %appName%.exe  ;å¯¾è±¡ã‚¢ãƒ—ãƒªã®IDå–å¾—
   oldTime := A_TickCount
   While (true)
   {
@@ -345,13 +345,13 @@ tenkeyHotkey(appName ,sendKey)
   If (appID == activeID)
     Break
 
-  ; ˆê‰ƒ^ƒCƒ€ƒAƒEƒgİ’è
+  ; ä¸€å¿œã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆè¨­å®š
   If (A_TickCount - oldTime > 3000)
     Break
   }
 
   Sleep, 50
-  Send, %sendKey%  ;ƒzƒbƒgƒL[‚ğ‘—M
+  Send, %sendKey%  ;ãƒ›ãƒƒãƒˆã‚­ãƒ¼ã‚’é€ä¿¡
   Sleep, 50
-  WinActivate, %oldTitle%  ;‹L‰¯‚µ‚½ƒEƒBƒ“ƒhƒE‚ğÄ“xƒAƒNƒeƒBƒu‰»
+  WinActivate, %oldTitle%  ;è¨˜æ†¶ã—ãŸã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’å†åº¦ã‚¢ã‚¯ãƒ†ã‚£ãƒ–åŒ–
 }

@@ -1,22 +1,22 @@
-#Persistent
+ï»¿#Persistent
 #NoEnv
 #UseHook
-#MaxHotkeysPerInterval 100
+#MaxHotkeysPerInterval, 100
 Process, Priority,, High
 SendMode, Input
 SetTitleMatchMode, 2
 SetKeyDelay, , 10
 
-; •Ï”‚Ì‰Šú‰»
+; å¤‰æ•°ã®åˆæœŸåŒ–
 #Include, %A_ScriptDir%\Variables.ahk
 
-; ƒvƒ‰ƒOƒCƒ“‚ÌŒŸoEæ‚è‚İ
+; ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã®æ¤œå‡ºãƒ»å–ã‚Šè¾¼ã¿
 if (search_plugins()) {
   Reload
 }
 
 search_plugins() {
-  ; PluginsƒtƒHƒ‹ƒ_“à‚ÌAHKƒXƒNƒŠƒvƒg–¼‚ğ®Œ`‚µ‚Äplugins‚ÉŠi”[
+  ; Pluginsãƒ•ã‚©ãƒ«ãƒ€å†…ã®AHKã‚¹ã‚¯ãƒªãƒ—ãƒˆåã‚’æ•´å½¢ã—ã¦pluginsã«æ ¼ç´
   plugins := ""
   Loop, %A_ScriptDir%\Plugins\*.ahk {
     plugins .= "#" . "Include *i %A_ScriptDir%\Plugins\" . A_LoopFileName . "`n"
@@ -24,7 +24,8 @@ search_plugins() {
   if (plugins == "") {
     return 0
   }
-  ; Plugins‚Ì•ÏX“_‚ğ”F¯
+
+  ; Pluginsã®å¤‰æ›´ç‚¹ã‚’èªè­˜
   file := FileOpen(A_ScriptDir . "\PluginList.ahk", "r `n", "CP932")
   if (file) {
     plugin_list_old := file.Read(file.Length)
@@ -33,7 +34,8 @@ search_plugins() {
       return 0
     }
   }
-  ; plugin_list_old‚ğplugins‚É‘‚«Š·‚¦‚é
+
+  ; plugin_list_oldã‚’pluginsã«æ›¸ãæ›ãˆã‚‹
   file := FileOpen(A_ScriptDir . "\PluginList.ahk", "w `n", "CP932")
   if (!file) {
     return 0
@@ -43,14 +45,13 @@ search_plugins() {
   return 1
 }
 
-; (AutoExexute‚±‚±‚Ü‚Å)
+; (AutoExexuteã“ã“ã¾ã§)
 
-#Include %A_ScriptDir%\PluginList.ahk
+#Include, %A_ScriptDir%\PluginList.ahk
 
-; ‹¤’ÊƒTƒuƒ‹[ƒ`ƒ“
-; ƒc[ƒ‹ƒ`ƒbƒv
-my_tooltip_function(str, delay)
-{
+; å…±é€šã‚µãƒ–ãƒ«ãƒ¼ãƒãƒ³
+; ãƒ„ãƒ¼ãƒ«ãƒãƒƒãƒ—
+my_tooltip_function(str, delay) {
   ToolTip, %str%
   SetTimer, remove_tooltip, -%delay%
 }
@@ -60,12 +61,12 @@ remove_tooltip:
 Return
 
 remove_tooltip_all:
-  SetTimer, remove_tooltip, Off  ; ”O‚Ìˆ×
+  SetTimer, remove_tooltip, Off
   Loop, 20
   ToolTip, , , , % A_Index
 Return
 
-;ƒJƒŒƒ“ƒgƒfƒBƒŒƒNƒgƒŠæ“¾
+;ã‚«ãƒ¬ãƒ³ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªå–å¾—
 get_current_dir() {
   explorerHwnd := WinActive("ahk_class CabinetWClass")
   if (explorerHwnd) {
@@ -76,7 +77,7 @@ get_current_dir() {
   }
 }
 
-;ƒL[—LŒøE–³Œø
+;ã‚­ãƒ¼æœ‰åŠ¹ãƒ»ç„¡åŠ¹
 allKeyDisable:
   Loop, PARSE, allKeys, `,
   Hotkey, %A_LoopField%, allKeyDisable_Label, On

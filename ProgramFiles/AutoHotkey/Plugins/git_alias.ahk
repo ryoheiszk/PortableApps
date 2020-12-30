@@ -1,11 +1,11 @@
-#Hotstring C O K-1 Z
-; C : ‘å•¶š¬•¶š‚Ì‹æ•Ê
-; O : ÅŒã‚ÉI—¹•¶š‚ğ“ü—Í‚µ‚È‚¢
-; Kn: ƒL[‚Ì“ü—ÍŠÔŠu‚ğ’²®‚·‚é
-; Z : ”­“®“_‚ÅƒL[“ü—Í‚Ìƒoƒbƒtƒ@‚ğƒNƒŠƒA‚·‚é
-; R : “ÁêƒL[‚ğ‚»‚Ì‚Ü‚Ü“ü—Í‚·‚é(ŒÂ•Êİ’è)
+ï»¿#Hotstring C O K-1 Z
+; C : å¤§æ–‡å­—å°æ–‡å­—ã®åŒºåˆ¥
+; O : æœ€å¾Œã«çµ‚äº†æ–‡å­—ã‚’å…¥åŠ›ã—ãªã„
+; Kn: ã‚­ãƒ¼ã®å…¥åŠ›é–“éš”ã‚’èª¿æ•´ã™ã‚‹
+; Z : ç™ºå‹•æ™‚ç‚¹ã§ã‚­ãƒ¼å…¥åŠ›ã®ãƒãƒƒãƒ•ã‚¡ã‚’ã‚¯ãƒªã‚¢ã™ã‚‹
+; R : ç‰¹æ®Šã‚­ãƒ¼ã‚’ãã®ã¾ã¾å…¥åŠ›ã™ã‚‹(å€‹åˆ¥è¨­å®š)
 
-; Šî–{
+; åŸºæœ¬
 ::gia::git add .
 ::gibr::git branch{Space}
 ::gibrd::git branch -d{Space}
@@ -38,7 +38,7 @@
 ; ::gipl::
 ::gis::git status{Space}
 
-; ‰—p
+; å¿œç”¨
 ::gishbr::git show-branch | grep '*'
 ; :R:gishbr::git show-branch | grep '*' | grep -v "$(git rev-parse --abbrev-ref HEAD)" | head -1 | awk -F'[]~^[]' '{print $2}'
 ::gigr::git log --graph --date=short --decorate=short --pretty=format:'%Cgreen%h %Creset%cd %Cblue%cn %Cred%d %Creset%s'
