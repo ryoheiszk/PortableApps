@@ -1,4 +1,15 @@
-﻿;ScrollLockで電卓を開く
+﻿; 選択文字列でGoogle検索
+vk1D & F1::
+  ClipSaved := ClipboardAll
+  Send, ^c
+  ClipWait, 2
+  Run,https://www.google.co.jp/search?q=%Clipboard%
+  Clipboard := ClipSaved
+  ClipSaved =
+Return
+
+
+;ScrollLockで電卓を開く
   ScrollLock::Run, calc.exe
   Return
 

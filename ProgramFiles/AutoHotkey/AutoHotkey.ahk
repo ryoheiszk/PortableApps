@@ -90,3 +90,15 @@ Return
 
 allKeyDisable_Label:
 Return
+
+; 改行コード除去
+cut_crlf(str) {
+  str := RegExReplace(str, "\n", "")
+  str := RegExReplace(str, "\r", "")
+  Return str
+}
+
+GuiEscape:
+GuiClose:
+  Gui, Destroy
+Return

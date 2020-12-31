@@ -8,8 +8,8 @@
 ;   2. セカンダリキー設定
 ;
 ; 課題:
-;   ・プライマリキー指定を一括化
-;   ・未定義の場合その旨を表示
+;   ・プライマリキー指定を一括化(Hotkey, Loopあたりか)
+;   ・未定義の場合その旨を表示(現状、falseになるだけ)
 ;   ・プライマリキーとセカンダリキーが同じ場合、A_ThisHotkeyに変化がないためtoggleをfalseにできない
 ;     現状はセカンダリキーの方で明示的にfalseにしている(例: vk1C+e->e)
 
@@ -66,6 +66,9 @@ vk1C::Send, {vk1C}
 
 ; AutoHotkey
 #If, toggle == "a"
+  ; Documentation
+  d::Run, https://www.autohotkey.com/docs/AutoHotkey.htm
+
   ; リロード
   r::Reload
 
@@ -105,6 +108,26 @@ vk1C::Send, {vk1C}
 #If, toggle == "f"
 ; GUI
 #If, toggle == "g"
+  ; 新しいブランクファイルを作成
+  f::
+    ; エクスプローラがアクティブでなければ中断
+    If (!WinActive("ahk_class CabinetWClass")) {
+      MsgBox, エクスプローラがアクティブではありません
+      Return
+    }
+    ; 現在表示中のディレクトリ
+    current_dir := get_current_dir()
+    ; ファイルを生成(重複しない名前)
+    Gui, Add, Edit, v_str_filename w380
+    Gui, Add, Button, Default, Append
+    Gui, Show, Center w400, ファイル名
+    Send, {vkF2}{vkF3}
+    Return
+    ButtonAppend:
+    Gui, Submit
+    FileAppend, , %current_dir%\%_str_filename%
+  Return
+
   ; Google検索
   g::
     ; (「課題」参照)
@@ -113,18 +136,26 @@ vk1C::Send, {vk1C}
     If (WinExist("google.ahk")) {
       Return
     }
-    ; GUI表示
-    Gui, Add, Edit, vStr w380
+    stash := ClipboardAll
+    Clipboard :=
+    Send, ^c
+    ClipWait, 0.05
+    clip := Clipboard
+    Clipboard := stash
+    clip := cut_crlf(clip)
+    Gui, Add, Edit, v_str_google w380, %clip%
     Gui, Add, Button, Default, Search
     Gui, Show, Center w400, google.ahk
     Send, {vkF2}
+    clip := ""
+    stash := ""
     Return
     ButtonSearch:
       Gui, Submit
-      Run, https://www.google.co.jp/search?q=%Str%
-    2GuiEscape:
-    2GuiClose:
-      Gui, Destroy
+      Run, https://www.google.co.jp/search?q=%_str_google%
+    ; 2GuiEscape:
+    ; 2GuiClose:
+    ;   Gui, Destroy
   Return
 
   ; launcher
@@ -134,14 +165,14 @@ vk1C::Send, {vk1C}
       Return
     }
     launcher_head:
-    Gui, Add, Edit, vStr Lowercase
+    Gui, Add, Edit, v_str_launcher Lowercase
     Gui, Add, Button, Default, Launch
     Gui, Show, Center AutoSize, Launcher
     Send, {vkF2}{vkF3}
     Return
     ButtonLaunch:
       Gui, Submit
-      IniRead, val, %A_ScriptDir%\Plugins\launcher_data.ini, Scripts, %Str%
+      IniRead, val, %A_ScriptDir%\Plugins\launcher_data.ini, Scripts, %_str_launcher%
       ; 一致するレコードがなければval="ERROR"となることを利用する
       If (val != "ERROR") {
         Run, %val%
@@ -149,9 +180,6 @@ vk1C::Send, {vk1C}
         GoSub, GuiClose
         Goto, launcher_head
       }
-    GuiEscape:
-    GuiClose:
-      Gui, Destroy
   Return
 
 ; (空き)

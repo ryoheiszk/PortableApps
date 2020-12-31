@@ -37,9 +37,11 @@ vk1D & o::Send, {vk1D}
 
 ; Backspace
 vk1D & Space::Send, {Blind}{Backspace}
+vk1D & n::Send, {Blind}{Backspace}
 
 ; Delete
 vk1D & vk1C::Send,{Blind}{Delete}
+vk1D & /::Send,{Blind}{Delete}
 
 ; 行挿入
 vk1D & Enter::
