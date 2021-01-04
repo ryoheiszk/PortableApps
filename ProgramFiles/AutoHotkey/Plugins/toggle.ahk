@@ -46,7 +46,7 @@ vk1C::Send, {vk1C}
   y::
   z::
     ; keybdmouseが有効の場合toggleしない
-    If (toggle_KeyMouse) {
+    If (toggle_keybd_mouse) {
       Return
     }
 
@@ -54,7 +54,7 @@ vk1C::Send, {vk1C}
     toggle_activation(toggle)
     SetTimer, watch_hotkey_done, 50
 
-    GoSub, allKeyDisable
+    hotkeys_define(keys_all, "disable_keys", "On")
   Return
 #If
 
@@ -68,6 +68,9 @@ vk1C::Send, {vk1C}
 #If, toggle == "a"
   ; Documentation
   d::Run, https://www.autohotkey.com/docs/AutoHotkey.htm
+
+  ;KeyList
+  k::Run, http://ahkwiki.net/KeyList
 
   ; リロード
   r::Reload
@@ -108,7 +111,7 @@ vk1C::Send, {vk1C}
 #If, toggle == "f"
 ; GUI
 #If, toggle == "g"
-  ; 新しいブランクファイルを作成
+  ; 3:新しいブランクファイルを作成
   f::
     ; エクスプローラがアクティブでなければ中断
     If (!WinActive("ahk_class CabinetWClass")) {
@@ -126,9 +129,12 @@ vk1C::Send, {vk1C}
     ButtonAppend:
     Gui, Submit
     FileAppend, , %current_dir%\%_str_filename%
+    3GuiEscape:
+    3GuiClose:
+      Gui, Destroy
   Return
 
-  ; Google検索
+  ; 2:Google検索
   g::
     ; (「課題」参照)
     Gosub, toggle_deactivation
@@ -142,23 +148,22 @@ vk1C::Send, {vk1C}
     ClipWait, 0.05
     clip := Clipboard
     Clipboard := stash
-    clip := cut_crlf(clip)
+    clip := rm_crlf(clip)
     Gui, Add, Edit, v_str_google w380, %clip%
     Gui, Add, Button, Default, Search
     Gui, Show, Center w400, google.ahk
     Send, {vkF2}
     clip := ""
-    stash := ""
     Return
     ButtonSearch:
       Gui, Submit
       Run, https://www.google.co.jp/search?q=%_str_google%
-    ; 2GuiEscape:
-    ; 2GuiClose:
-    ;   Gui, Destroy
+    2GuiEscape:
+    2GuiClose:
+      Gui, Destroy
   Return
 
-  ; launcher
+  ; def:launcher
   l::
     ; 多重起動防止
     If (WinExist("Launcher")) {
@@ -180,6 +185,9 @@ vk1C::Send, {vk1C}
         GoSub, GuiClose
         Goto, launcher_head
       }
+    GuiEscape:
+    GuiClose:
+      Gui, Destroy
   Return
 
 ; (空き)
@@ -240,7 +248,7 @@ toggle_activation(toggle) {
 toggle_deactivation:
   toggle := false
   my_tooltip_function("toggle == false", 1000)
-  GoSub, allKeyEnable
+  hotkeys_define(keys_all, "disable_keys", "Off")
 Return
 
 ; セカンダリキーの入力があった場合、toggleをfalseにし、SetTimerしたタイムアウト設定を解除する

@@ -43,13 +43,17 @@ Return
   Send, {vkF2}{vkF3}%dateStr%
 Return
 
-; 最初のテキストフィールドに移動
-#If, WinActive("ahk_class Chrome_WidgetWin_1")
+; 最初のテキストフィールドに移動[Chromium]
+#If, WinActive("ahk_exe chrome.exe")
   ^+u::
+    ; ホールド対策
+    KeyWait, Ctrl, Up
+    KeyWait, Shift, Up
     stash := ClipBoardAll
-    ClipBoard := "element=document.querySelector(""input[type='text']"");element.select();element.scrollIntoView()"
+    ClipBoard := "const element=document.querySelector(""input[type='text'],input[type='search']"");element.select();element.scrollIntoView();"
     ClipWait, 1
     Send, ^l
+    ; "javascript:"は貼り付けできない
     Send, {vkF2}{vkF3}javascript:
     Sleep, 100
     Send, ^v
@@ -58,6 +62,5 @@ Return
     Sleep, 10
     ClipBoard := stash
     stash := ""
-    Send, {Ctrl Up}{Shift Up}
   Return
 #If

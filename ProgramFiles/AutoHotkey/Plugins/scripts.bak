@@ -49,23 +49,23 @@ Return
 ;無変換+Shift+R→現在のマウス座標を記録
 ;無変換+Shift+C→記録したマウス座標を左クリック
   vk1D & r::
-  if (GetKeyState("Shift", "P")) {
+  If (GetKeyState("Shift", "P")) {
     CoordMode, Mouse, Screen
     MouseGetPos, mouseX, mouseY
-  }else{
+  }Else{
     ;Numpad9はここに移動
     Send, {Numpad9}
   }
   Return
 
   vk1D & c::
-  if (GetKeyState("Shift", "P")) {
+  If (GetKeyState("Shift", "P")) {
     ;記録した座標をクリック後、元の座標に戻る
     CoordMode, Mouse, Screen
     MouseGetPos, tempX, tempY
     MouseClick, Left, mouseX, mouseY
     MouseMove, tempX, tempY
-  }else{
+  }Else{
     ;Numpad2はここに移動
     Send, {Numpad2}
   }
@@ -94,7 +94,7 @@ while (1) {
 
   ; 1回目はファイル数カウント初回であるため、cnt==0だからスキップしないと必ずcnt!=tmpとなってしまう。
   ; そのためLoop回数を記録するnum変数を上で用意した。
-  if (cnt != tmp || num != 1)
+  If (cnt != tmp || num != 1)
     break
 
   ; msgbox, NG %num%

@@ -11,7 +11,7 @@ SetKeyDelay, , 10
 #Include, %A_ScriptDir%\Variables.ahk
 
 ; プラグインの検出・取り込み
-if (search_plugins()) {
+If (search_plugins()) {
   Reload
 }
 
@@ -21,29 +21,35 @@ search_plugins() {
   Loop, %A_ScriptDir%\Plugins\*.ahk {
     plugins .= "#" . "Include *i %A_ScriptDir%\Plugins\" . A_LoopFileName . "`n"
   }
-  if (plugins == "") {
-    return 0
+  If (plugins == "") {
+    Return 0
   }
-
   ; Pluginsの変更点を認識
-  file := FileOpen(A_ScriptDir . "\PluginList.ahk", "r `n", "CP932")
-  if (file) {
+  file := FileOpen(A_ScriptDir . "\PluginList.ahk", "r `n", "utf-8")
+  If (file) {
     plugin_list_old := file.Read(file.Length)
     file.Close
-    if (plugin_list_old == plugins) {
-      return 0
+    If (plugin_list_old == plugins) {
+      Return 0
     }
   }
-
   ; plugin_list_oldをpluginsに書き換える
-  file := FileOpen(A_ScriptDir . "\PluginList.ahk", "w `n", "CP932")
-  if (!file) {
-    return 0
+  file := FileOpen(A_ScriptDir . "\PluginList.ahk", "w `n", "utf-8")
+  If (!file) {
+    Return 0
   }
   file.Write(plugins)
   file.Close
-  return 1
+  Return 1
 }
+
+; 練習用キー無効化
+hotkeys_define(keys_practice, "keys_practice", "On")
+keys_practice:
+  count++
+  If (count > 1)
+    my_tooltip_function("そのキーは禁止です(" . count - 1 . "回目)", 1000)
+Return
 
 ; (AutoExexuteここまで)
 
@@ -69,36 +75,27 @@ Return
 ;カレントディレクトリ取得
 get_current_dir() {
   explorerHwnd := WinActive("ahk_class CabinetWClass")
-  if (explorerHwnd) {
+  If (explorerHwnd) {
     for window in ComObjCreate("Shell.Application").Windows {
-      if (window.hwnd==explorerHwnd)
-      return window.Document.Folder.Self.Path
+      If (window.hwnd==explorerHwnd)
+        Return window.Document.Folder.Self.Path
     }
   }
 }
 
-;キー有効・無効
-allKeyDisable:
-  Loop, PARSE, allKeys, `,
-  Hotkey, %A_LoopField%, allKeyDisable_Label, On
-Return
+; ループでホットキー定義
+hotkeys_define(keys, label, OnOff) {
+  Loop, PARSE, keys, `,
+    Hotkey, %A_LoopField%, %label%, %OnOff%
+  Return
+}
 
-allKeyEnable:
-  Loop, PARSE, allKeys, `,
-  Hotkey, %A_LoopField%, allKeyDisable_Label, Off
-Return
-
-allKeyDisable_Label:
+disable_keys:
 Return
 
 ; 改行コード除去
-cut_crlf(str) {
+rm_crlf(str) {
   str := RegExReplace(str, "\n", "")
   str := RegExReplace(str, "\r", "")
   Return str
 }
-
-GuiEscape:
-GuiClose:
-  Gui, Destroy
-Return
