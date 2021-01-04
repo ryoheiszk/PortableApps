@@ -66,6 +66,9 @@ vk1C::Send, {vk1C}
 
 ; AutoHotkey
 #If, toggle == "a"
+  ; コンパイラを開く
+  c::Run, %A_ScriptDir%/Compiler/Ahk2Exe.exe
+
   ; Documentation
   d::Run, https://www.autohotkey.com/docs/AutoHotkey.htm
 
