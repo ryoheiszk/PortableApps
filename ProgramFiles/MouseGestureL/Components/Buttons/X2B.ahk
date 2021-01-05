@@ -1,13 +1,20 @@
-﻿Goto,MG_X2B_End
+﻿Goto, MG_X2B_End
 
 MG_X2B_Enable:
-	Hotkey,*XButton2,MG_X2B_DownHotkey,On
-	Hotkey,*XButton2 up,MG_X2B_UpHotkey,On
+	if (!MG_AlwaysHook) {
+		MG_X2B_HookEnabled := Func("MG_IsHookEnabled_X2B")
+		Hotkey, If, % MG_X2B_HookEnabled
+	}
+	Hotkey, *XButton2, MG_X2B_DownHotkey, On
+	Hotkey, *XButton2 up, MG_X2B_UpHotkey, On
+	Hotkey, If
+	MG_X2B_Enabled := 1
 return
 
 MG_X2B_Disable:
-	Hotkey,*XButton2,MG_X2B_DownHotkey,Off
-	Hotkey,*XButton2 up,MG_X2B_UpHotkey,Off
+	Hotkey, *XButton2, MG_X2B_DownHotkey, Off
+	Hotkey, *XButton2 up, MG_X2B_UpHotkey, Off
+	MG_X2B_Enabled := 0
 return
 
 MG_X2B_DownHotkey:
@@ -20,29 +27,18 @@ return
 
 MG_X2B_Down:
 	if (!MG_DisableDefX2B) {
-		SetMouseDelay,-1
-		Send,{Blind}{XButton2 Down}
+		MG_SendButton("X2B", "XButton2", "Down")
 	}
 return
 
 MG_X2B_Up:
 	if (!MG_DisableDefX2B) {
-		SetMouseDelay,-1
-		Send,{Blind}{XButton2 Up}
+		MG_SendButton("X2B", "XButton2", "Up")
 	}
 return
 
 MG_X2B_Check:
-	if (!GetKeyState("XButton2", "P")) {
-		MG_UnpressCntX2B++
-		if (MG_UnpressCntX2B > 3) {
-			MG_TriggerUp("X2B")
-			SetMouseDelay,-1
-			Send,{Blind}{XButton2}
-		}
-	} else {
-		MG_UnpressCntX2B := 0
-	}
+	MG_CheckButton("X2B", "XButton2")
 return
 
 MG_X2B_End:

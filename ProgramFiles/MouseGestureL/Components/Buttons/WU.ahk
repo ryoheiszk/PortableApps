@@ -1,11 +1,18 @@
-﻿Goto,MG_WU_End
+﻿Goto, MG_WU_End
 
 MG_WU_Enable:
-	Hotkey,*WheelUp,MG_WU_Hotkey,On
+	if (!MG_AlwaysHook) {
+		MG_WU_HookEnabled := Func("MG_IsHookEnabled_WU")
+		Hotkey, If, % MG_WU_HookEnabled
+	}
+	Hotkey, *WheelUp, MG_WU_Hotkey, On
+	Hotkey, If
+	MG_WU_Enabled := 1
 return
 
 MG_WU_Disable:
-	Hotkey,*WheelUp,MG_WU_Hotkey,Off
+	Hotkey, *WheelUp, MG_WU_Hotkey, Off
+	MG_WU_Enabled := 0
 return
 
 MG_WU_Hotkey:
@@ -13,8 +20,7 @@ MG_WU_Hotkey:
 return
 
 MG_WU_Press:
-	SetMouseDelay,-1
-	Send,{Blind}{WheelUp}
+	MG_SendButton("WU", "WheelUp")
 return
 
 MG_WU_End:

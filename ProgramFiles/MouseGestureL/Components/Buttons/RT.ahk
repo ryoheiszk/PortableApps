@@ -1,13 +1,20 @@
-﻿Goto,MG_RT_End
+﻿Goto, MG_RT_End
 
 MG_RT_Enable:
-	Hotkey,*WheelRight,MG_RT_DownHotkey,On
-	Hotkey,*WheelRight up,MG_RT_UpHotkey,On
+	if (!MG_AlwaysHook) {
+		MG_RT_HookEnabled := Func("MG_IsHookEnabled_RT")
+		Hotkey, If, % MG_RT_HookEnabled
+	}
+	Hotkey, *WheelRight, MG_RT_DownHotkey, On
+	Hotkey, *WheelRight up, MG_RT_UpHotkey, On
+	Hotkey, If
+	MG_RT_Enabled := 1
 return
 
 MG_RT_Disable:
-	Hotkey,*WheelRight,MG_RT_DownHotkey,Off
-	Hotkey,*WheelRight up,MG_RT_UpHotkey,Off
+	Hotkey, *WheelRight, MG_RT_DownHotkey, Off
+	Hotkey, *WheelRight up, MG_RT_UpHotkey, Off
+	MG_RT_Enabled := 0
 return
 
 MG_RT_DownHotkey:
@@ -19,26 +26,15 @@ MG_RT_UpHotkey:
 return
 
 MG_RT_Down:
-	SetMouseDelay,-1
-	Send,{Blind}{WheelRight Down}
+	MG_SendButton("RT", "WheelRight", "Down")
 return
 
 MG_RT_Up:
-	SetMouseDelay,-1
-	Send,{Blind}{WheelRight Up}
+	MG_SendButton("RT", "WheelRight", "Up")
 return
 
 MG_RT_Check:
-	if (!GetKeyState("WheelRight", "P")) {
-		MG_UnpressCntRT++
-		if (MG_UnpressCntRT > 3) {
-			MG_TriggerUp("RT")
-			SetMouseDelay,-1
-			Send,{Blind}{WheelRight}
-		}
-	} else {
-		MG_UnpressCntRT := 0
-	}
+	MG_CheckButton("RT", "WheelRight")
 return
 
 MG_RT_End:

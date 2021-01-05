@@ -4,33 +4,57 @@
 ;
 ;														Created by Pyonkichi
 ;===============================================================================
-MG_Version := 1.30
-
-MG_RuleNames =
-(LTrim Join|
-	WClass
-	WClass_[NPTBR][PTBR]?
-	CClass
-	CClass_[NPTBR][PTBR]?
-	Title
-	Title_[NPTBR][PTBR]?
-	Exe
-	Exe_[NPTBR][PTBR]?
-	Custom
-	Custom_N
-	Include
-	Include_N
-)
-MG_SaveModificationObj := Func("SaveModification")
-MG_TgDelim := "/"
-MG_EncKey := "7j^t@ZE;HRUdTM^N@WqQNsocLMuuPzC4K$Zofb@BKXrLF#cWw*HQcAW@hqVxpLdi%YVND&R29ZcakZHSrwr$x!gKE^SR3&nAKU9z759*YsmbCUH%9VuNZEx*aVoe7H2@QwraX$#miB9r&2QRB2B3hXw!9covRFDXatp6kU#JERR#tZLiPrCoCf$FWt7ZHkp!#iE8K2nSbRyCwuV%rtSFCN&u4LcvD^vAuDZ^UUzdfCVwrExeP2tgnC6*BjBFG&U5"
-if (A_Is64bitOS) {
-	EnvGet, A_ProgramFilesX86, ProgramFiles(x86)
-} else {
-	A_ProgramFilesX86 := A_ProgramFiles
-}
+#Requires AutoHotkey v1.1.25+
+MG_Version := 1.38
+MG_InitCommonGlobals()
 Goto MG_CommonLibEnd
 
+;-------------------------------------------------------------------------------
+; Initialize common global variables
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+MG_InitCommonGlobals()
+{
+	global
+	MG_DirConfig  := A_ScriptDir "\Config\"
+	MG_DirLang	  := A_ScriptDir "\Languages\"
+	MG_DirPlugins := A_ScriptDir "\Plugins\"
+	MG_DirButtons := A_ScriptDir "\Components\Buttons\"
+	MG_DirScrEdge := MG_DirButtons "ScreenEdges\"
+	MG_DirUserBtn := MG_DirConfig "UserButtons\"
+	MG_IconFile	  := A_ScriptDir "\Components\MouseGestureL.icl"
+	MG_ReplaceStr := "###REPLACE###"
+	MG_DefTargetName := "Default"
+
+	MG_SaveModificationObj := Func("SaveModification")
+	MG_TgDelim := "/"
+	MG_RuleNames =
+	(LTrim Join|
+		WClass
+		WClass_[NPTBR][PTBR]?
+		CClass
+		CClass_[NPTBR][PTBR]?
+		Title
+		Title_[NPTBR][PTBR]?
+		Exe
+		Exe_[NPTBR][PTBR]?
+		Custom
+		Custom_N
+		Include
+		Include_N
+	)
+	if (A_Is64bitOS) {
+		EnvGet, A_ProgramFilesX86, ProgramFiles(x86)
+	} else {
+		A_ProgramFilesX86 := A_ProgramFiles
+	}
+}
+
+;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+;
+;	Menu commands
+;
+;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;-------------------------------------------------------------------------------
 ; Reload Gesture Configurations
 ;														Implemented by lukewarm
@@ -56,68 +80,53 @@ MG_Edit()
 	}
 	MG_SearchPlugins()
 	local t1:=0, t2:=0
-	FileGetTime, t1, %A_ScriptDir%\Config\MG_Config.ahk
+	FileGetTime, t1, %MG_DirConfig%MG_Config.ahk
 	RunWait, %A_AhkPath% "%A_ScriptDir%\MG_Edit.ahk"
-	FileGetTime, t2, %A_ScriptDir%\Config\MG_Config.ahk
-	if (t2 > t1)
-	{
+	FileGetTime, t2, %MG_DirConfig%MG_Config.ahk
+	if (t2 > t1) {
 		Reload
 		CheckConfigurationError()
 	}
 }
 
 ;-------------------------------------------------------------------------------
-; Wait Error Message
+; Show Help Document
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-CheckConfigurationError()
+MG_ShowHelp()
 {
-	global MC_LngButton001, MC_LngButton002, MC_LngMessage002
-	WinWait, MouseGestureL.ahk ahk_class #32770, Error
-	if (ErrorLevel==0)
+	global
+	IfWinExist, MouseGestureL-Help ahk_class HH Parent
 	{
-		ControlGetText, szMsg1, Static1
-		ControlGetText, szMsg2, Static2
-		WinClose
-		Gui, MGW_Err:New
-		Gui, MGW_Err:+HWNDhWnd
-		Gui, MGW_Err:Add, Text, x10 y10, % MC_LngMessage002 . szMsg1 . szMsg2
-		Gui, MGW_Err:Add, Button, gOnSendClipboard x+-250 y+16 w160 h26, %MC_LngButton002%
-		Gui, MGW_Err:Add, Button, gOnMsgClosed x+10 yp+0 w80 h26, %MC_LngButton001%
-		Gui, MGW_Err:Show, ,
-		WinWaitClose, ahk_id %hWnd%
+		WinActivate
 	}
-	return
-
-	;---------------------------------------------------------------------------
-	; Copy to Clipboard
-OnSendClipboard:
-	Clipboard := szMsg1 . szMsg2
-	Gui, MGW_Err:Destroy
-	return
-
-	;---------------------------------------------------------------------------
-	; Canceled
-OnMsgClosed:
-MGW_ErrGuiClose:
-MGW_ErrGuiEscape:
-	Gui, MGW_Err:Destroy
-	return
+	else if(FileExist(A_ScriptDir . "\Docs\" . MC_HelpFile)) {
+		Run, %A_ScriptDir%\Docs\%MC_HelpFile%
+	}
+	else {
+		MsgBox, %MC_LngMessage001%
+	}
 }
 
+;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+;
+;	Configurations
+;
+;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;-------------------------------------------------------------------------------
 ; Check whether configuration files exist
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
 MG_CheckConfigFiles()
 {
-	global MG_IsEdit
-	szConfDir := A_ScriptDir . "\Config"
-	szNewIni := szConfDir . "\MouseGestureL.ini"
-	szOldIni := A_ScriptDir . "\MouseGesture.ini"
+	local szNewIni, szOldIni, bExists
+
+	szNewIni := MG_DirConfig "MouseGestureL.ini"
+	szOldIni := A_ScriptDir "\MouseGesture.ini"
 	bExists := true
-	if (!FileExist(szConfDir)) {
-		FileCreateDir, %szConfDir%
+
+	if (FileExist(MG_DirConfig) != "D") {
+		FileCreateDir, %MG_DirConfig%
 	}
 	if (!FileExist(szNewIni))
 	{
@@ -126,12 +135,11 @@ MG_CheckConfigFiles()
 		}
 		bExists := false
 	}
-	if (!MG_IsEdit)
-	{
+	if (!MG_IsEdit) {
 		if (!bExists) {
 			MG_Edit()
 		}
-		else if (!FileExist(szConfDir . "\MG_Config.ahk")) {
+		else if (!FileExist(MG_DirConfig "MG_Config.ahk")) {
 			MG_Reload()
 		}
 	}
@@ -149,7 +157,7 @@ MG_LoadIniFile(szIniData="")
 	Target_Count  := 0
 	Gesture_Count := 0
 	if (!szIniData) {
-		FileRead, szIniData, % A_ScriptDir . "\Config\MouseGestureL.ini"
+		FileRead, szIniData, %MG_DirConfig%MouseGestureL.ini
 	}
 	MG_LoadIni(szIniData)
 	Config_IniFileVersion := MG_Version
@@ -160,17 +168,21 @@ MG_LoadIniFile(szIniData="")
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-MG_LoadIni(szIni, tpos=0, gpos=0)
+MG_LoadIni(szIni, ByRef tpos=0, ByRef gpos=0)
 {
 	global
-	local szLine, $, $1, $2, com, SName, tidx, tname, cnt, gidx, rcount, acount
-		, bGes, parent, lv, tstart, bChild, lvdiff, shift, num, swap, LastIdx:=[0]
+	local szLine, com, SName, tidx, tname, cnt, gidx, rcount, acount, bChild
+		, bGes, parent, lv, tstart, lvdiff, bImpT, bImpG , LastIdx, nIgnore, aryTmp
 
 	szIni .= "`n[EndOfIni]`n"
 	SName := ""
 	tstart := Target_Count + 1
-	gstart := Gesture_Count + 1
-	bChild := false
+	bImpT:= bImpG := bChild := false
+	nIgnore := 0
+	LastIdx := []
+	if (!MG_ActvtExclud.MaxIndex()) {
+		MG_ActvtExclud := []
+	}
 	Loop, parse, szIni, `n, `r%A_Tab%%A_Space%
 	{
 		;-----------------------------------------------------------------------
@@ -179,41 +191,33 @@ MG_LoadIni(szIni, tpos=0, gpos=0)
 		szLine := A_LoopField
 		;.......................................................................
 		; Start comments : 範囲コメント開始
-		if (RegExMatch(szLine, "^\s*\/\*"))
-		{
+		if (RegExMatch(szLine, "^\s*\/\*")) {
 			if (!RegExMatch(szLine, "\*\/\s*$")){
 				com := 1
 			}
 		}
 		;.......................................................................
 		; End comments : 範囲コメント終了
-		else if (RegExMatch(szLine, "\*\/\s*$"))
-		{
+		else if (RegExMatch(szLine, "\*\/\s*$")) {
 			com := 0
 		}
 		;.......................................................................
 		; Skip other comments : その他コメントはスキップ
-		else if (RegExMatch(szLine, "^\s*#")||com)
-		{
+		else if (RegExMatch(szLine, "^\s*#")||com) {
 		}
 		;-----------------------------------------------------------------------
 		; Section : セクション
 		;-----------------------------------------------------------------------
-		else if (RegExMatch(szLine, "^\[(.+)\]$", $))
-		{
-			if (SName == "")
-			{
+		else if (RegExMatch(szLine, "^\[(.+)\]$", $)) {
+			if (SName == "") {
 				; Section has not been found.
 			}
 			;.......................................................................
  			; Previous section is gesture : 前のセクションがジェスチャーだった場合
-			else if (bGes)
-			{
-				if (GestureIndexOf(SName))
-				{
+			else if (bGes) {
+				if (GestureIndexOf(SName)) {
 					cnt := 1
-					Loop
-					{
+					Loop {
 						cnt++
 						tname := SName . " (" . cnt . ")"
 						if (!GestureIndexOf(tname)) {
@@ -223,19 +227,16 @@ MG_LoadIni(szIni, tpos=0, gpos=0)
 					}
 				}
 				Gesture_%gidx%_Count := acount
-				if (!Gesture_%gidx%_Name)
-				{
+				if (!Gesture_%gidx%_Name) {
 					Gesture_%gidx%_Name := SName
 					Gesture_Count++
-					MG_ImportedG := (gpos > 0) ? gidx : 0
+					bImpG := true
 				}
 			}
 			;.......................................................................
-			; Previous section is condition : 前のセクションが条件定義だった場合
-			else if (SName != "Settings")
-			{
-				if (lv==1 && TargetIndexOf(SName))
-				{
+			; Previous section is target : 前のセクションがターゲットだった場合
+			else if (SName!="Settings" && SName!="ActivationExcluded") {
+				if (lv==1 && TargetIndexOf(SName)) {
 					cnt := 1
 					Loop {
 						cnt++
@@ -247,12 +248,11 @@ MG_LoadIni(szIni, tpos=0, gpos=0)
 					}
 				}
 				Target_%tidx%_Count := rcount
-				if (!Target_%tidx%_Name)
-				{
+				if (!Target_%tidx%_Name) {
 					Target_%tidx%_Name := SName
 					Target_Count++
 					LastIdx[lv] := tidx
-					MG_ImportedT := (tpos > 0) ? tidx : 0
+					bImpT := true
 				}
 			}
 			;.......................................................................
@@ -276,19 +276,22 @@ MG_LoadIni(szIni, tpos=0, gpos=0)
 		;-----------------------------------------------------------------------
 		; Entry : エントリ
 		;-----------------------------------------------------------------------
-		else if (RegExMatch(szLine, "^(.+?)\s*=\s*(.*?)$", $))
-		{
-			if (SName = "Settings")
-			{
-				if ($1="UserName" || $1="Password") {
-					$2 := MG_StrEncDec($2)
-				}
+		else if (RegExMatch(szLine, "^(.+?)\s*=\s*(.*?)$", $)) {
+			if (SName = "Settings") {
 				Config_%$1% := $2
 			}
 			;.......................................................................
+			; Excluded targets for MG_ActivatePrevWin() function
+			else if (SName = "ActivationExcluded") {
+				if (RegExMatch($2, "^{(.*?)\t(.*?)\t(.*?)}$", $) && ($1 || $2 || $3)) {
+					aryTmp := Array($1, $2, $3)
+					nIgnore++
+					MG_ActvtExclud.InsertAt(nIgnore, aryTmp)
+				}
+			}
+			;.......................................................................
 			; Target rule : ターゲットルール
-			else if (RegExMatch($1, "^(" . MG_RuleNames . ")$"))
-			{
+			else if (RegExMatch($1, "^(" . MG_RuleNames . ")$")) {
 				if (!MG_RuleExists(tidx, $1, $2)) {
 					rcount++
 					Target_%tidx%_%rcount%_Type	 := $1
@@ -297,8 +300,7 @@ MG_LoadIni(szIni, tpos=0, gpos=0)
 			}
 			;.......................................................................
 			; Target Icon : ターゲットのアイコン
-			else if (MG_hImageList && $1="Icon")
-			{
+			else if (MG_hImageList && $1="Icon") {
 				Target_%tidx%_IconFile := $2
 				Target_%tidx%_Icon := MG_SerchSameIcon($2)
 				if (!Target_%tidx%_Icon) {
@@ -307,15 +309,13 @@ MG_LoadIni(szIni, tpos=0, gpos=0)
 				}
 			}
 			;.......................................................................
-			; Target rule and mode : ターゲットルールANDモード
-			else if ($1 = "And")
-			{
+			; Target rule "And" mode : ターゲットルールANDモード
+			else if ($1 = "And") {
 				Target_%tidx%_IsAnd := $2
 			}
 			;.......................................................................
 			; Target nesting level
-			else if ($1 = "Level")
-			{
+			else if ($1 = "Level") {
 				lv := $2 - 1
 				if (LastIdx[lv]) {
 					Target_%tidx%_Parent := LastIdx[lv]
@@ -335,14 +335,12 @@ MG_LoadIni(szIni, tpos=0, gpos=0)
 			}
 			;.......................................................................
 			; Target does not inherit parent rules
-			else if ($1 = "NotInherit")
-			{
+			else if ($1 = "NotInherit") {
 				Target_%tidx%_NotInh := $2
 			}
 			;.......................................................................
 			; Gesture : ジェスチャー
-			else if ($1 = "G")
-			{
+			else if ($1 = "G") {
 				bGes := true
 				if ($2) {
 					Join(Gesture_%gidx%_Patterns, $2)
@@ -350,10 +348,8 @@ MG_LoadIni(szIni, tpos=0, gpos=0)
 			}
 			;.......................................................................
 			; Bound Action : 割り当てアクション
-			else if (bGes)
-			{
-				if (!MG_ActionExists(gidx, $1))
-				{
+			else if (bGes) {
+				if (!MG_ActionExists(gidx, $1)) {
 					if (Config_IniFileVersion < 1.20) {
 						$2 := RegExReplace($2, "(?<!\t)\t", "<MG_CR>")
 					}
@@ -364,57 +360,8 @@ MG_LoadIni(szIni, tpos=0, gpos=0)
 			}
 		}
 	}
-	;---------------------------------------------------------------------------
-	; Move the imported targets to current position
-	;---------------------------------------------------------------------------
-	if (MG_ImportedT && (tpos>1 || !bChild))
-	{
-		if (!bChild) {
-			num := Func("GetGroupTargetNum").(tpos)
-			tpos += num - 1
-		}
-		shift := tstart - tpos - 1
-		if (shift > 0)
-		{
-			swap := Func("TargetSwap")
-			Loop, % Target_Count - tstart + 1
-			{
-				tidx := tstart + A_Index - 1
-				if (Target_%tidx%_Parent >= tstart) {
-					Target_%tidx%_Parent -= shift
-				}
-				Loop, %shift%
-				{
-					swap.(tidx, tidx-1)
-					if (Target_%tidx%_Level>1 && Target_%tidx%_Parent>tpos) {
-						Target_%tidx%_Parent++
-					}
-					tidx--
-				}
-			}
-		}
-		MG_ImportedT := tpos + 1
-	}
-	;---------------------------------------------------------------------------
-	; Move the imported gestures to current position
-	;---------------------------------------------------------------------------
-	if (MG_ImportedG)
-	{
-		shift := gstart - gpos - 1
-		if (shift > 0)
-		{
-			swap := Func("GestureSwap")
-			Loop, % Gesture_Count - gstart + 1
-			{
-				gidx := gstart + A_Index - 1
-				Loop, %shift% {
-					swap.(gidx, gidx-1)
-					gidx--
-				}
-			}
-		}
-		MG_ImportedG := gpos + 1
-	}
+	tpos := bImpT ? tpos : 0
+	gpos := bImpG ? gpos : 0
 }
 
 ;-------------------------------------------------------------------------------
@@ -427,8 +374,7 @@ MG_RuleExists(iTarget, szType, szValue)
 	Loop, % Target_%iTarget%_Count
 	{
 		if ((Target_%iTarget%_%A_Index%_Type  = szType)
-		&&	(Target_%iTarget%_%A_Index%_Value = szValue))
-		{
+		&&	(Target_%iTarget%_%A_Index%_Value = szValue)) {
 			return true
 		}
 	}
@@ -458,9 +404,9 @@ MG_ActionExists(iGesture, szTarget)
 ;-------------------------------------------------------------------------------
 TargetIndexOf(name)
 {
-	local idx:=1, ret:=0
-	
-	if (name = MC_DefTargetName) {
+	local idx:=1, ret:=0, lv
+
+	if (name == MG_DefTargetName) {
 		return 1
 	}
 	Loop, Parse, name, %MG_TgDelim%
@@ -468,9 +414,10 @@ TargetIndexOf(name)
 		if (!A_LoopField) {
 			break
 		}
-		while (idx <= Target_Count)
-		{
-			if (Target_%idx%_Name = A_LoopField) {
+		lv := A_Index
+		while (idx <= Target_Count) {
+			if ((Target_%idx%_Name == A_LoopField)
+			&&	(Target_%idx%_Level == lv)) {
 				ret:=idx
 				break
 			}
@@ -533,278 +480,9 @@ MG_SerchSameIcon(szIconFile)
 	return 0
 }
 
-;-------------------------------------------------------------------------------
-; Combine strings with delimiter
-;														Implemented by lukewarm
-;-------------------------------------------------------------------------------
-Join(ByRef list, value, delim="`n")
-{
-	list := list ? (list . delim . value) : value
-}
-
-;-------------------------------------------------------------------------------
-; Replace Variables in String
-;														Implemented by Pyonkichi
-;-------------------------------------------------------------------------------
-MG_VarInStr(str)
-{
-	out := str
-	while (RegExMatch(out, ".*%(.+?)%.*", $)) {
-		out := RegExReplace(out, "%" $1 "%", %$1%)
-	}
-	return out
-}
-
-;-------------------------------------------------------------------------------
-; Encrypt / Decrypt String
-;														Implemented by Pyonkichi
-;-------------------------------------------------------------------------------
-MG_StrEncDec(str, bEnc=false)
-{
-	global MG_EncKey
-	out := ""
-	strlen := StrLen(str)
-	keylen := StrLen(MG_EncKey)
-	pos1 := 1
-	pos2 := (bEnc ? strlen : StrLen(RegExReplace(str, "\?"))) + 1
-	while (pos1 <= strlen)
-	{
-		code := Asc(SubStr(str, pos1, 1))
-		if (!bEnc && code==0x3F) {
-			pos1++
-			code := Asc(SubStr(str, pos1, 1)) - 0x41
-		}
-		code ^= Asc(SubStr(MG_EncKey, pos2, 1))
-		if (bEnc && (code<=0x20 || code==0x25 || code==0x3F || code==0x60)) {
-			out .= "?"
-			code += 0x41
-		}
-		out .= Chr(code)
-		pos1++, pos2++
-		if (pos2 > keylen) {
-			pos2 := 1
-		}
-	}
-	return out
-}
-
-;-------------------------------------------------------------------------------
-; Check whether the operating system is recent one
-;														Implemented by Pyonkichi
-;-------------------------------------------------------------------------------
-MG_IsNewOS()
-{
-	return (A_OSVersion!="WIN_NT4" && A_OSVersion!="WIN_2000"
-		&&	A_OSVersion!="WIN_XP"  && A_OSVersion!="WIN_2003")
-}
-
-;-------------------------------------------------------------------------------
-; Check and Select Language
-;	fChoose : 0:Check whether language data is loaded
-;			  1:Show "Choose Language" Dialog Box
-;														Implemented by Pyonkichi
-;-------------------------------------------------------------------------------
-MG_CheckLanguage(fChoose=0)
-{
-	global MG_Language
-
-	if (!fChoose)
-	{
-		; Check Language Data
-		if (MG_Language)
-		{
-			return
-		}
-		; Language file does not exist
-		; -> Select language automatically by LCID
-		static szLanguage
-		if (A_Language==0411)
-		{
-			IfExist, %A_ScriptDir%\Languages\Japanese.ahk
-			{
-				szLanguage := "Japanese"
-				Goto OnLngSelected
-			}
-		}
-		else ;	if (A_Language==0409 || A_Language==0809)
-		{
-			IfExist, %A_ScriptDir%\Languages\English.ahk
-			{
-				szLanguage := "English"
-				Goto OnLngSelected
-			}
-		}
-	}
-	;...........................................................................
-	; Retrieve Name of Language Files
-	szList := ""
-	Loop, %A_ScriptDir%\Languages\*.ahk
-	{
-		if (A_LoopFileName != "MG_Language.ahk")
-		{
-			szList .= A_LoopFileName . "|"
-		}
-	}
-	;...........................................................................
-	; Show Choose Language Dialog Box
-	Gui, MGW_Lng:New
-	Gui, MGW_Lng:-MaximizeBox -MinimizeBox +HWNDhWnd
-	Gui, MGW_Lng:Add, Text, x10 y10, Choose your language:
-	Gui, MGW_Lng:Add, DropDownList, VszLanguage xp+0 y+10 w180, % RegExReplace(szList, ".ahk")
-	Gui, MGW_Lng:Add, Button, gOnLngSelected x+-168 y+10 w80 Default, OK
-	Gui, MGW_Lng:Add, Button, gOnLngCanceled x+8 yp+0 w80, &Cancel
-	GuiControl, MGW_Lng:Choose, szLanguage, English
-	Gui, MGW_Lng:Show, , Choose Language
-
-	WinWaitClose, ahk_id %hWnd%
-	return
-
-	;---------------------------------------------------------------------------
-	; Accepted
-OnLngSelected:
-	Gui, MGW_Lng:Submit
-	file := FileOpen(A_ScriptDir . "\Languages\" . szLanguage . ".ahk", "r", "UTF-8")
-	if (file)
-	{
-		szLng := file.Read(file.Length)
-		file.Close
-		if (!RegExMatch(szLng, "m)^[\s\t]*MG_Language\s*:=\s*RegExReplace"))
-		{
-			MsgBox, ERROR : Language file is invalid.
-			Goto, OnLngCanceled
-		}
-		file := FileOpen(A_ScriptDir . "\Languages\MG_Language.ahk", "w `n", "UTF-8")
-		if (!file)
-		{
-			MsgBox, ERROR : Failed in file writing.
-			Goto, OnLngCanceled
-		}
-		file.Write("#" . "Include %A_ScriptDir%\Languages\" . szLanguage . ".ahk`n")
-		file.Close
-	}
-	Reload
-
-	;---------------------------------------------------------------------------
-	; Canceled
-OnLngCanceled:
-MGW_LngGuiClose:
-MGW_LngGuiEscape:
-	if (fChoose)
-	{
-		Gui, MGW_Lng:Destroy
-		return
-	}
-	else
-	{
-		ExitApp
-	}
-}
-
-;-------------------------------------------------------------------------------
-; Search Plugins
-;	return=1 : Plugin Include Script has been Updated
-;	return=0 : Plugin Include Script has Not been Changed
-;														Implemented by Pyonkichi
-;-------------------------------------------------------------------------------
-MG_SearchPlugins()
-{
-	;...........................................................................
-	; Search Plugin Script Files
-	szInc := ""
-	Loop, %A_ScriptDir%\Plugins\*.ahk
-	{
-		if (A_LoopFileName != "MG_Plugin.ahk")
-		{
-			szInc .= "#" . "Include *i %A_ScriptDir%\Plugins\" . A_LoopFileName . "`n"
-		}
-	}
-	if (szInc == "") {
-		return 0
-	}
-	;...........................................................................
-	; Check if Plugin Files are Added or Removed
-	file := FileOpen(A_ScriptDir . "\Plugins\MG_Plugin.ahk", "r `n", "UTF-8")
-	if (file)
-	{
-		szCur := file.Read(file.Length)
-		file.Close
-		if (szCur == szInc) {
-			return 0
-		}
-	}
-	;...........................................................................
-	; Write Plugin Include Script
-	file := FileOpen(A_ScriptDir . "\Plugins\MG_Plugin.ahk", "w `n", "UTF-8")
-	if (!file) {
-		return 0
-	}
-	file.Write(szInc)
-	file.Close
-	return 1
-}
-
-;-------------------------------------------------------------------------------
-; Show Help Document
-;														Implemented by Pyonkichi
-;-------------------------------------------------------------------------------
-MG_ShowHelp()
-{
-	global MC_HelpFile, MC_LngMessage001
-	IfWinExist, MouseGestureL-Help ahk_class HH Parent
-	{
-		WinActivate
-	}
-	else if(FileExist(A_ScriptDir . "\Docs\" . MC_HelpFile))
-	{
-		Run, %A_ScriptDir%\Docs\%MC_HelpFile%
-	}
-	else
-	{
-		MsgBox, %MC_LngMessage001%
-	}
-}
-
-;-------------------------------------------------------------------------------
-; Get monitor rectangle that includes specified coordinates
-;														Implemented by Pyonkichi
-;-------------------------------------------------------------------------------
-MG_GetMonitorRect(ptX, ptY, ByRef monL=0, ByRef monT=0, ByRef monR=0, ByRef monB=0, fWork=false)
-{
-	pt := (ptY<<32) | (ptX & 0xffffffff)
-	hMon := DllCall("user32.dll\MonitorFromPoint", "UInt64",pt, "UInt",2, "Ptr")
-	VarSetCapacity(infMon, 40, 0)
-	NumPut(40, infMon, 0, "UInt")
-	res := DllCall("user32.dll\GetMonitorInfo", "Ptr",hMon, "Ptr",&infMon, "UInt")
-	offset := fWork ? 20 : 4
-	monL := NumGet(infMon, offset+ 0, "Int")
-	monT := NumGet(infMon, offset+ 4, "Int")
-	monR := NumGet(infMon, offset+ 8, "Int")
-	monB := NumGet(infMon, offset+12, "Int")
-}
-
 ;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;
-;	Plugin Menus
-;
-;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-;-------------------------------------------------------------------------------
-; Regisger Plugin Menu
-;														Implemented by Pyonkichi
-;-------------------------------------------------------------------------------
-MG_AddPluginMenu(szName="", szCommand="")
-{
-	global
-	if (MG_IsEdit) {
-		return
-	}
-	MG_PluginMenuCount++
-	MG_PluginMenu%MG_PluginMenuCount%_Name	  := szName
-	MG_PluginMenu%MG_PluginMenuCount%_Command := szCommand
-}
-
-;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-;
-;	Custom Condition Templates
+;	Gesture Conditions
 ;
 ;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;-------------------------------------------------------------------------------
@@ -832,12 +510,12 @@ MG_AddConditionCategory(key, name)
 ;-------------------------------------------------------------------------------
 MG_AddCustomCondition(category, name="", value="")
 {
-	global
+	local cnt, szCommand
 	if (!MG_IsEdit) {
 		return
 	}
 	Menu, CustomExpressions_%category%, Add, %name%, CustomExpressionsMenuSelect
-	local cnt := CustomExpressions_%category%_Count
+	cnt := CustomExpressions_%category%_Count
 	cnt := cnt ? cnt+1 : 1
 	CustomExpressions_%category%_Count := cnt
 	CustomExpressions_%category%_%cnt% := value
@@ -846,10 +524,15 @@ MG_AddCustomCondition(category, name="", value="")
 	;---------------------------------------------------------------------------
 	; The menu item has been selected
 CustomExpressionsMenuSelect:
-	if(IsLabel(%A_ThisMenu%_%A_ThisMenuItemPos%)){
-		GoSub,% %A_ThisMenu%_%A_ThisMenuItemPos%
-	}else{
-		MG_SetRuleValue(%A_ThisMenu%_%A_ThisMenuItemPos%)
+	szCommand := %A_ThisMenu%_%A_ThisMenuItemPos%
+	if (IsFunc(szCommand)) {
+		Func(szCommand).()
+	}
+	else if (IsLabel(szCommand)) {
+		GoSub, %szCommand%
+	}
+	else {
+		MG_SetRuleValue(szCommand)
 	}
 	return
 }
@@ -858,15 +541,13 @@ CustomExpressionsMenuSelect:
 ; Set Rule Value
 ;														Implemented by lukewarm
 ;-------------------------------------------------------------------------------
-MG_SetRuleValue(val)
-{
+MG_SetRuleValue(val) {
 	GuiControl, MEW_Main:, ERuleValue, %val%
 }
 
-
 ;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;
-;	Action Templates
+;	Gesture Actions
 ;
 ;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;-------------------------------------------------------------------------------
@@ -914,8 +595,7 @@ MG_AddActionTemplate(category, name, script)
 	ActionTemplate1_%ActionCategory1_Count% := script
 
 	local idx := GetActionCategoryIdx(category)
-	if (!idx)
-	{
+	if (!idx) {
 		MG_AddActionCategory(category)
 		idx := (category = "Others") ? "Temp" : ActionCategory_Count
 	}
@@ -949,15 +629,19 @@ GetActionCategoryIdx(key)
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-MG_AddActionScript(script, pos="")
+MG_AddActionScript(szScript, szDesc="", pos="")
 {
 	global
-	script := ";" . ActionTitle%DDLActionCategory%_%DDLActionTemplate% . "`n" . script
+	if (szDesc) {
+		szScript := ";" . szDesc . "`n" . szScript
+	} else {
+		szScript := ";" ActionTitle%DDLActionCategory%_%DDLActionTemplate% . szDesc "`n" szScript
+	}
 	Gui, MEW_Main:Submit, NoHide
-	if(pos="top"){
-		EAction=%script%`n%EAction%
-	}else{
-		Join(EAction, script)
+	if (pos = "top") {
+		EAction := szScript "`n" EAction
+	} else {
+		Join(EAction, szScript)
 	}
 	GuiControl, MEW_Main:, EAction, %EAction%
 	MG_SaveModificationObj.("Modified", "EAction")
@@ -965,7 +649,200 @@ MG_AddActionScript(script, pos="")
 
 ;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;
-;	Rendering Function of Gesture Patterns
+;	Languages
+;
+;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+;-------------------------------------------------------------------------------
+; Check and Select Language
+;	fChoose : 0 = Determine whether language module has been included
+;			  1 = Show "Choose Language" dialog box
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+MG_CheckLanguage(fChoose=0)
+{
+	local	szFileName, szDispName, szDDL, szBuf, objFileList, iLng, iSel, file, hWnd
+	static	tblLang := [ [ "Japanese.ahk", "0411" ]
+					   , [ "Chinese.ahk" , "0804", "0C04", "1004", "0404" ] ]
+
+	; Create Config folder
+	if (FileExist(MG_DirConfig) != "D") {
+		FileCreateDir, %MG_DirConfig%
+	}
+	; Determination whether language module has been included
+	if (!fChoose) {
+		if (MG_Language) {
+			return
+		}
+		; MG_Language.ahk does not exist -> Select language automatically by LCID
+		szFileName := ""
+		MG_ChkLngLoop:
+		Loop, % tblLang.MaxIndex() {
+			iLng := A_Index
+			Loop, % tblLang[iLng].MaxIndex()-1 {
+				if (A_Language = tblLang[iLng][A_Index+1]) {
+					szFileName := tblLang[iLng][1]
+					break MG_ChkLngLoop
+				}
+			}
+		}
+		if (!szFileName || !FileExist(MG_DirLang . szFileName)) {
+			szFileName := "English.ahk"
+		}
+		Goto MGW_LangApply
+	}
+	; Retrieving name of the stored language files
+	iSel := 0
+	szDDL := ""
+	objFileList := []
+	Loop, %MG_DirLang%*.ahk
+	{
+		if (A_LoopFileName != "MG_Language.ahk") {
+			objFileList.InsertAt(A_Index, A_LoopFileName)
+			szFileName := RegExReplace(A_LoopFileName, ".ahk")
+			if (szFileName = MG_Language) {
+				iSel := A_Index
+			}
+			szDispName := ""
+			file := FileOpen(A_LoopFileFullPath, "r", "UTF-8")
+			if (file) {
+				szBuf := file.Read(file.Length)
+				file.Close
+				if (RegExMatch(szBuf, "m)^.*MC_LanguageName.*=(.+).*$", $)) {
+					szDispName := $1
+				}
+			}
+			if (szDispName == "") {
+				szDispName := szFileName
+			}
+			szDDL .= szDispName . "|"
+		}
+	}
+	; Choose Language dialog box
+	Gui, MGW_Lng:New
+	Gui, MGW_Lng:-MaximizeBox -MinimizeBox +HWNDhWnd
+	Gui, MGW_Lng:Add, Text, x10 y10, Choose your language:
+	Gui, MGW_Lng:Add, DropDownList, VddlLang xp+0 y+10 w180 AltSubmit, %szDDL%
+	Gui, MGW_Lng:Add, Button, gOnLngSelected x+-168 y+10 w80 Default, OK
+	Gui, MGW_Lng:Add, Button, gOnLngCanceled x+8 yp+0 w80, &Cancel
+	GuiControl, MGW_Lng:Choose, ddlLang, %iSel%
+	Gui, MGW_Lng:Show, , Choose Language
+
+	WinWaitClose, ahk_id %hWnd%
+	return
+
+	;---------------------------------------------------------------------------
+	; Selected
+OnLngSelected:
+	GuiControlGet, iSel, MGW_Lng:, ddlLang
+	szFileName := objFileList[iSel]
+	Loop, % objFileList.MaxIndex() {
+		objFileList.RemoveAt(A_Index)
+	}
+MGW_LangApply:
+	file := FileOpen(MG_DirLang . szFileName, "r", "UTF-8")
+	if (file) {
+		szBuf := file.Read(file.Length)
+		file.Close
+		if (!RegExMatch(szBuf, "m)^[\s\t]*MG_Language\s*:=\s*RegExReplace"))
+		{
+			MsgBox, ERROR : Language file is invalid.
+			Goto, OnLngCanceled
+		}
+		file := FileOpen(MG_DirConfig "MG_Language.ahk", "w `n", "UTF-8")
+		if (!file) {
+			MsgBox, ERROR : Failed in file writing.
+			Goto, OnLngCanceled
+		}
+		file.Write("#" . "Include %A_ScriptDir%\Languages\" . szFileName . "`n")
+		file.Close
+		FileDelete, %MG_DirLang%MG_Language.ahk
+	}
+	Reload
+
+	;---------------------------------------------------------------------------
+	; Canceled
+OnLngCanceled:
+MGW_LngGuiClose:
+MGW_LngGuiEscape:
+	if (fChoose) {
+		Gui, MGW_Lng:Destroy
+		return
+	} else {
+		ExitApp
+	}
+}
+
+;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+;
+;	Plugins
+;
+;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+;-------------------------------------------------------------------------------
+; Search Plugins
+;	return=1 : Plugin Include Script has been Updated
+;	return=0 : Plugin Include Script has Not been Changed
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+MG_SearchPlugins()
+{
+	local szInc, szCur, file
+	;...........................................................................
+	; Search Plugin Script Files
+	szInc := ""
+	Loop, %MG_DirPlugins%*.ahk
+	{
+		if (A_LoopFileName != "MG_Plugin.ahk")
+		{
+			szInc .= "#" . "Include *i %A_ScriptDir%\Plugins\" . A_LoopFileName . "`n"
+		}
+	}
+	if (szInc == "") {
+		return 0
+	}
+	;...........................................................................
+	; Check if Plugin Files are Added or Removed
+	file := FileOpen(MG_DirConfig "MG_Plugins.ahk", "r `n", "UTF-8")
+	if (!file) {
+		file := FileOpen(MG_DirPlugins "MG_Plugin.ahk", "r `n", "UTF-8")
+	}
+	if (file)
+	{
+		szCur := file.Read(file.Length)
+		file.Close
+		if (szCur == szInc) {
+			return 0
+		}
+	}
+	;...........................................................................
+	; Write Plugin Include Script
+	file := FileOpen(MG_DirConfig "MG_Plugins.ahk", "w `n", "UTF-8")
+	if (!file) {
+		return 0
+	}
+	file.Write(szInc)
+	file.Close
+	FileDelete, %MG_DirPlugins%MG_Plugin.ahk
+	return 1
+}
+
+;-------------------------------------------------------------------------------
+; Regisger Plugin Menu
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+MG_AddPluginMenu(szName="", szCommand="")
+{
+	global
+	if (MG_IsEdit) {
+		return
+	}
+	MG_PluginMenuCount++
+	MG_PluginMenu%MG_PluginMenuCount%_Name	  := szName
+	MG_PluginMenu%MG_PluginMenuCount%_Command := szCommand
+}
+
+;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+;
+;	Gesture pattern rendering functions
 ;
 ;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;-------------------------------------------------------------------------------
@@ -974,8 +851,10 @@ MG_AddActionScript(script, pos="")
 ;-------------------------------------------------------------------------------
 MG_CreateFont(szFace, nSize, nWeight=0, nQuality=0)
 {
+	local nHeight = -(nSize * MG_ScreenDPI // 72)
+
 	return DllCall("CreateFont"
-					,"Int",-nSize							; nHeight
+					,"Int",nHeight							; nHeight
 					,"Int",0								; nWidth
 					,"Int",0								; nEscapement
 					,"Int",0								; nOrientation
@@ -1006,30 +885,29 @@ MG_DrawGesture(hDC, ptX, ptY, szGesture, ByRef strW=0, ByRef strH=0, fMeasure=0,
 		hRgn := DllCall("CreateRectRgn", "Int",ptX, "Int",ptY, "Int",ptX+strW, "Int",ptY+strH, "Ptr")
 		DllCall("SelectClipRgn", "Ptr",hDC, "Ptr",hRgn)
 	}
-	DllCall("SetTextAlign", "Ptr",hDC, "Ptr",24)
 	hFntOld := DllCall("SelectObject", "Ptr",hDC, "Ptr",MG_hFntBtn, "Ptr")
 	VarSetCapacity(size, 8, 0)
-	max:=StrLen(szGesture), pos:=1, preFont:=1, nowX:=ptX, strH:=0, sftBase:=MG_AdNaviSize//6
+	max:=StrLen(szGesture), pos:=1, preFont:=1, nowX:=ptX, strH:=0
+	nHeight := MG_AdjustToDPI(MG_AdNaviSize)
 	while (pos <= max)
 	{
-		shift := 0
 		if (SubStr(szGesture, pos, 1) == "_")
 		{
 			newFont := 1
 			szDraw := "_"
 			offset := 1
-			shift := fDown ? 0 : (sftBase-MG_AdNaviSize)
+			shift := fDown ? 0 : -nHeight*5//4
 			fDown := 0
 		}
 		else
 		{
+			shift := 0
 			fDown := 0
-			Loop, Parse, MG_BtnNames, _
-			{
-				if (A_LoopField && InStr(SubStr(szGesture, pos), A_LoopField) == 1) {
+			Loop, % MG_BtnNames.MaxIndex() {
+				if (MG_BtnNames[A_Index] && InStr(SubStr(szGesture, pos), MG_BtnNames[A_Index]) == 1) {
 					newFont := 1
-					szDraw := A_LoopField
-					offset := StrLen(A_LoopField)
+					szDraw := MG_BtnNames[A_Index]
+					offset := StrLen(MG_BtnNames[A_Index])
 					fDown := 1
 					break
 				}
@@ -1039,7 +917,9 @@ MG_DrawGesture(hDC, ptX, ptY, szGesture, ByRef strW=0, ByRef strH=0, fMeasure=0,
 				dir := "Dir" . SubStr(szGesture, pos, 1)
 				szDraw := Chr(%dir%)
 				offset := 1
-				shift := (dir="DirD"||dir="Dir2") ? sftBase : 0
+				shift := nHeight//4
+				shift -= (dir="DirU"||dir="Dir8") ? nHeight//6 : 0
+				shift += (dir="DirD"||dir="Dir2") ? nHeight//6 : 0
 			}
 		}
 		if (preFont != newFont) {
@@ -1047,7 +927,7 @@ MG_DrawGesture(hDC, ptX, ptY, szGesture, ByRef strW=0, ByRef strH=0, fMeasure=0,
 			DllCall("SelectObject", "Ptr",hDC, "Ptr",(newFont==1 ? MG_hFntBtn : MG_hFntDir))
 		}
 		if (!fMeasure) {
-			DllCall("TextOut", "Ptr",hDC, "Int",nowX, "Int",ptY+MG_AdNaviSize+shift, "Str",szDraw, "Int",StrLen(szDraw))
+			DllCall("TextOut", "Ptr",hDC, "Int",nowX, "Int",ptY+shift, "Str",szDraw, "Int",StrLen(szDraw))
 		}
 		DllCall("GetTextExtentPoint32", "Ptr",hDC, "Str",szDraw, "Int",StrLen(szDraw), "Ptr",&size)
 		nowX += NumGet(size, 0, "UInt")
@@ -1062,11 +942,281 @@ MG_DrawGesture(hDC, ptX, ptY, szGesture, ByRef strW=0, ByRef strH=0, fMeasure=0,
 	}
 	strW := nowX - ptX
 	DllCall("SelectObject", "Ptr",hDC, "Ptr",hFntOld)
-	DllCall("SetTextAlign", "Ptr",hDC, "Ptr",0)
 	if (!fMeasure) {
 		DllCall("SelectClipRgn", "Ptr",hDC, "Ptr",0)
 		DllCall("DeleteObject", "Ptr",hRgn)
 	}
+}
+
+;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+;
+;	General functions
+;
+;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+;-------------------------------------------------------------------------------
+; Combine strings with delimiter
+;														Implemented by lukewarm
+;														Modified by Pyonkichi
+;-------------------------------------------------------------------------------
+Join(ByRef list, value, delim="`n") {
+	list := list ? (list . delim . value) : value
+	return list
+}
+
+;-------------------------------------------------------------------------------
+; Replace Variables in String
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+MG_VarInStr(str) {
+	out := str
+	while (RegExMatch(out, ".*%(.+?)%.*", $)) {
+		out := RegExReplace(out, "%" $1 "%", %$1%)
+	}
+	return out
+}
+
+;-------------------------------------------------------------------------------
+; Check whether the operating system is recent one
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+MG_IsNewOS() {
+	return (A_OSVersion!="WIN_NT4" && A_OSVersion!="WIN_2000"
+		&&	A_OSVersion!="WIN_XP"  && A_OSVersion!="WIN_2003")
+}
+
+;-------------------------------------------------------------------------------
+; Call specified function if it is needed
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+MG_CallIfUsed(func, conditions, param:="")
+{
+	local file, buf, pos
+	if (file := FileOpen(MG_DirConfig "MG_Config.ahk", "r", "UTF-8")) {
+		buf := file.Read(file.Length)
+		file.Close
+		if (RegExMatch(buf, conditions)) {
+			Func(func).(param)
+		}
+	}
+}
+
+;-------------------------------------------------------------------------------
+; Execute a program as normal user
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+MG_RunAsUser(szTarget, szWorkDir="", szWinStat="", bWait=false)
+{
+	szTarget := MG_VarInStr(szTarget)
+	szWorkDir := MG_VarInStr(szWorkDir)
+	if (A_IsAdmin && MG_IsNewOS()) {
+		if (MG_CreateProcessAsUser(szTarget, szWorkDir, szWinStat, bWait)) {
+			return
+		}
+	}
+	if (bWait) {
+		RunWait, %szTarget%, %szWorkDir%, % szWinStat . " UseErrorLevel"
+	} else {
+		Run, %szTarget%, %szWorkDir%, % szWinStat . " UseErrorLevel"
+	}
+}
+
+;-------------------------------------------------------------------------------
+; Create process as normal user
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+MG_CreateProcessAsUser(szTarget, szWorkDir="", szWinStat="", bWait=false)
+{
+	; Get process handle of the shell
+	local hProc:=0, hWnd:=0, pid:=0
+	WinGet, hWnd, ID, Program Manager ahk_class Progman
+	if (hWnd) {
+		WinGet, pid, PID, % "ahk_id " hWnd
+		hProc := DllCall("OpenProcess", UInt,0x0400 , UInt,1, UInt,pid, Ptr)
+	}
+	if (!hProc) {
+		return false
+	}
+	; Duplicate user token
+	local res, htkUser:=0, htkCopy:=0
+	VarSetCapacity(htkUser, A_PtrSize, 0)
+	VarSetCapacity(htkCopy, A_PtrSize, 0)
+	res := DllCall("advapi32.dll\OpenProcessToken", Ptr,hProc, UInt,0x000E, PtrP,htkUser, UInt)
+	DllCall("CloseHandle", Ptr,hProc)
+	if (!res) {
+		return false
+	}
+	res := DllCall("advapi32.dll\DuplicateTokenEx", Ptr,htkUser, UInt,0x02000000, Ptr,0, Int,3, Int,1, PtrP,htkCopy, UInt)
+	DllCall("CloseHandle", Ptr,htkUser)
+	if (!res || !htkCopy) {
+		return false
+	}
+	; Create process with user token
+	local size, sinfo, pinfo, stat, ofs
+	size := 4*9 + 2*2 + A_PtrSize*7 + (A_PtrSize//8*4)
+	VarSetCapacity(sinfo, size, 0)
+	NumPut(size, sinfo, 0, "UInt")
+	ofs := 4*8 + A_PtrSize*3 + (A_PtrSize//8*4)
+	NumPut(1, sinfo, ofs, "UInt")
+	stat := (szWinStat="Max") ? 3
+		 :	(szWinStat="Min") ? 7
+		 :	(szWinStat="Hide") ? 0 : 1
+	ofs += 4
+	NumPut(stat, sinfo, ofs, "UShort")
+
+	size := 4*2 + A_PtrSize*2
+	VarSetCapacity(pinfo, size, 0)
+	pid := 0
+	szWorkDir := szWorkDir ? szWorkDir : A_ScriptDir
+	if (DllCall("advapi32.dll\CreateProcessWithTokenW", Ptr,htkCopy, UInt,0, Ptr,0, Str,szTarget
+			,UInt,0x00000400, Ptr,0, Str,szWorkDir, Ptr,&sinfo, Ptr,&pinfo, UInt)) {
+		DllCall("CloseHandle", Ptr,NumGet(pinfo, A_PtrSize, "Ptr"))
+		DllCall("CloseHandle", Ptr,NumGet(pinfo, 0, "Ptr"))
+		ofs := A_PtrSize * 2
+		pid := NumGet(pinfo, ofs, "UInt")
+	}
+	DllCall("CloseHandle", Ptr,htkCopy)
+	if (!pid) {
+		return false
+	}
+	if (bWait) {
+		DetectHiddenWindows, On
+		WinWait, % "ahk_pid " pid
+		WinWaitClose, % "ahk_pid " pid
+		DetectHiddenWindows, Off
+	}
+	return true
+}
+
+;-------------------------------------------------------------------------------
+; Get monitor rectangle that includes specified coordinates
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+MG_GetMonitorRect(ptX, ptY, ByRef monL=0, ByRef monT=0, ByRef monR=0, ByRef monB=0, fWork=false)
+{
+	pt := (ptY<<32) | (ptX & 0xffffffff)
+	hMon := DllCall("user32.dll\MonitorFromPoint", "UInt64",pt, "UInt",2, "Ptr")
+	VarSetCapacity(infMon, 40, 0)
+	NumPut(40, infMon, 0, "UInt")
+	res := DllCall("user32.dll\GetMonitorInfo", "Ptr",hMon, "Ptr",&infMon, "UInt")
+	offset := fWork ? 20 : 4
+	monL := NumGet(infMon, offset+ 0, "Int")
+	monT := NumGet(infMon, offset+ 4, "Int")
+	monR := NumGet(infMon, offset+ 8, "Int")
+	monB := NumGet(infMon, offset+12, "Int")
+}
+
+;-------------------------------------------------------------------------------
+; Adjust size value to screen DPI
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+MG_AdjustToDPI(size) {
+	global
+	return size * MG_ScreenDPI // 96
+}
+
+;-------------------------------------------------------------------------------
+; Get screen DPI from cursor position
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+MG_GetDpiFromPoint(x, y)
+{
+	pt := (y<<32) | (x & 0xffffffff)
+	hMon := DllCall("MonitorFromPoint", UInt64,pt, UInt,1, Ptr)
+	VarSetCapacity(dpiX, 4, 0)
+	VarSetCapacity(dpiY, 4, 0)
+	DllCall("Shcore.dll\GetDpiForMonitor", UPtr,hMon, Int,0, IntP,dpiX, IntP,dpiY)
+	return dpiX ? dpiX : A_ScreenDPI
+}
+
+;-------------------------------------------------------------------------------
+; Get module filename from window handle
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+MG_GetExeName(hWnd, bPath=false)
+{
+	local szExe, hChild
+
+	WinGet, szExe, ProcessName, ahk_id %hWnd%
+	if (szExe = "ApplicationFrameHost.exe") {
+		hChild := DllCall("FindWindowExW", Ptr,hWnd, Ptr,0, Str,"Windows.UI.Core.CoreWindow", Ptr,0, Ptr)
+		if (hChild) {
+			hWnd := hChild
+		}
+	}
+	if (bPath) {
+		WinGet, szExe, ProcessPath, ahk_id %hWnd%
+	} else {
+		WinGet, szExe, ProcessName, ahk_id %hWnd%
+	}
+	return szExe
+}
+
+;-------------------------------------------------------------------------------
+; Check whether specified window is activation target
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+MG_IsActivationTarget(hWnd, bIncRegWnd:=true)
+{
+	local dwStyle, szTitle
+
+	WinGet, dwStyle, Style, ahk_id %hWnd%
+	WinGetTitle, szTitle, ahk_id %hWnd%
+	if ((dwStyle&0x08000000) || !(dwStyle&0x10000000)
+	||	((dwStyle&0x80000000) && !(dwStyle&0x20000000)
+		&& ((dwStyle&0x00C80000)!=0x00C80000 || !szTitle))) {
+		return false
+	}
+	if (!bIncRegWnd) {
+		return true
+	}
+	Loop, % MG_ActvtExclud.MaxIndex()
+	{
+		szTitle := MG_ActvtExclud[A_Index][1]
+		szTitle .= MG_ActvtExclud[A_Index][2] ? " ahk_class " MG_ActvtExclud[A_Index][2] : ""
+		szTitle .= MG_ActvtExclud[A_Index][3] ? " ahk_exe " MG_ActvtExclud[A_Index][3] : ""
+		if (hWnd = WinExist(szTitle)) {
+			return false
+		}
+	}
+	return true
+}
+
+;-------------------------------------------------------------------------------
+; Wait Error Message
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+CheckConfigurationError()
+{
+	global MC_LngButton001, MC_LngButton002, MC_LngMessage002
+	WinWait, MouseGestureL.ahk ahk_class #32770, Error
+	if (ErrorLevel==0) {
+		ControlGetText, szMsg1, Static1
+		ControlGetText, szMsg2, Static2
+		WinClose
+		Gui, MGW_Err:New
+		Gui, MGW_Err:+HWNDhWnd
+		Gui, MGW_Err:Add, Text, x10 y10, % MC_LngMessage002 . szMsg1 . szMsg2
+		Gui, MGW_Err:Add, Button, gOnSendClipboard x+-250 y+16 w160 h26, %MC_LngButton002%
+		Gui, MGW_Err:Add, Button, gOnMsgClosed x+10 yp+0 w80 h26, %MC_LngButton001%
+		Gui, MGW_Err:Show, ,
+		WinWaitClose, ahk_id %hWnd%
+	}
+	return
+
+	;---------------------------------------------------------------------------
+	; Copy to Clipboard
+OnSendClipboard:
+	Clipboard := szMsg1 . szMsg2
+	Gui, MGW_Err:Destroy
+	return
+
+	;---------------------------------------------------------------------------
+	; Canceled
+OnMsgClosed:
+MGW_ErrGuiClose:
+MGW_ErrGuiEscape:
+	Gui, MGW_Err:Destroy
+	return
 }
 
 MG_CommonLibEnd:

@@ -1,13 +1,20 @@
-﻿Goto,MG_LB_End
+﻿Goto, MG_LB_End
 
 MG_LB_Enable:
-	Hotkey,*LButton,MG_LB_DownHotkey,On
-	Hotkey,*LButton up,MG_LB_UpHotkey,On
+	if (!MG_AlwaysHook) {
+		MG_LB_HookEnabled := Func("MG_IsHookEnabled_LB")
+		Hotkey, If, % MG_LB_HookEnabled
+	}
+	Hotkey, *LButton, MG_LB_DownHotkey, On
+	Hotkey, *LButton up, MG_LB_UpHotkey, On
+	Hotkey, If
+	MG_LB_Enabled := 1
 return
 
 MG_LB_Disable:
-	Hotkey,*LButton,MG_LB_DownHotkey,Off
-	Hotkey,*LButton up,MG_LB_UpHotkey,Off
+	Hotkey, *LButton, MG_LB_DownHotkey, Off
+	Hotkey, *LButton up, MG_LB_UpHotkey, Off
+	MG_LB_Enabled := 0
 return
 
 MG_LB_DownHotkey:
@@ -19,26 +26,15 @@ MG_LB_UpHotkey:
 return
 
 MG_LB_Down:
-	SetMouseDelay,-1
-	Send,{Blind}{LButton Down}
+	MG_SendButton("LB", "LButton", "Down")
 return
 
 MG_LB_Up:
-	SetMouseDelay,-1
-	Send,{Blind}{LButton Up}
+	MG_SendButton("LB", "LButton", "Up")
 return
 
 MG_LB_Check:
-	if (!GetKeyState("LButton", "P")) {
-		MG_UnpressCntLB++
-		if (MG_UnpressCntLB > 3) {
-			MG_TriggerUp("LB")
-			SetMouseDelay,-1
-			Send,{Blind}{LButton}
-		}
-	} else {
-		MG_UnpressCntLB := 0
-	}
+	MG_CheckButton("LB", "LButton")
 return
 
 MG_LB_End:

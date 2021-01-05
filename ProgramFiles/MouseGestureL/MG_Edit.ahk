@@ -1,440 +1,53 @@
 ﻿;===============================================================================
 ;
-;		MouseGestureL.ahk - Configuration Module (MauSuji Mod)
+;		MouseGestureL.ahk - Configuration Module
 ;														Created by lukewarm
 ;														Modified by Pyonkichi
 ;===============================================================================
 Critical
-Menu, Tray, Icon, %A_WinDir%\System32\shell32.dll, 22
-
-MG_IsEdit	  = 1
+MG_IsEdit := 1
 ME_CmdLineArg = %1%
-ME_DmyObj := Object("base", Object("__Delete", "ME_Exit"))
+ME_DmyObj := Object("base", Object("__Delete", "ME_OnExit"))
 #Include %A_ScriptDir%\Components\MG_CommonLib.ahk
-#Include *i %A_ScriptDir%\Languages\MG_Language.ahk
+Menu, Tray, Icon, %MG_IconFile%, 2
+#Include *i %A_ScriptDir%\Config\MG_Language.ahk
 MG_CheckLanguage()
-if ((ME_CmdLineArg != "/ini2ahk")
-&&	MG_SearchPlugins())
-{
+if ((ME_CmdLineArg != "/ini2ahk") && MG_SearchPlugins()) {
 	Reload
 }
-;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-;
-;	Initialize Configurations
-;
-;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-; Size of Lists
-ME_ListH	:= 460		; Height of Lists
-ME_TListW1	:= 140		; [P.1] Width  of Target List Default=180
-ME_GListW1	:= 240		; [P.1] Width  of Gesture List Default=150
-ME_AListW	:= 300		; [P.1] Width  of Action List
-ME_AListH	:= 215		; [P.1] Height of Action List
-ME_AListR	:= 50		; [P.1] Ratio  of Target Column Width of Action List (%)
-ME_TListW2	:= 200		; [P.2] Width  of Target List
-ME_GListW2	:= 200		; [P.3] Width  of Gesture List
-ME_ListPad	:= 8		; Padding
-
-;◆追加設定 8項目
-ME_GListR	:= 50		;  [P.1] ジェスチャー一覧の全幅に対する「ジェスチャー」列の割合 (%)
-ME_AEditH	:= 250		;  [P.1] 表示切替時のアクションスクリプトの高さ
-LV_AssignedMark	 := "●"	; 割り当て済みジェスチャーの先頭に付けるマーク
-LV_UnAssignedMark:= ""		; 未割り当てジェスチャーの先頭に付けるマーク
-LV_AssignedTColor	:= "0x000000"	; 割り当て済みジェスチャーの文字色
-LV_AssignedBColor	:= "0xFFFFFF"	;  同 背景色
-LV_UnAssignedTColor	:= "0xA0A0A0"	; 未割り当てジェスチャーの文字色
-LV_UnAssignedBColor	:= "0xFFFFFF"	;  同 背景色
-
-#Include *i %A_ScriptDir%\Class_LV_Colors.ahk	;追加
-Gosub, ReadAdditionalOptions	;追加。Mod設定ファイルの読み込み
-
+InitGlobals()
 #Include *i %A_ScriptDir%\Config\MG_User.ahk
-;-------------------------------------------------------------------------------
-; Configurations of Recognition Process
-ConfRecognition =
-(LTrim
-	IniFileVersion
-	8Dir
-	ActiveAsTarget
-	Interval
-	Threshold
-	LongThresholdX
-	LongThresholdY
-	LongThreshold
-	TimeoutThreshold
-	Timeout
-	DGInterval
-	ORangeDefault
-	ORangeA
-	ORangeB
-	EdgeInterval
-	EdgeIndiv
-	CornerX
-	CornerY
-	DisableDefMB
-	DisableDefX1B
-	DisableDefX2B
-)
-InitConfigs(ConfRecognition)
-Config_8Dir				= 0
-Config_ActiveAsTarget	= 0
-Config_Interval			= 20
-Config_Threshold		= 60
-Config_LongThresholdX	= 800
-Config_LongThresholdY	= 600
-Config_LongThreshold	= 700
-Config_TimeoutThreshold	= 12
-Config_Timeout			= 400
-Config_DGInterval		= 0
-Config_ORangeDefault	= 3
-Config_ORangeA			= 3
-Config_ORangeB			= 3
-Config_EdgeInterval		= 20
-Config_EdgeIndiv		= 0
-Config_CornerX			= 1
-Config_CornerY			= 1
-Config_DisableDefMB		= 0
-Config_DisableDefX1B	= 0
-Config_DisableDefX2B	= 0
-
-;-------------------------------------------------------------------------------
-; Configurations of Gesture Hints
-ConfNavi =
-(LTrim
-	UseNavi
-	UseExNavi
-	NaviInterval
-	NaviPersist
-	ExNaviTransBG
-	ExNaviFG
-	ExNaviBG
-	ExNaviTranspcy
-	ExNaviSize
-	ExNaviSpacing
-	ExNaviPadding
-	ExNaviMargin
-)
-InitConfigs(ConfNavi)
-Config_UseNavi			= 1
-Config_UseExNavi		= 3
-Config_NaviInterval		= 10
-Config_NaviPersist		= 0
-Config_ExNaviTransBG	= 1
-Config_ExNaviFG			= 000000
-Config_ExNaviBG			= FFFFFF
-Config_ExNaviTranspcy	= 255
-Config_ExNaviSize		= 24
-Config_ExNaviSpacing	= 2
-Config_ExNaviPadding	= 4
-Config_ExNaviMargin		= 8
-
-;-------------------------------------------------------------------------------
-; Configurations of Advanced Gesture Hints
-ConfAdNavi =
-(LTrim
-	AdNaviFG
-	AdNaviNI
-	AdNaviBG
-	AdNaviTranspcy
-	AdNaviSize
-	AdNaviFont
-	AdNaviPosition
-	AdNaviPaddingL
-	AdNaviPaddingR
-	AdNaviPaddingT
-	AdNaviPaddingB
-	AdNaviRound
-	AdNaviMargin
-	AdNaviSpaceX
-	AdNaviSpaceY
-	AdNaviOnClick
-)
-InitConfigs(ConfAdNavi)
-Config_AdNaviFG			= FFFFFF
-Config_AdNaviNI			= 7F7F7F
-Config_AdNaviBG			= 000000
-Config_AdNaviTranspcy	= 220
-Config_AdNaviSize		= 12
-Config_AdNaviPosition	= 0
-Config_AdNaviPaddingL	= 6
-Config_AdNaviPaddingR	= 6
-Config_AdNaviPaddingT	= 3
-Config_AdNaviPaddingB	= 3
-Config_AdNaviRound		= 1
-Config_AdNaviMargin		= 14
-Config_AdNaviSpaceX		= 2
-Config_AdNaviSpaceY		= 2
-Config_AdNaviOnClick	= 0
-if (MG_IsNewOS()) {
-	Config_AdNaviFont := "Meiryo"
-} else {
-	Config_AdNaviFont := "Tahoma"
-}
-;-------------------------------------------------------------------------------
-; Configurations of Gesture Trail
-ConfTrail =
-(LTrim
-	ShowTrail
-	DrawTrailWnd
-	TrailColor
-	TrailTranspcy
-	TrailWidth
-	TrailStartMove
-	TrailInterval
-)
-InitConfigs(ConfTrail)
-Config_ShowTrail		= 0
-Config_DrawTrailWnd		= 1
-Config_TrailColor		= 0000FF
-Config_TrailTranspcy	= 255
-Config_TrailWidth		= 3
-Config_TrailStartMove	= 3
-Config_TrailInterval	= 10
-
-;-------------------------------------------------------------------------------
-; Configurations of Log Display
-ConfLogs =
-(LTrim
-	ShowLogs
-	LogPosition
-	LogPosX
-	LogPosY
-	LogMax
-	LogSizeW
-	LogInterval
-	LogFG
-	LogBG
-	LogTranspcy
-	LogFontSize
-	LogFont
-)
-InitConfigs(ConfLogs)
-Config_ShowLogs			= 0
-Config_LogPosition		= 4
-Config_LogPosX			= 0
-Config_LogPosY			= 0
-Config_LogMax			= 20
-Config_LogSizeW			= 400
-Config_LogInterval		= 500
-Config_LogFG			= FFFFFF
-Config_LogBG			= 000000
-Config_LogTranspcy		= 100
-Config_LogFontSize		= 10
-Config_LogFont			= MS UI Gothic
-;-------------------------------------------------------------------------------
-; Other Configurations
-ConfOthers =
-(LTrim
-	HotkeyEnable
-	HotkeyNavi
-	ScriptEditor
-	UserName
-	Password
-	TraySubmenu
-	AdjustDlg
-	DlgHeightLimit
-	EditCommand
-	FoldTarget
-)
-InitConfigs(ConfOthers)
-Config_TraySubmenu		= 0
-Config_AdjustDlg	 	= 0
-Config_DlgHeightLimit	= 800
-Config_FoldTarget		= 0
-
-;-------------------------------------------------------------------------------
-; Load Configurations
-MG_hImageList := IL_Create()
-MG_LoadIniFile(MG_CheckConfigFiles() ? "" : MC_PresetItems)
-GetSystemIcons()
-
-MG_DefButtons := "LB`nRB`nMB`nX1B`nX2B`nWU`nWD`nLT`nRT"
-#Include *i %A_ScriptDir%\Components\Buttons\MG_MyButtonNames.ahk
-LoadButtons()
-
-if (ME_CmdLineArg = "/ini2ahk")
-{
-	Config_UserName := MG_StrEncDec(Config_UserName, true)
-	Config_Password := MG_StrEncDec(Config_Password, true)
-	FileDelete, %A_ScriptDir%\Config\MG_Config.ahk
-	FileAppend, % ToAhk(), %A_ScriptDir%\Config\MG_Config.ahk, UTF-8
-	ExitApp
-}
-
-;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-;
-;	Create and Initialize Configuration Dialog Box
-;
-;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-RuleType_WClass	 = 1
-RuleType_CClass	 = 2
-RuleType_Exe	 = 3
-RuleType_Title	 = 4
-RuleType_Custom	 = 5
-RuleType_Include = 6
-
-RuleType_1 = WClass
-RuleType_2 = CClass
-RuleType_3 = Exe
-RuleType_4 = Title
-RuleType_5 = Custom
-RuleType_6 = Include
-
-MG_AddConditionCategory("HitTest", ME_LngMenu001)
-MG_AddCustomCondition("HitTest", ME_LngMenu002, "MG_HitTest()=""Caption""")
-MG_AddCustomCondition("HitTest", ME_LngMenu003, "MG_HitTest()=""SysMenu""")
-MG_AddCustomCondition("HitTest", ME_LngMenu004, "MG_HitTest()=""MinButton""")
-MG_AddCustomCondition("HitTest", ME_LngMenu005, "MG_HitTest()=""MaxButton""")
-MG_AddCustomCondition("HitTest", ME_LngMenu006, "MG_HitTest()=""CloseButton""")
-MG_AddCustomCondition("HitTest", ME_LngMenu007, "MG_HitTest()=""HelpButton""")
-MG_AddCustomCondition("HitTest", "", "")
-MG_AddCustomCondition("HitTest", ME_LngMenu008, "MG_HitTest()=""Menu""")
-MG_AddCustomCondition("HitTest", ME_LngMenu009, "MG_HitTest()=""VScroll""")
-MG_AddCustomCondition("HitTest", ME_LngMenu010, "MG_HitTest()=""HScroll""")
-MG_AddCustomCondition("HitTest", ME_LngMenu011, "MG_HitTest()=""Border""")
-MG_AddCustomCondition("HitTest", ME_LngMenu012, "MG_HitTest()=""SizeBorder""")
-MG_AddCustomCondition("HitTest", ME_LngMenu013, "MG_HitTest()=""Client""")
-MG_AddCustomCondition("HitTest", "", "")
-MG_AddCustomCondition("HitTest", ME_LngMenu014, "MG_TreeListHitTest()")
-
-MG_AddConditionCategory("Cursor", ME_LngMenu015)
-MG_AddCustomCondition("Cursor", ME_LngMenu016, "MG_CheckCursor(32512, 0)")
-MG_AddCustomCondition("Cursor", ME_LngMenu017, "MG_CheckCursor(32513, 0)")
-MG_AddCustomCondition("Cursor", ME_LngMenu018, "MG_CheckCursor(32649, 0)")
-MG_AddCustomCondition("Cursor", ME_LngMenu019, "MG_CheckCursor(32514, 0)")
-MG_AddCustomCondition("Cursor", ME_LngMenu020, "MG_CheckCursor(32515, 0)")
-MG_AddCustomCondition("Cursor", ME_LngMenu021, "MG_CheckCursor(32648, 0)")
-MG_AddCustomCondition("Cursor", ME_LngMenu022, "MG_CheckCursor(32650, 0)")
-MG_AddCustomCondition("Cursor", ME_LngMenu023, "MG_CheckCursor(32651, 0)")
-MG_AddCustomCondition("Cursor", ME_LngMenu024, "MG_CheckCursor(32646, 0)")
-MG_AddCustomCondition("Cursor", ME_LngMenu025, "MG_CheckCursor(32645, 0)")
-MG_AddCustomCondition("Cursor", ME_LngMenu026, "MG_CheckCursor(32644, 0)")
-MG_AddCustomCondition("Cursor", ME_LngMenu027, "MG_CheckCursor(32642, 0)")
-MG_AddCustomCondition("Cursor", ME_LngMenu028, "MG_CheckCursor(32643, 0)")
-MG_AddCustomCondition("Cursor", ME_LngMenu029, "MG_CheckCursor(32516, 0)")
-MG_AddCustomCondition("Cursor", "", "")
-MG_AddCustomCondition("Cursor", ME_LngMenu030, "MG_CheckAllCursor(1, 0)")
-MG_AddCustomCondition("Cursor", ME_LngMenu031, "MG_CheckAllCursor(0, 0)")
-
-MG_AddConditionCategory("WinStat", ME_LngMenu032)
-MG_AddCustomCondition("WinStat", ME_LngMenu033, "MG_Win(""MinMax"")==1")
-MG_AddCustomCondition("WinStat", ME_LngMenu034, "MG_Win(""MinMax"")==0")
-MG_AddCustomCondition("WinStat", ME_LngMenu035, "MG_Win(""Transparent"")<255")
-MG_AddCustomCondition("WinStat", ME_LngMenu036, "MG_Win(""Transparent"")=""""")
-MG_AddCustomCondition("WinStat", ME_LngMenu037, "MG_Win(""ExStyle"")&0x08")
-MG_AddCustomCondition("WinStat", ME_LngMenu038, "!(MG_Win(""ExStyle"")&0x08)")
-
-MG_AddConditionCategory("KeyStat", ME_LngMenu039)
-MG_AddCustomCondition("KeyStat", ME_LngMenu040, "GetKeyState(""Shift"")")
-MG_AddCustomCondition("KeyStat", ME_LngMenu041, "!GetKeyState(""Shift"")")
-MG_AddCustomCondition("KeyStat", ME_LngMenu042, "GetKeyState(""Ctrl"")")
-MG_AddCustomCondition("KeyStat", ME_LngMenu043, "!GetKeyState(""Ctrl"")")
-MG_AddCustomCondition("KeyStat", ME_LngMenu044, "GetKeyState(""Alt"")")
-MG_AddCustomCondition("KeyStat", ME_LngMenu045, "!GetKeyState(""Alt"")")
-
-MG_AddConditionCategory("Rect", ME_LngMenu046)
-MG_AddCustomCondition("Rect", ME_LngMenu047, "GetRectRelative")
-MG_AddCustomCondition("Rect", ME_LngMenu048, "GetRectAbsolute")
-
-
-GoSub, CreateGui
-
-GuiControl, MEW_Main:, LBButtons, `n%LBButtons%
-OnMessage(0x0111, "OnCommand")
-OnMessage(0x004E, "OnNotify")
-OnMessage(0x0205, "OnRButtonUp")
-OnMessage(0x0100, "OnKeyDown")
-OnMessage(0x000F, "OnPaint")
-MG_AdNaviSize := 12
-MG_hFntBtn := MG_CreateFont("MS UI Gothic", MG_AdNaviSize, 0, 4)
-MG_hFntDir := MG_CreateFont("Wingdings", MG_AdNaviSize, 0, 4)
-
-
-ActionCategory_Count=0
-MG_AddActionCategory("All", ActionType001)
-MG_AddActionCategory("Input", ActionType002)
-MG_AddActionTemplate("Input", ActionName001, "ActKeyStroke")
-MG_AddActionTemplate("Input", ActionName002, "ActMouseClick")
-MG_AddActionTemplate("Input", ActionName003, "ActSendWheel")
-MG_AddActionTemplate("Input", ActionName004, "ActMoveCursor")
-
-MG_AddActionCategory("Scroll", ActionType003)
-MG_AddActionTemplate("Scroll", ActionName005, "ActScroll")
-MG_AddActionTemplate("Scroll", ActionName006, "ActDragScroll")
-
-MG_AddActionCategory("Window", ActionType004)
-MG_AddActionTemplate("Window", ActionName007, "WinActivate")
-MG_AddActionTemplate("Window", ActionName008, "WinMinimize")
-MG_AddActionTemplate("Window", ActionName009, "WinMaximize")
-MG_AddActionTemplate("Window", ActionName010, "WinRestore")
-MG_AddActionTemplate("Window", ActionName011, "WinClose")
-MG_AddActionTemplate("Window", ActionName012, "WinSet, Bottom")
-MG_AddActionTemplate("Window", ActionName013, "WinSet, Topmost, On")
-MG_AddActionTemplate("Window", ActionName014, "WinSet, Topmost, Off")
-MG_AddActionTemplate("Window", ActionName015, "WinSet, Topmost, Toggle")
-MG_AddActionTemplate("Window", ActionName016, "ActMoveWindow")
-MG_AddActionTemplate("Window", ActionName017, "WinSet, Trans, %[" . ME_LngMessage104 . "]%")
-MG_AddActionTemplate("Window", ActionName018, "WinSet, Trans, Off")
-MG_AddActionTemplate("Window", ActionName019, "if (MG_Defer()) {`n`t`MG_ActivatePrevWin()`n}")
-
-MG_AddActionCategory("Process", ActionType005)
-MG_AddActionTemplate("Process", ActionName020, "ActFileLaunch")
-MG_AddActionTemplate("Process", ActionName021, "Process, Close, % MG_Win(""pid"")")
-
-MG_AddActionCategory("Application", ActionType006)
-MG_AddActionTemplate("Application", ActionName022, "ButtonIDPicker")
-MG_AddActionTemplate("Application", ActionName023, "WinMenuSelectItem,,, %[" . ME_LngMessage101 . "]%")
-
-MG_AddActionCategory("Sound", ActionType007)
-MG_AddActionTemplate("Sound", ActionName024, "SoundSet, %[" . ME_LngMessage105 . "]%, MASTER, VOLUME")
-MG_AddActionTemplate("Sound", ActionName025, "SoundSet, %[" . ME_LngMessage106 . "]%, MASTER, MUTE")
-MG_AddActionTemplate("Sound", ActionName026, "ActSoundPlay")
-
-MG_AddActionCategory("Script", ActionType008)
-MG_AddActionTemplate("Script", ActionName027, "MG_Abort()")
-MG_AddActionTemplate("Script", ActionName028, "MG_Wait(%[" . ME_LngMessage108 . "%<500>%]%)")
-MG_AddActionTemplate("Script", ActionName029, "Sleep, %[" . ME_LngMessage109 . "%<500>%]%")
-MG_AddActionTemplate("Script", ActionName030, "if (MG_Timer(-%[" . ME_LngMessage110 . "%<200>%]%)) {`n`t`;" . ActionComment001 . "`n`n}`nelse {`n`t`;" . ActionComment002 . "`n`n}")
-MG_AddActionTemplate("Script", ActionName031, "if (!MG_Hold()) {`n`t`;" . ActionComment001 . "`n`n}`nelse if (MG_Hold() > %[" . ME_LngMessage111 . "%<500>%]%) {`n`t`;" . ActionComment005 . "`n`n}")
-MG_AddActionTemplate("Script", ActionName032, "if (MG_While(%[" . ME_LngMessage112 . "%<500>%]%)) {`n`t`;" . ActionComment003 . "`n`n}`nelse {`n`t`;" . ActionComment004 . "`n`n}")
-MG_AddActionTemplate("Script", ActionName033, "if (MG_Defer()) {`n`t`;" . ActionComment006 . "`n`n}%[" . ME_LngMessage113 . "%<#NoInput#>%]%")
-MG_AddActionTemplate("Script", ActionName034, "MG_SetActiveAsTarget()")
-
-MG_AddActionCategory("Hints", ActionType009)
-MG_AddActionTemplate("Hints", ActionName035, "MG_Tooltip=`n(`n%[" . ME_LngMessage114 . "]%`n)")
-MG_AddActionTemplate("Hints", ActionName036, "MG_StopNavi()")
-MG_AddActionTemplate("Hints", ActionName037, "MG_StopTrail()")
-
-MG_AddActionTemplate("Others", ActionName038, "Clipboard:=""`n(% LTrim RTrim0`n%[" . ME_LngMessage115 . "]%`n)""")
-MG_AddActionTemplate("Others", ActionName039, "ActPostMessage")
-MG_AddActionTemplate("Others", ActionName040, "ActSendMessage")
+LoadIcons()
+InitConfigurations()
+LoadConfigurations()
+AddCustomConditions()
+CreateGui()
+InitActionTemplates()
+#Include *i %A_ScriptDir%\Config\MG_Plugins.ahk
 #Include *i %A_ScriptDir%\Plugins\MG_Plugin.ahk
-MG_AddActionCategory("Others", ActionType010)
-
+MG_AddActionCategory("Others", ActionType100)
 CloseActionTemplateReg()
 GuiControl, MEW_Main:Choose, DDLActionCategory, `n1
 
 ShowConfig()
 ShowTargets(true)
-CLV := New LV_Colors(HLVGesture)	;追加
 ShowGestures()
-;GuiControl, MEW_Main:Choose, LBGesture1, `n1
+GuiControl, MEW_Main:Choose, LBGesture, `n1
 
-On8DirChange(false)
-Gosub, OnNaviChange
-Gosub, OnNaviPosChange
-Gosub, OnShowTrailChange
-Gosub, OnShowLogsChange
+EnableGestureControls()
+DirModeChange(false)
+OnNaviChange()
+OnNaviPosChange()
+OnShowTrailChange()
+OnShowLogsChange()
 Gui, MEW_Main:Show, Hide Autosize, %ME_LngCapt002%
 AdjustDialogHeight(true)
-ChangeLayout()	;追加
 
 Critical,Off
-
 Gui, MEW_Main:Show
-
 GuiControl, MEW_Main:Focus, TVTarget1
+AdjustTextPos()
 return
-
 
 ;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;
@@ -447,21 +60,21 @@ ME_Exit:
 	ExitApp
 
 ;-------------------------------------------------------------------------------
-; Exit Operation
+; Terminal Operation
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-ME_Exit()
+ME_OnExit()
 {
 	global
 	IL_Destroy(MG_hImageList)
-	MG_hFntBtn ? DllCall("DeleteObject", "Ptr",MG_hFntBtn) :
-	MG_hFntDir ? DllCall("DeleteObject", "Ptr",MG_hFntDir) :
+	Loop, % ME_hIcons.MaxIndex() {
+		DllCall("DestroyIcon", Ptr,ME_hIcons[A_Index])
+	}
 }
-
 
 ;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;
-;	Hotkeys(mark)
+;	Hotkeys
 ;
 ;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 #If WinActive("ahk_id " ME_hWndMain)
@@ -472,47 +85,1330 @@ ME_Exit()
 ~^5::	SwitchTab(5)
 ~^6::	SwitchTab(6)
 ~^7::	SwitchTab(7)
-;~^G::	ShowAssignedGestureMenu()
-;~^Down::ShowNextGesture()
-;~^Up::	ShowNextGesture(false)
 ~^E::	EditAction()
-~^F::	SwitchTargetFolding(true)
-~^N::
-	OnNewItemKeyPress()
-	ShowGestures()		;ホットキーだとLVGestureが更新されないのを対策
-	ShowGesture(Gesture_Editing)
-return
+~^F::	SwitchTargetFolding()
+~^N::	OnNewItemKeyPress()
+~^D::	OnDuplicateKeyPress()
 ~^C::	OnCopyKeyPress()
 ~^V::	OnPasteKeyPress()
 ~Del::	OnDeleteKeyPress()
 ~F1::	MG_ShowHelp()
-~F2::	OnRenameKeyPress()
 #If
 
 #If (WinActive("ahk_id " ME_hWndMain) && IsAnyListActive())
-+Up::
-	OnMoveUpKeyPress()
-	ShowGestures()		;ホットキーだとLVGestureが更新されないのを対策
-	ShowGesture(Gesture_Editing)
-return
-+Down::
-	OnMoveDownKeyPress()
-	ShowGestures()		;ホットキーだとLVGestureが更新されないのを対策
-	ShowGesture(Gesture_Editing)
-return
++Up::	OnMoveUpKeyPress()
++Down::	OnMoveDownKeyPress()
 #If
 
+
+;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+;
+;	Initialize Configurations
+;
+;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;-------------------------------------------------------------------------------
-; Check whether any list is activated
+; Initialize Global Variables
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-IsAnyListActive()
+InitGlobals()
 {
-	GuiControlGet, szCtrl, MEW_Main:FocusV
-	return (szCtrl="TVTarget1"	|| szCtrl="TVTarget2" || szCtrl="LVGesture"
-		||  szCtrl="LBGesture2" || szCtrl="LVAction")
+	local type
+
+	; Size of lists
+	ME_ListH	:= 486		; Height of Lists
+	ME_TListW1	:= 200		; [P.1] Width  of Target List
+	ME_GListW1	:= 500		; [P.1] Width  of Gesture List
+	ME_GListH	:= 185		; [P.1] Height of Gesture List
+	ME_GListR	:= 35		; [P.1] Ratio  of Gesture Column Width of Gesture List (%)
+	ME_TListW2	:= 200		; [P.2] Width  of Target List
+	ME_RListR	:= 35		; [P.2] Ratio  of Type Column Width of Rule List (%)
+	ME_GListW2	:= 150		; [P.3] Width  of Gesture List
+	ME_GListW3	:= 250		; [P.3] Width  of Gesture Pattern List
+	ME_AListR	:= 50		; [P.3] Ratio  of Target Column Width of Action List (%)
+	ME_ListPad	:= 8		; Padding
+
+	; Rule Types
+	RuleType_1 = WClass
+	RuleType_2 = CClass
+	RuleType_3 = Exe
+	RuleType_4 = Title
+	RuleType_5 = Custom
+	RuleType_6 = Include
+	Loop, Parse, ME_LngDropDown002, `n
+	{
+		type := RuleType_%A_Index%
+		RuleType_%type% := A_Index
+		RuleDisp_%type% := A_LoopField
+	}
+
+	; Others
+	MG_ScreenDPI := A_ScreenDPI
+	MG_AdNaviSize := 9
+	ME_bTvRenaming := false
+}
+;-------------------------------------------------------------------------------
+; Load Icons
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+LoadIcons()
+{
+	local max, hiAry
+
+	Icon_Blank	 :=  3
+	Icon_Default :=  4
+	Icon_Ignored :=  5
+	Icon_Delete	 :=  6
+	Icon_Edit	 :=  7
+	Icon_Add	 :=  8
+	Icon_Up		 :=  9
+	Icon_Down	 := 10
+	Icon_Sort	 := 11
+	Icon_Dup	 := 12
+	Icon_Fold	 := 13
+	Icon_Expand	 := 14
+
+	MG_hImageList := IL_Create()
+	Target_Blank_Icon	:= IL_Add(MG_hImageList, MG_IconFile, Icon_Blank)
+	Target_Default_Icon	:= IL_Add(MG_hImageList, MG_IconFile, Icon_Default)
+	Target_Ignored_Icon	:= IL_Add(MG_hImageList, MG_IconFile, Icon_Ignored)
+
+	ME_hIcons := []
+	max := DllCall("shell32\ExtractIconExW", Str,MG_IconFile, Int,-1, Ptr,0, Ptr,0, UInt,0, UInt) - 1
+	VarSetCapacity(hiAry, A_PtrSize*max, 0)
+	DllCall("shell32\ExtractIconExW", Str,MG_IconFile, Int,1, Ptr,0, Ptr,&hiAry, UInt,max, UInt)
+	Loop, %max% {
+		ME_hIcons.InsertAt(A_Index, NumGet(hiAry, A_PtrSize*(A_Index-1), "Ptr"))
+	}
+}
+;-------------------------------------------------------------------------------
+; Initialize Configurations
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+InitConfigurations()
+{
+	InitConfRecognition()
+	InitConfNavi()
+	InitConfAdNavi()
+	InitConfTrail()
+	InitConfLogs()
+	InitConfOthers()
+}
+;-------------------------------------------------------------------------------
+; Initialize Configurations of Recognition Process
+;														Implemented by lukewarm
+;														Modified by Pyonkichi
+;-------------------------------------------------------------------------------
+InitConfRecognition()
+{
+	global
+	ConfRecognition =
+	(LTrim
+		IniFileVersion
+		8Dir
+		ActiveAsTarget
+		Interval
+		AlwaysHook
+		PrvntCtxtMenu
+		Threshold
+		LongThresholdX
+		LongThresholdY
+		LongThreshold
+		TimeoutThreshold
+		Timeout
+		DGInterval
+		TmReleaseTrigger
+		ORangeDefault
+		ORangeA
+		ORangeB
+		EdgeInterval
+		EdgeIndiv
+		CornerX
+		CornerY
+		DisableDefMB
+		DisableDefX1B
+		DisableDefX2B
+	)
+	InitConfigs(ConfRecognition)
+	Config_8Dir				= 0
+	Config_ActiveAsTarget	= 0
+	Config_Interval			= 20
+	Config_AlwaysHook		= 0
+	Config_PrvntCtxtMenu	= 0
+	Config_Threshold		= 60
+	Config_LongThresholdX	= 800
+	Config_LongThresholdY	= 600
+	Config_LongThreshold	= 700
+	Config_TimeoutThreshold	= 12
+	Config_Timeout			= 400
+	Config_DGInterval		= 0
+	Config_TmReleaseTrigger	= 3
+	Config_ORangeDefault	= 3
+	Config_ORangeA			= 3
+	Config_ORangeB			= 3
+	Config_EdgeInterval		= 20
+	Config_EdgeIndiv		= 0
+	Config_CornerX			= 1
+	Config_CornerY			= 1
+	Config_DisableDefMB		= 0
+	Config_DisableDefX1B	= 0
+	Config_DisableDefX2B	= 0
+}
+;-------------------------------------------------------------------------------
+; Initialize Configurations of Gesture Hints
+;														Implemented by lukewarm
+;														Modified by Pyonkichi
+;-------------------------------------------------------------------------------
+InitConfNavi()
+{
+	global
+	ConfNavi =
+	(LTrim
+		UseNavi
+		UseExNavi
+		NaviInterval
+		NaviPersist
+		ExNaviTransBG
+		ExNaviFG
+		ExNaviBG
+		ExNaviTranspcy
+		ExNaviSize
+		ExNaviSpacing
+		ExNaviPadding
+		ExNaviMargin
+	)
+	InitConfigs(ConfNavi)
+	Config_UseNavi			= 1
+	Config_UseExNavi		= 3
+	Config_NaviInterval		= 10
+	Config_NaviPersist		= 0
+	Config_ExNaviTransBG	= 1
+	Config_ExNaviFG			= 000000
+	Config_ExNaviBG			= FFFFFF
+	Config_ExNaviTranspcy	= 255
+	Config_ExNaviSize		= 24
+	Config_ExNaviSpacing	= 2
+	Config_ExNaviPadding	= 4
+	Config_ExNaviMargin		= 8
+}
+;-------------------------------------------------------------------------------
+; Initialize Configurations of Advanced Gesture Hints
+;														Implemented by lukewarm
+;														Modified by Pyonkichi
+;-------------------------------------------------------------------------------
+InitConfAdNavi()
+{
+	global
+	ConfAdNavi =
+	(LTrim
+		AdNaviFG
+		AdNaviNI
+		AdNaviBG
+		AdNaviTranspcy
+		AdNaviSize
+		AdNaviFont
+		AdNaviPosition
+		AdNaviPaddingL
+		AdNaviPaddingR
+		AdNaviPaddingT
+		AdNaviPaddingB
+		AdNaviRound
+		AdNaviMargin
+		AdNaviSpaceX
+		AdNaviSpaceY
+		AdNaviOnClick
+	)
+	InitConfigs(ConfAdNavi)
+	Config_AdNaviFG			= FFFFFF
+	Config_AdNaviNI			= 7F7F7F
+	Config_AdNaviBG			= 000000
+	Config_AdNaviTranspcy	= 220
+	Config_AdNaviSize		= 11
+	Config_AdNaviPosition	= 0
+	Config_AdNaviPaddingL	= 6
+	Config_AdNaviPaddingR	= 6
+	Config_AdNaviPaddingT	= 3
+	Config_AdNaviPaddingB	= 3
+	Config_AdNaviRound		= 2
+	Config_AdNaviMargin		= 14
+	Config_AdNaviSpaceX		= 2
+	Config_AdNaviSpaceY		= 2
+	Config_AdNaviOnClick	= 0
+	if (MG_IsNewOS()) {
+		Config_AdNaviFont := ME_AdNaviFont
+	} else {
+		Config_AdNaviFont := "Tahoma"
+	}
+}
+;-------------------------------------------------------------------------------
+; Initialize Configurations of Gesture Trails
+;														Implemented by lukewarm
+;														Modified by Pyonkichi
+;-------------------------------------------------------------------------------
+InitConfTrail()
+{
+	global
+	ConfTrail =
+	(LTrim
+		ShowTrail
+		DrawTrailWnd
+		TrailColor
+		TrailTranspcy
+		TrailWidth
+		TrailStartMove
+		TrailInterval
+	)
+	InitConfigs(ConfTrail)
+	Config_ShowTrail		= 0
+	Config_DrawTrailWnd		= 1
+	Config_TrailColor		= 0000FF
+	Config_TrailTranspcy	= 255
+	Config_TrailWidth		= 3
+	Config_TrailStartMove	= 3
+	Config_TrailInterval	= 10
+}
+;-------------------------------------------------------------------------------
+; Initialize Configurations of Log Display
+;														Implemented by lukewarm
+;														Modified by Pyonkichi
+;-------------------------------------------------------------------------------
+InitConfLogs()
+{
+	global
+	ConfLogs =
+	(LTrim
+		ShowLogs
+		LogPosition
+		LogPosX
+		LogPosY
+		LogMax
+		LogSizeW
+		LogInterval
+		LogFG
+		LogBG
+		LogTranspcy
+		LogFontSize
+		LogFont
+	)
+	InitConfigs(ConfLogs)
+	Config_ShowLogs			= 0
+	Config_LogPosition		= 4
+	Config_LogPosX			= 0
+	Config_LogPosY			= 0
+	Config_LogMax			= 20
+	Config_LogSizeW			= 400
+	Config_LogInterval		= 500
+	Config_LogFG			= FFFFFF
+	Config_LogBG			= 000000
+	Config_LogTranspcy		= 100
+	Config_LogFontSize		= 10
+	Config_LogFont			= MS UI Gothic
+}
+;-------------------------------------------------------------------------------
+; Initialize Other Configurations
+;														Implemented by lukewarm
+;														Modified by Pyonkichi
+;-------------------------------------------------------------------------------
+InitConfOthers()
+{
+	global
+	ConfOthers =
+	(LTrim
+		EditCommand
+		HotkeyEnable
+		HotkeyNavi
+		HotkeyReload
+		ScriptEditor
+		TraySubmenu
+		AdjustDlg
+		DlgHeightLimit
+		FoldTarget
+		DisableWarning
+	)
+	InitConfigs(ConfOthers)
+	Config_TraySubmenu		= 0
+	Config_AdjustDlg	 	= 0
+	Config_DlgHeightLimit	= 800
+	Config_FoldTarget		= 0
+	Config_DisableWarning	= 0
+}
+;-------------------------------------------------------------------------------
+; Load Configurations
+;														Implemented by lukewarm
+;														Modified by Pyonkichi
+;-------------------------------------------------------------------------------
+LoadConfigurations()
+{
+	global
+	MG_LoadIniFile(MG_CheckConfigFiles() ? "" : ME_PresetItems)
+	MG_DefButtons := "LB`nRB`nMB`nX1B`nX2B`nWU`nWD`nLT`nRT"
+	; Moving old user buttons  - - - - - - - - - - - - - - - - - - - - - - - - -
+	Loop, %MG_DirButtons%*.ahk
+	{
+		if (!IsDefaultBtnName(RegExReplace(A_LoopFileName, "\.ahk"))) {
+			if (FileExist(MG_DirUserBtn) != "D") {
+				FileCreateDir, %MG_DirUserBtn%
+			}
+			FileMove, %A_LoopFileFullPath%, %MG_DirUserBtn%, 1
+		}
+	} ;- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	LoadButtons()
+	if (ME_CmdLineArg = "/ini2ahk") {
+		FileDelete, %MG_DirConfig%MG_Config.ahk
+		FileAppend, % ToAhk(), %MG_DirConfig%MG_Config.ahk, UTF-8
+		ExitApp
+	}
 }
 
+;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+;
+;	Create and Initialize Configuration Dialog Box
+;
+;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+;-------------------------------------------------------------------------------
+; Initialize Custom Conditions
+;														Implemented by lukewarm
+;														Modified by Pyonkichi
+;-------------------------------------------------------------------------------
+AddCustomConditions()
+{
+	global
+	MG_AddConditionCategory("HitTest", ME_LngMenu001)
+	MG_AddCustomCondition("HitTest", ME_LngMenu002, "MG_HitTest()=""Caption""")
+	MG_AddCustomCondition("HitTest", ME_LngMenu003, "MG_HitTest()=""SysMenu""")
+	MG_AddCustomCondition("HitTest", ME_LngMenu004, "MG_HitTest()=""MinButton""")
+	MG_AddCustomCondition("HitTest", ME_LngMenu005, "MG_HitTest()=""MaxButton""")
+	MG_AddCustomCondition("HitTest", ME_LngMenu006, "MG_HitTest()=""CloseButton""")
+	MG_AddCustomCondition("HitTest", ME_LngMenu007, "MG_HitTest()=""HelpButton""")
+	MG_AddCustomCondition("HitTest", "", "")
+	MG_AddCustomCondition("HitTest", ME_LngMenu008, "MG_HitTest()=""Menu""")
+	MG_AddCustomCondition("HitTest", ME_LngMenu009, "MG_HitTest()=""VScroll""")
+	MG_AddCustomCondition("HitTest", ME_LngMenu010, "MG_HitTest()=""HScroll""")
+	MG_AddCustomCondition("HitTest", ME_LngMenu011, "MG_HitTest()=""Border""")
+	MG_AddCustomCondition("HitTest", ME_LngMenu012, "MG_HitTest()=""SizeBorder""")
+	MG_AddCustomCondition("HitTest", ME_LngMenu013, "MG_HitTest()=""Client""")
+	MG_AddCustomCondition("HitTest", "", "")
+	MG_AddCustomCondition("HitTest", ME_LngMenu014, "MG_TreeListHitTest()")
+
+	MG_AddConditionCategory("Cursor", ME_LngMenu015)
+	MG_AddCustomCondition("Cursor", ME_LngMenu016, "MG_CheckCursor(32512, 0)")
+	MG_AddCustomCondition("Cursor", ME_LngMenu017, "MG_CheckCursor(32513, 0)")
+	MG_AddCustomCondition("Cursor", ME_LngMenu018, "MG_CheckCursor(32649, 0)")
+	MG_AddCustomCondition("Cursor", ME_LngMenu019, "MG_CheckCursor(32514, 0)")
+	MG_AddCustomCondition("Cursor", ME_LngMenu020, "MG_CheckCursor(32515, 0)")
+	MG_AddCustomCondition("Cursor", ME_LngMenu021, "MG_CheckCursor(32648, 0)")
+	MG_AddCustomCondition("Cursor", ME_LngMenu022, "MG_CheckCursor(32650, 0)")
+	MG_AddCustomCondition("Cursor", ME_LngMenu023, "MG_CheckCursor(32651, 0)")
+	MG_AddCustomCondition("Cursor", ME_LngMenu024, "MG_CheckCursor(32646, 0)")
+	MG_AddCustomCondition("Cursor", ME_LngMenu025, "MG_CheckCursor(32645, 0)")
+	MG_AddCustomCondition("Cursor", ME_LngMenu026, "MG_CheckCursor(32644, 0)")
+	MG_AddCustomCondition("Cursor", ME_LngMenu027, "MG_CheckCursor(32642, 0)")
+	MG_AddCustomCondition("Cursor", ME_LngMenu028, "MG_CheckCursor(32643, 0)")
+	MG_AddCustomCondition("Cursor", ME_LngMenu029, "MG_CheckCursor(32516, 0)")
+	MG_AddCustomCondition("Cursor", "", "")
+	MG_AddCustomCondition("Cursor", ME_LngMenu030, "MG_CheckAllCursor(1, 0)")
+	MG_AddCustomCondition("Cursor", ME_LngMenu031, "MG_CheckAllCursor(0, 0)")
+
+	MG_AddConditionCategory("WinStat", ME_LngMenu032)
+	MG_AddCustomCondition("WinStat", ME_LngMenu033, "MG_Win(""MinMax"")==1")
+	MG_AddCustomCondition("WinStat", ME_LngMenu034, "MG_Win(""MinMax"")==0")
+	MG_AddCustomCondition("WinStat", ME_LngMenu035, "MG_Win(""Transparent"")<255")
+	MG_AddCustomCondition("WinStat", ME_LngMenu036, "MG_Win(""Transparent"")=""""")
+	MG_AddCustomCondition("WinStat", ME_LngMenu037, "MG_Win(""ExStyle"")&0x08")
+	MG_AddCustomCondition("WinStat", ME_LngMenu038, "!(MG_Win(""ExStyle"")&0x08)")
+
+	MG_AddConditionCategory("KeyStat", ME_LngMenu039)
+	MG_AddCustomCondition("KeyStat", ME_LngMenu040, "GetKeyState(""Shift"")")
+	MG_AddCustomCondition("KeyStat", ME_LngMenu041, "!GetKeyState(""Shift"")")
+	MG_AddCustomCondition("KeyStat", ME_LngMenu042, "GetKeyState(""Ctrl"")")
+	MG_AddCustomCondition("KeyStat", ME_LngMenu043, "!GetKeyState(""Ctrl"")")
+	MG_AddCustomCondition("KeyStat", ME_LngMenu044, "GetKeyState(""Alt"")")
+	MG_AddCustomCondition("KeyStat", ME_LngMenu045, "!GetKeyState(""Alt"")")
+
+	MG_AddConditionCategory("Rect", ME_LngMenu046)
+	MG_AddCustomCondition("Rect", ME_LngMenu047, "GetRectRelative")
+	MG_AddCustomCondition("Rect", ME_LngMenu048, "GetRectAbsolute")
+}
+;-------------------------------------------------------------------------------
+; Create Configuration Dialog Box
+;														Implemented by lukewarm
+;														Modified by Pyonkichi
+;-------------------------------------------------------------------------------
+CreateGui()
+{
+	global
+	wTab := ME_TListW1 + ME_ListPad + ME_GListW1 + 42
+	hTab := ME_ListH + 65
+	wAvlbl := wTab - 26
+	Gui, MEW_Main:New, +HwndME_hWndMain +Delimiter`n
+	Gui, MEW_Main:Add, Tab2, x8 y2 w%wTab% h%hTab% vMainTab gOnTabChange AltSubmit, %ME_LngTab001%
+	MainTabIdx := 1
+	MG_DDLHeight := GetDesktopHeight()
+	CreateMainTab()
+	CreateTargetsTab()
+	CreateGesturesTab()
+	CreateRecognitionTab()
+	CreateHintsTab()
+	CreateTrailTab()
+	CreateOthersTab()
+	PutCommonButtons()
+	GuiControl, MEW_Main:, LBButtons, `n%LBButtons%
+	Gui, MEW_Main:Default
+
+	OnMessage(0x0111, "OnCommand")
+	OnMessage(0x004E, "OnNotify")
+	OnMessage(0x0205, "OnRButtonUp")
+	OnMessage(0x0100, "OnKeyDown")
+	OnMessage(0x000F, "OnPaint")
+}
+;-------------------------------------------------------------------------------
+; Main : メイン
+;-------------------------------------------------------------------------------
+CreateMainTab()
+{
+	local width, width2, height, top, left, bw, pad, tblText
+	Gui, MEW_Main:Tab, 1
+
+	; Target list
+	Gui, MEW_Main:Add, Text, Section y+10 h16 vLabel1, %ME_LngText001%
+	Gui, MEW_Main:Add, TreeView, xs y+6 w%ME_TListW1% h%ME_ListH% vTVTarget1 gTVTargetSelect HwndME_hTVTarget1 -Lines -ReadOnly 0x1000 ImageList%MG_hImageList% AltSubmit
+
+	; Gesture list
+	Gui, MEW_Main:Add, Text, Section x+%ME_ListPad% ys h16 vLabel2, %ME_LngText002%
+	Gui, MEW_Main:Add, ListView,xs y+6 w%ME_GListW1% h%ME_GListH% Section Grid vLVGesture gLVGestureEvents -Multi NoSortHdr AltSubmit, % ME_LngListView002 "`n "
+	width := ME_GListW1 - 22
+	width2 := width * ME_GListR // 100
+	LV_ModifyCol(1, width2)
+	LV_ModifyCol(2, width - width2)
+	LV_ModifyCol(3, 0)
+	Gui, MEW_Main:Add, Button, x+1 w20 h20 vBReleaseGesture gOnReleaseGesturePress Disabled
+	SetButtonIcon("BReleaseGesture", Icon_Delete, ME_LngTooltip001)
+
+	; Script editor
+	bw:=120, pad:=6
+	top := ME_GListH+9
+	Gui, MEW_Main:Add, Text, xs ys+%top% h16 vLabel3, %ME_LngText004%
+	left := ME_GListW1 - bw*2 - pad
+	Gui, MEW_Main:Add, Button,	xs+%left% yp-6 w%bw% h25 vBAddAction	gBAddActionPress, %ME_LngButton005%
+	Gui, MEW_Main:Add, Button,	x+%pad% w%bw% h25 vBUpdateAction	gBUpdateActionPress	Disabled, %ME_LngButton006%
+	EnblAddAction := "Enable"
+	EnblUpdateAction := "Disable"
+
+	height := ME_ListH - ME_GListH - 84
+	Gui, MEW_Main:Font, %ME_ScriptSize%, %ME_ScriptFont%
+	Gui, MEW_Main:Add, Edit,   xs y+3 w%ME_GListW1% h%height% Section vEAction	gOnActionEditModify -Wrap WantTab T12 +0x00100000 Disabled
+	Gui, MEW_Main:Font
+	Gui, MEW_Main:Add, Button, x+1 w20 h20 vBEditAction gEditAction Disabled
+	SetButtonIcon("BEditAction", Icon_Edit, ME_LngTooltip003)
+	Gui, MEW_Main:Add, Button, xp y+4 w20 h20 vBClearAction gOnClearActionPress	Disabled
+	SetButtonIcon("BClearAction", Icon_Delete, ME_LngTooltip002)
+
+	bw:=60, pad:=8
+	tblText := Array(ME_LngText005, ME_LngText006)
+	width := GetMaxTextLength(tblText)
+	width2 := ME_GListW1 - width - pad
+	top := height + 8
+	Gui, MEW_Main:Add, Text,	xs ys+%top% w%width% vLabel4, %ME_LngText005%
+	Gui, MEW_Main:Add, DropDownList, x+%pad%  w%width2% h%MG_DDLHeight% vDDLActionCategory gOnActionCategoryChange AltSubmit
+
+	width2 -= (bw + 2)
+	Gui, MEW_Main:Add, Text,	xs y+8 w%width% vLabel5, %ME_LngText006%
+	Gui, MEW_Main:Add, DropDownList, x+%pad% w%width2% h%MG_DDLHeight% vDDLActionTemplate AltSubmit
+	Gui, MEW_Main:Add, Button,	x+2 yp-1 w60 h22 vBAddActionLine	gBAddActionLinePress Disabled, %ME_LngButton007%
+}
+
+;-------------------------------------------------------------------------------
+; Targets : ターゲット
+;-------------------------------------------------------------------------------
+CreateTargetsTab()
+{
+	local width, width2, height, tblText
+	Gui, MEW_Main:Tab, 2
+
+	; Target list
+	Gui, MEW_Main:Add, Button, Section w25 h25 vBTargetNew gTargetNew
+	SetButtonIcon("BTargetNew", Icon_Add, ME_LngTooltip011)
+	Gui, MEW_Main:Add, Button, x+0 w25 h25 vBTargetUp gTargetUp	Disabled
+	SetButtonIcon("BTargetUp", Icon_Up, ME_LngTooltip012)
+	Gui, MEW_Main:Add, Button, x+0 w25 h25 vBTargetDown gTargetDown Disabled
+	SetButtonIcon("BTargetDown", Icon_Down, ME_LngTooltip013)
+	Gui, MEW_Main:Add, Button, x+0 w25 h25 vBTargetSort gTargetSort
+	SetButtonIcon("BTargetSort", Icon_Sort, ME_LngTooltip014)
+	Gui, MEW_Main:Add, Button, x+0 w25 h25 vBTargetDup gDuplicateTarget Disabled
+	SetButtonIcon("BTargetDup", Icon_Dup, ME_LngTooltip015)
+	Gui, MEW_Main:Add, Button, x+0 w25 h25 vBTargetDelete gTargetDelete Disabled
+	SetButtonIcon("BTargetDelete", Icon_Delete, ME_LngTooltip001)
+	Gui, MEW_Main:Add, Button, x+0 w25 h25 vBFoldTarget gSwitchTargetFolding
+	SetButtonIcon("BFoldTarget", Config_FoldTarget ? Icon_Fold : Icon_Expand, Config_FoldTarget ? ME_LngTooltip016 : ME_LngTooltip017)
+	Gui, MEW_Main:Add, TreeView, xs y+1 w%ME_TListW2% h%ME_ListH% vTVTarget2 gTVTargetSelect -Lines -ReadOnly 0x1000 ImageList%MG_hImageList% AltSubmit
+
+	; Target name editor
+	ME_RListW := wTab - ME_TListW2 - ME_ListPad - 42
+	tblText := Array(ME_LngText011)
+	width := ME_RListW - 69 - GetMaxTextLength(tblText)
+	Gui, MEW_Main:Add, Text,	x+%ME_ListPad% ys+3 vLabel11 Section, %ME_LngText011%
+	Gui, MEW_Main:Add, Edit,	x+8	w%width% vETargetName gETargetNameChange Disabled
+	Gui, MEW_Main:Add, Button,	x+2	yp-1 w60 h22 vBTargetRename gTargetRename Disabled, %ME_LngButton009%
+
+	; Rule list
+	height	:= ME_ListH - 213
+	Gui, MEW_Main:Add, ListView, xs y+2 w%ME_RListW% h%height% Section -Multi NoSortHdr Grid vLVRule gLVRuleSelect AltSubmit, %ME_LngListView001%
+	width := ME_RListW - 4
+	width2 := width * ME_RListR // 100
+	LV_ModifyCol(1, width2)
+	LV_ModifyCol(2, width - width2)
+	Gui, MEW_Main:Add, Button, x+1 yp+23 w20 h20 vBRuleUp gRuleUp Disabled
+	SetButtonIcon("BRuleUp", Icon_Up, ME_LngTooltip012)
+	Gui, MEW_Main:Add, Button, y+20 w20 h20 vBRuleDelete gRuleDelete Disabled
+	SetButtonIcon("BRuleDelete", Icon_Delete, ME_LngTooltip001)
+	Gui, MEW_Main:Add, Button, y+20 w20 h20 vBRuleDown gRuleDown Disabled
+	SetButtonIcon("BRuleDown", Icon_Down, ME_LngTooltip013)
+
+	GuiControlGet, rcCtrl, MEW_Main:Pos, LVRule
+	rcCtrlY += (rcCtrlH + 4)
+	width := ME_RListW - 123
+	Gui, MEW_Main:Add, DropDownList, xs y%rcCtrlY% w%width% vDDLLogic gDDLLogicChoose	Choose1	AltSubmit Disabled, %ME_LngDropDown001%
+	Gui, MEW_Main:Add, Button,	x+2 yp-1 w60 h22 vBAddRule	  gBAddRulePress	Disabled, %ME_LngButton007%
+	Gui, MEW_Main:Add, Button,	x+2		 w60 h22 vBUpdateRule gBUpdateRulePress Disabled, %ME_LngButton008%
+	EnblAddRule := EnblUpdateRule := "Disable"
+
+	; Rule type
+	tblText := Array(ME_LngText012, ME_LngText013, ME_LngText014)
+	width := GetMaxTextLength(tblText)
+	Gui, MEW_Main:Add, Text,	xs y+6 w%width% vLabel12 Disabled, %ME_LngText012%
+	width2 := ME_RListW - 69 - width
+	Gui, MEW_Main:Add, DropDownList,x+8 w%width2% vDDLRuleType gOnRuleTypeChange Choose1 AltSubmit Disabled, %ME_LngDropDown002%
+	Gui, MEW_Main:Add, Button,	x+2 yp-1 w60 h22 vBRulePicker gTargetPicked Disabled, %ME_LngButton010%
+
+	; Rule value
+	Gui, MEW_Main:Add, Text, xs y+6 w%width% vLabel13 Disabled, %ME_LngText013%
+	width2 := ME_RListW - 29 - width
+	Gui, MEW_Main:Add, Edit, x+8 w%width2% vERuleValue gOnRuleEditModify Disabled
+	Gui, MEW_Main:Add, Button, x+0	yp-1 w22 h22 vBClearRule gClearRulePress Disabled
+	SetButtonIcon("BClearRule", Icon_Delete, ME_LngTooltip002)
+
+	; Matching method
+	Gui, MEW_Main:Add, Text,	xs y+8 w%width% vLabel14 Disabled, %ME_LngText014%
+	width2 := ME_RListW - 8 - width
+	Gui, MEW_Main:Add, DropDownList,x+8 w%width2% vDDLMatchRule gOnRuleTypeChange Choose1 AltSubmit Disabled, %ME_LngDropDown003%
+
+	Gui, MEW_Main:Add, CheckBox, xp+0 y+8 h14 vChkNotMatch gOnRuleTypeChange Disabled, %ME_LngCheckBox001%
+	Gui, MEW_Main:Add, CheckBox, x+20 h14 vChkNotInhRules gOnNotInhRulesChange Disabled, %ME_LngCheckBox002%
+
+	; Icon
+	width2 := ME_RListW-4
+	Gui, MEW_Main:Add, GroupBox, xs+4 w%width2% h80 Section vGroupIcon, %ME_LngGroupBox017%
+	width2 := ME_RListW - 97
+	Gui, MEW_Main:Add, Edit, xs+16 yp+18 w%width2% Section vEIconFile gOnIconChange Disabled
+	Gui, MEW_Main:Add, Button,x+2 yp-1 w60 h22 vBBrowseIcon gOnBrowseIcon Disabled, %ME_LngButton020%
+
+	Gui, MEW_Main:Add, Picture, xs+20 y+12 w16 h16 Section vPicIcon AltSubmit
+	Gui, MEW_Main:Add, Edit, x+20 yp-2 w48 vEIconIndex gOnIconChange Disabled
+	Gui, MEW_Main:Add, UpDown, Range1-1000 128 vUDIconIndex Disabled
+	Gui, MEW_Main:Add, Button,	x+10 yp-2 w120 h24 vBApplyIcon gOnApplyIcon Disabled, %ME_LngButton021%
+}
+;-------------------------------------------------------------------------------
+; Gestures : ジェスチャー
+;-------------------------------------------------------------------------------
+CreateGesturesTab()
+{
+	local width, width2, height, top, left, tblText, hBaseBox
+
+	Gui, MEW_Main:Tab, 3
+
+	; Gesture list
+	Gui, MEW_Main:Add, Button, Section w25 h25 vBGestureNew gGestureNew
+	SetButtonIcon("BGestureNew", Icon_Add, ME_LngTooltip021)
+	Gui, MEW_Main:Add, Button, x+0 w25 h25 vBGestureUp gGestureUp   Disabled
+	SetButtonIcon("BGestureUp", Icon_Up, ME_LngTooltip012)
+	Gui, MEW_Main:Add, Button, x+0 w25 h25 vBGestureDown gGestureDown Disabled
+	SetButtonIcon("BGestureDown", Icon_Down, ME_LngTooltip013)
+	Gui, MEW_Main:Add, Button, x+0 w25 h25 vBGestureSort gGestureSort
+	SetButtonIcon("BGestureSort", Icon_Sort, ME_LngTooltip014)
+	Gui, MEW_Main:Add, Button, x+0 w25 h25 vBGestureDup gDuplicateGesture Disabled
+	SetButtonIcon("BGestureDup", Icon_Dup, ME_LngTooltip015)
+	Gui, MEW_Main:Add, Button, x+0 w25 h25 vBGestureDel gGestureDelete Disabled
+	SetButtonIcon("BGestureDel", Icon_Delete, ME_LngTooltip001)
+	Gui, MEW_Main:Add, ListBox,xs y+1 w%ME_GListW2% h%ME_ListH% vLBGesture gLBGestureEvents AltSubmit
+	Gui, MEW_Main:-DPIScale
+	GuiControlGet, rcCtrl, MEW_Main:Pos, LBGesture
+	Gui, MEW_Main:+DPIScale
+	DefListHeight := rcCtrlH
+
+	; Pattern list
+	tblText := Array(ME_LngText011)
+	width := ME_GListW3 - 69 - GetMaxTextLength(tblText)
+	Gui, MEW_Main:Add, Text,	x+%ME_ListPad% ys+3 vLabel21 Section, %ME_LngText011%
+	Gui, MEW_Main:Add, Edit,	x+8 w%width% vEGestureName gEGestureNameChange
+	Gui, MEW_Main:Add, Button,	x+2 yp-1 w60 h22 vBGestureRename gGestureRename Disabled, %ME_LngButton009%
+
+	width := ME_GListW3 - 21
+	height	:= ME_ListH - 360
+	Gui, MEW_Main:Add, ListBox,	xs y+2 w%width% h%height% vLBGesturePattern	gLBGesturePatternSelect Section AltSubmit
+	Gui, MEW_Main:Add, Button, x+1 ys w20 h20 vBGesturePatternUp gGesturePatternUp Disabled
+	SetButtonIcon("BGesturePatternUp", Icon_Up, ME_LngTooltip012)
+	Gui, MEW_Main:Add, Button, y+20 w20 h20 vBGesturePatternDelete gGesturePatternDelete Disabled
+	SetButtonIcon("BGesturePatternDelete", Icon_Delete, ME_LngTooltip001)
+	Gui, MEW_Main:Add, Button, y+20 w20 h20 vBGesturePatternDown gGesturePatternDown Disabled
+	SetButtonIcon("BGesturePatternDown", Icon_Down, ME_LngTooltip013)
+
+	; Gesture pattern editor
+	top := height + 3
+	width := ME_GListW3 - 103
+	Gui, MEW_Main:Add, Edit,	xs ys+%top% w%width% vEGesture			gEGestureChange		Disabled
+	Gui, MEW_Main:Add, Button,	x+2	yp-1 w50 h22 vBAddGesturePattern	gBAddGesPatPress	Disabled, %ME_LngButton007%
+	Gui, MEW_Main:Add, Button,	x+2		 w50 h22 vBUpdateGesturePattern	gBUpdateGesPatPress	Disabled, %ME_LngButton008%
+	EnblAddGesturePattern := EnblUpdateGesturePattern := "Disable"
+
+	; Gesture pattern display
+	width := ME_GListW3 - 22 + 1
+	Gui, MEW_Main:Add, Edit,	xs y+2 w%width%  h20 vGesturePatternBox -Tabstop Disabled
+	Gui, MEW_Main:Add, Button, x+0	yp-1 w22 h22 vBClearGesture gClearGesturePress Disabled
+	SetButtonIcon("BClearGesture", Icon_Delete, ME_LngTooltip002)
+
+	Gui, MGW_GPBox:New
+	GuiControlGet, hBaseBox, MEW_Main:HWND, GesturePatternBox
+	Gui, MGW_GPBox:+HwndME_hGesPatBox -Caption +Parent%hBaseBox% +0x40000000 +E0x08000020 +LastFound
+	GuiControlGet, ME_GPBoxSize, MEW_Main:Pos, GesturePatternBox
+	Gui, MGW_GPBox:Show, x0 y0 w%ME_GPBoxSizeW% h%ME_GPBoxSizeH% NA
+	Gui, MEW_Main:Default
+
+	Gui, MEW_Main:Add, Button, xs y+2 w%ME_GListW3% h25 vBGesturePatternBS gGesturePatternBS Disabled, %ME_LngButton014%
+
+	; Trigger list
+	left := ME_GListW3 - 129
+	Gui, MEW_Main:Add, Text,	xs y+5 vLabel22 Section, %ME_LngText021%
+	Gui, MEW_Main:Add, ListBox, xs y+8 w%ME_GListW3% h136 vLBButtons gLBTriggerEvents AltSubmit
+
+	; Trigger up/down buttons
+	Gui, MEW_Main:Add, Button, xs y+25 w142 h46 vBButtonDown gOnBButtonDown Disabled Section,	%ME_LngButton012%
+	Gui, MEW_Main:Add, Button, xs y+8  w142 h46 vBButtonUp	 gOnBButtonUp	Disabled,			%ME_LngButton013%
+
+	; Directions
+	Gui, MEW_Main:Add, Text,	x+10 ys-20 vLabel23 Section, %ME_LngText022%
+	Gui, MEW_Main:Font, S14, Wingdings
+	Gui, MEW_Main:Add, Button, xs	  ys+20	w32 h32 vBStrokeUL	gDir7 Disabled,			% Chr(0xEB)
+	Gui, MEW_Main:Add, Button, x+1			w32	h32 vBStrokeU	gDir8 Disabled +0x0400,	% Chr(0xE9)
+	Gui, MEW_Main:Add, Button, x+1			w32	h32 vBStrokeUR	gDir9 Disabled,			% Chr(0xEC)
+	Gui, MEW_Main:Add, Button, xs	  y+2	w32 h32 vBStrokeL	gDir4 Disabled,			% Chr(0xE7)
+	Gui, MEW_Main:Add, Button, x+34			w32	h32 vBStrokeR	gDir6 Disabled,			% Chr(0xE8)
+	Gui, MEW_Main:Add, Button, xs	  y+2	w32 h32 vBStrokeDL	gDir1 Disabled,			% Chr(0xED)
+	Gui, MEW_Main:Add, Button, x+1			w32	h32 vBStrokeD	gDir2 Disabled +0x0800, % Chr(0xEA)
+	Gui, MEW_Main:Add, Button, x+1			w32	h32 vBStrokeDR	gDir3 Disabled,			% Chr(0xEE)
+	Gui, MEW_Main:Font
+
+	; Default Action
+	GuiControlGet, rcCtrl, MEW_Main:Pos, BGestureDel
+	rcCtrlY += 4
+	width := wTab - ME_GListW2 - ME_GListW3 - ME_ListPad*2 - 42
+	Gui, MEW_Main:Add, Picture, Section x+%ME_ListPad% y%rcCtrlY% w16 h16 vDefIcon Icon%Icon_Default% AltSubmit, % MG_IconFile
+	Gui, MEW_Main:Add, Text, x+2 yp h16 vLabel24, %ME_LngText026%
+	Gui, MEW_Main:Add, ListBox, xs y+6 w%width% h16 vLBDefAction gLBDefActionEvents AltSubmit
+
+	; Target prioritie list
+	height := ME_ListH - 46
+	Gui, MEW_Main:Add, Text, xs y+8 h16 vLabel25, %ME_LngText003%
+	Gui, MEW_Main:Add, ListView,xs y+6 w%width% h%height% Grid vLVAction gLVActionEvents -Multi NoSortHdr AltSubmit, % ME_LngListView003 "`n "
+	LV_SetImageList(MG_hImageList)
+
+	width -= 4
+	width2 := width * ME_AListR // 100
+	LV_ModifyCol(1, width2)
+	LV_ModifyCol(2, width - width2)
+	LV_ModifyCol(3, 0)
+	Gui, MEW_Main:Add, Text, x+1 yp+8 w20 Center, %ME_LngText027%
+	Gui, MEW_Main:Add, Button, y+5 w20 h20 vBActionUp gActionUp Disabled
+	SetButtonIcon("BActionUp", Icon_Up, ME_LngTooltip012)
+	Gui, MEW_Main:Add, Button, y+20 w20 h20	vBActionDelete gBActionDeletePress Disabled
+	SetButtonIcon("BActionDelete", Icon_Delete, ME_LngTooltip001)
+	Gui, MEW_Main:Add, Button, y+20 w20 h20	vBActionDown gActionDown Disabled
+	SetButtonIcon("BActionDown", Icon_Down, ME_LngTooltip013)
+	Gui, MEW_Main:Add, Text, y+5 w20 Center, %ME_LngText028%
+}
+;-------------------------------------------------------------------------------
+; Recognition : 認識設定
+;-------------------------------------------------------------------------------
+CreateRecognitionTab()
+{
+	local width, width2, top, left, tblText
+	Gui, MEW_Main:Tab, 4
+
+	Gui, MEW_Main:Add, GroupBox,xm+10 y+8 w%wAvlbl% h110 Section, %ME_LngGroupBox001%
+	Gui, MEW_Main:Add, CheckBox,xs+12 ys+20 h14 vConfig_8Dir gOnDirChange, %ME_LngCheckBox003%
+	Gui, MEW_Main:Add, CheckBox,xs+12 y+8 h14 vConfig_ActiveAsTarget, %ME_LngCheckBox004%
+	Gui, MEW_Main:Add, CheckBox,xs+12 y+8 h14 vConfig_AlwaysHook, %ME_LngCheckBox020%
+	Gui, MEW_Main:Add, CheckBox,xs+12 y+8 h14 vConfig_PrvntCtxtMenu, %ME_LngCheckBox017%
+
+	Gui, MEW_Main:Add, Text,xs+370 ys+20 vLabel31, %ME_LngText100%
+	Gui, MEW_Main:Add, Edit,x+8 w48 vConfig_Interval
+	Gui, MEW_Main:Add, UpDown, Range0-10000 128
+
+
+	tblText := Array(ME_LngText101, ME_LngText102, ME_LngText103, ME_LngText104)
+	width := GetMaxTextLength(tblText)+8
+	width2 := wAvlbl - 320 - 12
+	Gui, MEW_Main:Add, GroupBox,xm+10 ys+118 w%width2% h124 Section, %ME_LngGroupBox002%
+	Gui, MEW_Main:Add, Text,xs+12 yp+18 w%width%  vLabel32, %ME_LngText101%
+	Gui, MEW_Main:Add, Edit,x+2 w48 vConfig_Threshold
+	Gui, MEW_Main:Add, UpDown, Range0-1000 128
+
+	Gui, MEW_Main:Add, Text,xs+12 y+6 w%width%  vLabel33, %ME_LngText102%
+	Gui, MEW_Main:Add, Edit,x+2 w48 vConfig_LongThresholdX
+	Gui, MEW_Main:Add, UpDown, Range0-10000 128
+
+	Gui, MEW_Main:Add, Text,xs+12 y+6 w%width%  vLabel34, %ME_LngText103%
+	Gui, MEW_Main:Add, Edit,x+2 w48  vConfig_LongThresholdY
+	Gui, MEW_Main:Add, UpDown, Range0-10000 128
+
+	Gui, MEW_Main:Add, Text,xs+12 y+6 w%width%  vLabel35,%ME_LngText104%
+	Gui, MEW_Main:Add, Edit,x+2 w48 vConfig_LongThreshold
+	Gui, MEW_Main:Add, UpDown, Range0-10000 128 vUDLongThreshold
+
+
+	left := width2+12
+	width2 := wAvlbl - left
+	Gui, MEW_Main:Add, GroupBox,xs+%left% ys w%width2% h124 Section, %ME_LngGroupBox003%
+	Gui, MEW_Main:Add, Text,xs+12 yp+22 w96 vLabel36,%ME_LngText105%
+	Gui, MEW_Main:Add, DropDownList,x+0 w41 vConfig_ORangeDefault Choose%Config_ORangeDefault% AltSubmit,0`n30`n45`n60`n90
+	Config_ORangeDefault:=""
+
+	Gui, MEW_Main:Add, Text,xs+12 y+12 w96 vLabel37,%ME_LngText106%
+	Gui, MEW_Main:Add, DropDownList,x+0 w41 vConfig_ORangeA Choose%Config_ORangeA% AltSubmit,0`n30`n45`n60`n90
+	Config_ORangeA:=""
+
+	Gui, MEW_Main:Add, Text,xs+12 y+12 w96 vLabel38,%ME_LngText107%
+	Gui, MEW_Main:Add, DropDownList,x+0 w41 vConfig_ORangeB Choose%Config_ORangeB% AltSubmit,0`n30`n45`n60`n90
+	Config_ORangeB:=""
+
+
+	tblText := Array(ME_LngText108, ME_LngText109, ME_LngText110, ME_LngText115)
+	width := GetMaxTextLength(tblText)+8
+	Gui, MEW_Main:Add, GroupBox, xm+10 ys+132 w%wAvlbl% h136 Section, %ME_LngGroupBox004%
+	Gui, MEW_Main:Add, Text,xs+12 yp+18 w%width% vLabel39,%ME_LngText108%
+	Gui, MEW_Main:Add, Edit,x+2 w48 vConfig_TimeoutThreshold
+	Gui, MEW_Main:Add, UpDown, Range0-1000 128
+
+	Gui, MEW_Main:Add, Text, xs+12 y+1 w%width% vLabel40,%ME_LngText109%
+	Gui, MEW_Main:Add, Edit,x+2 yp+5 w48 vConfig_Timeout
+	Gui, MEW_Main:Add, UpDown, Range0-10000 128
+
+	Gui, MEW_Main:Add, Text, xs+12 y+6 w%width% vLabel41,%ME_LngText110%
+	Gui, MEW_Main:Add, Edit,x+2 w48 vConfig_DGInterval
+	Gui, MEW_Main:Add, UpDown, Range0-10000 128
+
+	Gui, MEW_Main:Add, Text, xs+12 y+1 w%width% vLabel42,%ME_LngText115%
+	Gui, MEW_Main:Add, Edit,x+2 yp+5 w48 vConfig_TmReleaseTrigger
+	Gui, MEW_Main:Add, UpDown, Range0-10000 128
+
+
+	width2 := wAvlbl - 320 - 12
+	Gui, MEW_Main:Add, GroupBox, xm+10 ys+144 w%width2% h116 Section, %ME_LngGroupBox005%
+	Gui, MEW_Main:Add, Text,xs+12 yp+18 vLabel43, %ME_LngText111%
+	Gui, MEW_Main:Add, Edit,x+16 w48 vConfig_EdgeInterval
+	Gui, MEW_Main:Add, UpDown, Range0-10000 128
+
+	Gui, MEW_Main:Add, Text,xs+12 y+2 w140  vLabel44, %ME_LngText112%
+	Gui, MEW_Main:Add, Text,xs+12 y+10 w65 Right vLabel45, %ME_LngText113%
+	Gui, MEW_Main:Add, Edit,x+6 w48 vConfig_CornerX
+	Gui, MEW_Main:Add, UpDown, Range1-10000 128
+
+	Gui, MEW_Main:Add, Text,x+12 yp Right vLabel46, %ME_LngText114%
+	Gui, MEW_Main:Add, Edit,x+6 w48 vConfig_CornerY
+	Gui, MEW_Main:Add, UpDown, Range1-10000 128
+
+	Gui, MEW_Main:Add, CheckBox,xs+12 y+10 h14 vConfig_EdgeIndiv, %ME_LngCheckBox005%
+
+	left := width2+12
+	width2 := wAvlbl - left
+	Gui, MEW_Main:Add, GroupBox,xs+%left% ys w%width2% h116 Section,%ME_LngGroupBox006%
+	width2 -= 24
+	Gui, MEW_Main:Add, CheckBox,xp+12 yp+20 w%width2% h14 vConfig_DisableDefMB,  %ME_LngCheckBox006%
+	Gui, MEW_Main:Add, CheckBox,      y+12  w%width2% h14 vConfig_DisableDefX1B, %ME_LngCheckBox007%
+	Gui, MEW_Main:Add, CheckBox,      y+12  w%width2% h14 vConfig_DisableDefX2B, %ME_LngCheckBox008%
+}
+;-------------------------------------------------------------------------------
+; Hints : ナビ
+;-------------------------------------------------------------------------------
+CreateHintsTab()
+{
+	global
+	Gui, MEW_Main:Tab, 5
+
+	Gui, MEW_Main:Add, GroupBox,y+8 w%wAvlbl% h70 Section, %ME_LngGroupBox007%
+	Gui, MEW_Main:Add, CheckBox,xs+12 yp+20 h14 vConfig_UseNavi, %ME_LngCheckBox009%
+
+	Gui, MEW_Main:Add, Text,xs+12 y+10 vLabel61, %ME_LngText200%
+	Gui, MEW_Main:Add, DropDownList,x+10 w126 vConfig_UseExNavi gOnNaviChange AltSubmit, %ME_LngDropDown004%
+	GuiControl, MEW_Main:Choose, Config_UseExNavi, % Config_UseExNavi+1
+	Config_UseExNavi:=""
+
+	Gui, MEW_Main:Add, Text,xs+229 ys+16 w155 vLabel62, %ME_LngText201%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_NaviInterval
+	Gui, MEW_Main:Add, UpDown, Range0-10000 128
+
+	Gui, MEW_Main:Add, Text,xs+229 y+6 w155  vLabel63, %ME_LngText202%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_NaviPersist
+	Gui, MEW_Main:Add, UpDown, Range0-10000 128
+
+
+	Gui, MEW_Main:Add, GroupBox, xs y+16 w%wAvlbl% h155 Section, %ME_LngGroupBox008%
+	Gui, MEW_Main:Add, CheckBox,xs+12 yp+20 h14 vConfig_ExNaviTransBG gOnExNaviTransBGChange, %ME_LngCheckBox010%
+
+	Gui, MEW_Main:Add, Text,xs+12 y+10 w160 vLabel64, %ME_LngText203%
+	Gui, MEW_Main:Add, Edit,x+0 w58 Limit6 vConfig_ExNaviFG gOnColorChange
+	Gui, MEW_Main:Add, TreeView, x+1 w20 h20 vColorExNaviFG
+
+	Gui, MEW_Main:Add, Text,xs+12 y+6 w160 vLabel65, %ME_LngText204%
+	Gui, MEW_Main:Add, Edit,x+0 w58 Limit6 vConfig_ExNaviBG gOnColorChange
+	Gui, MEW_Main:Add, TreeView, x+1 w20 h20 vColorExNaviBG
+
+	Gui, MEW_Main:Add, Button,xs+20 y+16 w202 h24 vExNaviIdvClr gSetIdvArrowClr, %ME_LngButton017%
+
+	Gui, MEW_Main:Add, Text,xs+273 ys+18 w132 vLabel66, %ME_LngText205%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_ExNaviTranspcy
+	Gui, MEW_Main:Add, UpDown, Range0-255 128 vUDExNaviTranspcy
+
+	Gui, MEW_Main:Add, Text,xs+273 y+6 w132 vLabel67, %ME_LngText206%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_ExNaviSize
+	Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDExNaviSize
+
+	Gui, MEW_Main:Add, Text,xs+273 y+6 w132 vLabel68, %ME_LngText207%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_ExNaviSpacing
+	Gui, MEW_Main:Add, UpDown, Range-1000-1000 128 vUDExNaviSpacing
+
+	Gui, MEW_Main:Add, Text,xs+273 y+6 w132 vLabel69, %ME_LngText208%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_ExNaviPadding
+	Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDExNaviPadding
+
+	Gui, MEW_Main:Add, Text,xs+273 y+1 w132 vLabel70, %ME_LngText209%
+	Gui, MEW_Main:Add, Edit,x+0 yp+5 w48 vConfig_ExNaviMargin
+	Gui, MEW_Main:Add, UpDown, Range-1-1000 128 vUDExNaviMargin
+
+
+	Gui, MEW_Main:Add, GroupBox, xs y+21 w%wAvlbl% h228 Section, %ME_LngGroupBox009%
+	Gui, MEW_Main:Add, Text,xs+12 yp+18 w160 vLabel71, %ME_LngText300%
+	Gui, MEW_Main:Add, Edit,x+0 w58 Limit6 vConfig_AdNaviFG gOnColorChange
+	Gui, MEW_Main:Add, TreeView, x+1 w20 h20 vColorAdNaviFG
+
+	Gui, MEW_Main:Add, Text,xs+12 y+6 w160 vLabel72, %ME_LngText301%
+	Gui, MEW_Main:Add, Edit,x+0 w58 Limit6 vConfig_AdNaviNI gOnColorChange
+	Gui, MEW_Main:Add, TreeView, x+1 w20 h20 vColorAdNaviNI
+
+	Gui, MEW_Main:Add, Text,xs+12 y+6 w160 vLabel73, %ME_LngText302%
+	Gui, MEW_Main:Add, Edit,x+0 w58 Limit6 vConfig_AdNaviBG gOnColorChange
+	Gui, MEW_Main:Add, TreeView, x+1 w20 h20 vColorAdNaviBG
+
+	Gui, MEW_Main:Add, Text,xs+12 y+6 w191 vLabel74, %ME_LngText303%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_AdNaviTranspcy
+	Gui, MEW_Main:Add, UpDown, Range0-255 128 vUDAdNaviTranspcy
+
+	Gui, MEW_Main:Add, Text,xs+12 y+6 w191 vLabel75, %ME_LngText304%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_AdNaviSize
+	Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDAdNaviSize
+
+	Gui, MEW_Main:Add, Text,xs+12 y+6 w89 vLabel76, %ME_LngText305%
+	Gui, MEW_Main:Add, Edit,x+0 w150 vConfig_AdNaviFont
+
+	Gui, MEW_Main:Add, Text,xs+12 y+6 w88 vLabel77, %ME_LngText306%
+	Gui, MEW_Main:Add, DropDownList,x+0 w150 vConfig_AdNaviPosition gOnNaviPosChange AltSubmit, %ME_LngDropDown005%
+	GuiControl, MEW_Main:Choose, Config_AdNaviPosition, % Config_AdNaviPosition+1
+	Config_AdNaviPosition:=""
+
+	Gui, MEW_Main:Add, CheckBox,xs+12 y+10 h14 vConfig_AdNaviOnClick, %ME_LngCheckBox011%
+
+	Gui, MEW_Main:Add, Text,xs+273 ys+18 w132 vLabel78, %ME_LngText307%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_AdNaviPaddingL
+	Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDAdNaviPaddingL
+
+	Gui, MEW_Main:Add, Text,xs+273 y+6 w132 vLabel79, %ME_LngText308%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_AdNaviPaddingR
+	Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDAdNaviPaddingR
+
+	Gui, MEW_Main:Add, Text,xs+273 y+6 w132 vLabel80, %ME_LngText309%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_AdNaviPaddingT
+	Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDAdNaviPaddingT
+
+	Gui, MEW_Main:Add, Text,xs+273 y+6 w132 vLabel81, %ME_LngText310%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_AdNaviPaddingB
+	Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDAdNaviPaddingB
+
+	Gui, MEW_Main:Add, Text,xs+273 y+6 w132 vLabel82, %ME_LngText311%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_AdNaviRound
+	Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDAdNaviRound
+
+	Gui, MEW_Main:Add, Text,xs+273 y+1 w132 vLabel83, %ME_LngText312%
+	Gui, MEW_Main:Add, Edit,x+0 yp+5 w48 vConfig_AdNaviMargin
+	Gui, MEW_Main:Add, UpDown, Range-1-1000 128 vUDAdNaviMargin
+
+	Gui, MEW_Main:Add, Text,xs+273 yp w132 vLabel84, %ME_LngText313%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_AdNaviSpaceX
+	Gui, MEW_Main:Add, UpDown, Range-10000-10000 128 vUDAdNaviSpaceX
+
+	Gui, MEW_Main:Add, Text,xs+273 y+6 w132 vLabel85, %ME_LngText314%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_AdNaviSpaceY
+	Gui, MEW_Main:Add, UpDown, Range-10000-10000 128 vUDAdNaviSpaceY
+}
+;-------------------------------------------------------------------------------
+; Trails and Logs : 軌跡・ログ
+;-------------------------------------------------------------------------------
+CreateTrailTab()
+{
+	local width, tblText
+	Gui, MEW_Main:Tab, 6
+
+	; Trail
+	Gui, MEW_Main:Add, GroupBox,y+8 w%wAvlbl% h230 Section, %ME_LngGroupBox010%
+	Gui, MEW_Main:Add, CheckBox,xs+12 yp+20 h14 vConfig_ShowTrail gOnShowTrailChange, %ME_LngCheckBox012%
+	Gui, MEW_Main:Add, CheckBox,xs+24 y+14 h14 vConfig_DrawTrailWnd, %ME_LngCheckBox014%
+
+	Gui, MEW_Main:Add, Text,xs+24 y+12 w189 vLabel101, %ME_LngText400%
+	Gui, MEW_Main:Add, Edit,x+0 w58 vConfig_TrailColor gOnColorChange
+	Gui, MEW_Main:Add, TreeView, x+1 w20 h20 vColorTrailColor
+
+	Gui, MEW_Main:Add, Text,xs+24 y+12 w220 vLabel102, %ME_LngText401%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_TrailTranspcy
+	Gui, MEW_Main:Add, UpDown, Range0-255 128 vUDTrailTranspcy
+
+	Gui, MEW_Main:Add, Text,xs+24 y+12 w220 vLabel103, %ME_LngText402%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_TrailWidth
+	Gui, MEW_Main:Add, UpDown, Range0-100 128 vUDTrailWidth
+
+	Gui, MEW_Main:Add, Text,xs+24 y+12 w220 vLabel104, %ME_LngText403%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_TrailStartMove
+	Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDTrailStartMove
+
+	Gui, MEW_Main:Add, Text,xs+24 y+12 w220 vLabel105, %ME_LngText404%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_TrailInterval
+	Gui, MEW_Main:Add, UpDown, Range0-10000 128 vUDTrailInterval
+
+	; Logs
+	Gui, MEW_Main:Add, GroupBox,xs y+20 w%wAvlbl% h240 Section, %ME_LngGroupBox011%
+	Gui, MEW_Main:Add, CheckBox,xs+12 yp+20 h14 vConfig_ShowLogs gOnShowLogsChange, %ME_LngCheckBox013%
+
+	Gui, MEW_Main:Add, Text,xs+24 y+10 vLabel106, %ME_LngText306%
+	Gui, MEW_Main:Add, DropDownList,x+10 w150 vConfig_LogPosition gOnNaviChange AltSubmit, %ME_LngDropDown006%
+	GuiControl, MEW_Main:Choose, Config_LogPosition, % Config_LogPosition
+	Config_LogPosition:=""
+
+	Gui, MEW_Main:Add, Text,xs+14 y+6 w60 Right vLabel107, %ME_LngText421%
+	Gui, MEW_Main:Add, Edit,x+10 w48 vConfig_LogPosX
+	Gui, MEW_Main:Add, UpDown, Range1-10000 128 vUDLogPosX
+
+	Gui, MEW_Main:Add, Text,x+11 yp Right vLabel108, %ME_LngText422%
+	Gui, MEW_Main:Add, Edit,x+10 w48 vConfig_LogPosY
+	Gui, MEW_Main:Add, UpDown, Range1-10000 128 vUDLogPosY
+
+	tblText := Array(ME_LngText423, ME_LngText424, ME_LngText201)
+	width := GetMaxTextLength(tblText)+8
+	Gui, MEW_Main:Add, Text,xs+255 ys+17 w%width% vLabel109, %ME_LngText423%
+	Gui, MEW_Main:Add, Edit,x+2 w48 vConfig_LogMax
+	Gui, MEW_Main:Add, UpDown, Range0-10000 128 vUDLogMax
+
+	Gui, MEW_Main:Add, Text,xs+255 y+6 w%width%  vLabel110, %ME_LngText424%
+	Gui, MEW_Main:Add, Edit,x+2 w48 vConfig_LogSizeW
+	Gui, MEW_Main:Add, UpDown, Range0-10000 128 vUDLogSizeW
+
+	Gui, MEW_Main:Add, Text,xs+255 y+6 w%width%  vLabel111, %ME_LngText201%
+	Gui, MEW_Main:Add, Edit,x+2 w48 vConfig_LogInterval
+	Gui, MEW_Main:Add, UpDown, Range0-10000 128 vUDLogInterval
+
+	Gui, MEW_Main:Add, Text,xs+24 yp+34 w160 vLabel112, %ME_LngText300%
+	Gui, MEW_Main:Add, Edit,x+0 w58 Limit6 vConfig_LogFG gOnColorChange
+	Gui, MEW_Main:Add, TreeView, x+1 w20 h20 vColorLogFG
+
+	Gui, MEW_Main:Add, Text,xs+24 y+6 w160 vLabel113, %ME_LngText302%
+	Gui, MEW_Main:Add, Edit,x+0 w58 Limit6 vConfig_LogBG gOnColorChange
+	Gui, MEW_Main:Add, TreeView, x+1 w20 h20 vColorLogBG
+
+	Gui, MEW_Main:Add, Text,xs+24 y+6 w191 vLabel114, %ME_LngText303%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_LogTranspcy
+	Gui, MEW_Main:Add, UpDown, Range0-255 128 vUDLogTranspcy
+
+	Gui, MEW_Main:Add, Text,xs+24 y+6 w191 vLabel115, %ME_LngText304%
+	Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_LogFontSize
+	Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDLogFontSize
+
+	Gui, MEW_Main:Add, Text,xs+24 y+6 w89 vLabel116, %ME_LngText305%
+	Gui, MEW_Main:Add, Edit,x+0 w150 vConfig_LogFont
+}
+;-------------------------------------------------------------------------------
+; Others : その他
+;-------------------------------------------------------------------------------
+CreateOthersTab()
+{
+	local width, width2, tblText
+	Gui, MEW_Main:Tab, 7
+	tblText := Array(ME_LngText451, ME_LngText452)
+	width := GetMaxTextLength(tblText)+8
+	width2 := wAvlbl-12*2-width
+
+	Gui, MEW_Main:Add, GroupBox,y+8 w%wAvlbl% h62 Section, %ME_LngGroupBox014%
+	Gui, MEW_Main:Add, Button,xs+18 yp+20 w160 h30 gOnRegStartup, %ME_LngButton015%
+	Gui, MEW_Main:Add, Button,x+14 w160 h30 gOnDelStartup, %ME_LngButton016%
+
+
+	Gui, MEW_Main:Add, GroupBox, xs y+20 w%wAvlbl% h107,%ME_LngGroupBox012%
+	Gui, MEW_Main:Add, Text,xs+12 yp+20 w%width% vLabel131,%ME_LngText451%
+	Gui, MEW_Main:Add, Hotkey,x+0 w%width2% vConfig_HotkeyEnable gOnHotkeyChange
+
+	Gui, MEW_Main:Add, Text,xs+12 y+8 w%width% vLabel132,%ME_LngText452%
+	Gui, MEW_Main:Add, Hotkey,x+0 w%width2% vConfig_HotkeyNavi gOnHotkeyChange
+
+	Gui, MEW_Main:Add, Text,xs+12 y+8 w%width% vLabel133,%ME_LngText453%
+	Gui, MEW_Main:Add, Hotkey,x+0 w%width2% vConfig_HotkeyReload gOnHotkeyChange
+
+
+	Gui, MEW_Main:Add, GroupBox,xs y+20 w%wAvlbl% h62, %ME_LngGroupBox015%
+	Gui, MEW_Main:Add, Button, xs+16 yp+20 w300 h30 gDlgRegActvtExclud, %ME_LngButton022%
+
+
+	Gui, MEW_Main:Add, GroupBox,xs y+20 w%wAvlbl% h52, %ME_LngGroupBox013%
+	width := wAvlbl-12*2-62
+	Gui, MEW_Main:Add, Edit,xs+12 yp+20 w%width% vConfig_ScriptEditor
+	Gui, MEW_Main:Add, Button,x+2 yp-1 w60 h22 gOnBrowseEditor, %ME_LngButton020%
+
+
+	Gui, MEW_Main:Add, GroupBox,xs y+20 w%wAvlbl% h102, %ME_LngGroupBox016%
+	Gui, MEW_Main:Add, CheckBox,xs+17 yp+24 h14 vConfig_TraySubmenu, %ME_LngCheckBox015%
+
+	Gui, MEW_Main:Add, CheckBox,xs+17 y+14 h14 vConfig_AdjustDlg gOnAdjustDlgHeight, %ME_LngCheckBox016%
+	Gui, MEW_Main:Add, Text,xs+40 y+6 vLabel134, %ME_LngText455%
+	Gui, MEW_Main:Add, Edit,x+8 w60 vConfig_DlgHeightLimit gOnAdjustDlgHeight
+	Gui, MEW_Main:Add, UpDown, Range0-10000 128 vUDDlgHeightLimit
+}
+
+;-------------------------------------------------------------------------------
+; Common buttons : 共通ボタン
+;-------------------------------------------------------------------------------
+PutCommonButtons()
+{
+	local width, top, left
+	Gui, MEW_Main:Tab
+	GuiControlGet, rcTab, MEW_Main:Pos, MainTab
+	tabRight  := rcTabX + rcTabW
+	tabBottom := rcTabY + rcTabH
+	top  := tabBottom + 8
+	Gui, MEW_Main:Add, Button, x%rcTabX% y%top% w160 h24 vBFromClipboard gImportBtnPress, %ME_LngButton004%
+
+	width=80
+	spc=6
+	left := tabRight - (130+width*2+spc*2)
+	Gui, MEW_Main:Add, Button, x%left% y%top% w130 h24 vBHelp gMG_ShowHelp, %ME_LngButton003%
+	Gui, MEW_Main:Add, Button, x+%spc% w%width% h24 vBSaveExit gSaveExit, %ME_LngButton001%
+	Gui, MEW_Main:Add, Button, x+%spc% w%width% h24 vBExit gME_Exit, %ME_LngButton002%
+}
+;-------------------------------------------------------------------------------
+; Adjust Position of Static Text
+;-------------------------------------------------------------------------------
+AdjustTextPos()
+{
+	global
+	Loop, 140
+	{
+		GuiControlGet, pos, MEW_Main:pos, Label%A_Index%
+		if (!ErrorLevel)
+		{
+			posY+=4
+			posX+=2
+			GuiControl, MEW_Main:Move, Label%A_Index%, x%posX% y%posY%
+		}
+	}
+}
+
+;-------------------------------------------------------------------------------
+; Set button icon
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+SetButtonIcon(szBtn, idx:=1, szTip:="", szWnd:="MEW_Main")
+{
+	global
+	GuiControl, %szWnd%:+0x40, %szBtn%
+	SendMessage, 0x00F7, 1, ME_hIcons[idx-1],, % "ahk_id " ControlGetHandle(szBtn, szWnd)
+	if (szTip) {
+		AssignTooltip(szBtn, szTip, szWnd)
+	}
+}
+
+;-------------------------------------------------------------------------------
+; Assign tooltip to GUI control
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+AssignTooltip(szCtrl, szTip, szWnd="MEW_Main")
+{
+	local hBtn, hTip, hInst, ti, size, ofs
+	static objTips := []
+
+	hBtn := ControlGetHandle(szCtrl, szWnd)
+	size := 4*3 + 16 + A_PtrSize*4
+	VarSetCapacity(ti, size, 0),	ofs := 0
+	NumPut(size, ti, ofs, "UInt"),	ofs += 4
+	NumPut(0x11, ti, ofs, "UInt"),	ofs += 4
+	NumPut(hBtn, ti, ofs,  "Ptr"),	ofs += A_PtrSize
+	NumPut(hBtn, ti, ofs,  "Ptr"),	ofs += A_PtrSize*2+16
+	NumPut(&szTip, ti, ofs, "Ptr")
+	hTip := objTips[szCtrl]
+	if (hTip) {
+		DllCall("SendMessage", Ptr,hTip, UInt,0x0433, Ptr,0, Ptr,&ti)
+	} else {
+		hInst := DllCall("GetModuleHandle", Ptr,0, Ptr)
+		hTip := DllCall("CreateWindowExW", UInt,8, Str,"tooltips_class32", Str,"", UInt,0x80000003
+							,Int,0, Int,0, Int,10, Int,10, Ptr,hBtn, Ptr,0, Ptr,hInst, Ptr,0, Ptr)
+		DllCall("SetWindowPos", Ptr,hTip, Ptr,-1, Int,0, Int,0, Int,0, Int,0, UInt,0x1B)
+		objTips[szCtrl] := hTip
+	}
+	DllCall("SendMessage", Ptr,hTip, UInt,0x0432, Ptr,0, Ptr,&ti)
+}
+
+;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+;
+;	Window Message Handlers
+;
+;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+;-------------------------------------------------------------------------------
+; WM_COMMAND Message Handler
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+OnCommand(wParam, lParam)
+{
+	global
+	if ((wParam>>16) != 0x0200) {	; EN_KILLFOCUS
+		return
+	}
+	static edtName := [ "ETargetName",	 "EGestureName"	  ]
+	static btnRenm := [ "BTargetRename", "BGestureRename" ]
+	static subRenm := [ "TargetRename",	 "GestureRename"  ]
+	Loop, 2
+	{
+		if ((lParam == ControlGetHandle(edtName[A_Index]))
+		&&	ControlIsEnabled(btnRenm[A_Index]))
+		{
+			SaveModification()
+			Func(subRenm[A_Index]).()
+			break
+		}
+	}
+}
+;-------------------------------------------------------------------------------
+; WM_NOTIFY Message Handler
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+OnNotify(wParam, lParam)
+{
+	local hCtrl
+	if ((NumGet(lParam+0, A_PtrSize*2, "Ptr")&0xffffffff) == 4294967182)
+	{
+		;On ListView Item Double Click
+		hCtrl := NumGet(lParam+0, 0, "Ptr")
+		if (hCtrl == ControlGetHandle("LVGesture")) {
+			SwitchTab(3)
+		}
+		else if (hCtrl == ControlGetHandle("LVAction")) {
+			SwitchTab(1)
+		}
+	}
+}
+;-------------------------------------------------------------------------------
+; WM_RBUTTONUP Message Handler
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+OnRButtonUp(wParam, lParam)
+{
+	global
+	if (A_GuiControl=="LBButtons") {
+		Send, {LButton Down}{LButton Up}
+		Gui, MEW_Main:Submit, Nohide
+		SendMessage, 0x018B,,,, % "ahk_id " ControlGetHandle("LBButtons")
+		if (!LBButtons || LBButtons==ErrorLevel) {
+			return
+		}
+		Menu, menuDelete, Add
+		Menu, menuDelete, DeleteAll
+		Menu, menuDelete, Add, %ME_LngMenu142%, EditButton
+		Menu, menuDelete, Add
+		Menu, menuDelete, Add, %ME_LngMenu105%, DeleteButton
+		if (FileExist(MG_DirScrEdge . MG_BtnNames[LBButtons] ".ahk")) {
+			Menu, menuDelete, Disable, %ME_LngMenu142%
+		}
+		if (!GetButtonPath(MG_BtnNames[LBButtons])) {
+			Menu, menuDelete, Disable, %ME_LngMenu105%
+		}
+		Menu, menuDelete, Show
+	}
+	else if (A_GuiControl=="LBGesture") {
+		Send, {LButton Down}{LButton Up}
+		Gui, MEW_Main:Submit, Nohide
+		ShowListContextMenu("G", Gesture_Editing)
+	}
+}
+;-------------------------------------------------------------------------------
+; WM_KEYDOWN Message Handler
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+OnKeyDown(wParam, lParam, uMsg, hWnd)
+{
+	global
+	if (wParam == 0x0D)
+	{
+		;On Enter Key Down
+		if (hWnd==ControlGetHandle("ETargetName")
+		&&	ControlIsEnabled("BTargetRename"))
+		{
+			TargetRename()
+			if (SaveModification()) {
+				ShowTarget(Target_Editing)
+			}
+			GuiControl, MEW_Main:Focus, TVTarget2
+		}
+		else if (hWnd==ControlGetHandle("EGestureName")
+		&&		 ControlIsEnabled("BGestureRename"))
+		{
+			SaveModification()
+			GestureRename()
+			GuiControl, MEW_Main:Focus, LBGesture
+		}
+		else if (hWnd==ControlGetHandle("EIconFile")
+		||		 hWnd==ControlGetHandle("EIconIndex"))
+		{
+			if (ControlIsEnabled("BApplyIcon")) {
+				SaveModification()
+				OnApplyIcon()
+			}
+		}
+	}
+}
+;-------------------------------------------------------------------------------
+; WM_PAINT Message Handler
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+OnPaint(wParam, lParam, uMsg, hWnd)
+{
+	local w, h, hDC
+
+	if (hWnd!=ME_hGesPatBox) {
+		return
+	}
+	; Change GUI size to erase current gesture
+	w := ME_GPBoxSizeW-1
+	Gui, MGW_GPBox:Show, x0 y0 w%w% h%ME_GPBoxSizeH% NA
+	Gui, MGW_GPBox:Show, x0 y0 w%ME_GPBoxSizeW% h%ME_GPBoxSizeH% NA
+
+	MG_hFntBtn := MG_CreateFont("MS UI Gothic", MG_AdNaviSize, 0, 4)
+	MG_hFntDir := MG_CreateFont("Wingdings", MG_AdNaviSize, 0, 4)
+	hDC := DllCall("GetWindowDC", "Ptr",ME_hGesPatBox, "Ptr")
+	DllCall("SetBkMode", "Ptr",hDC, "Ptr",1)
+	w := MG_AdjustToDPI(ME_GPBoxSizeW)
+	h := MG_AdjustToDPI(ME_GPBoxSizeH)
+	GuiControlGet, szGesture, MEW_Main:, EGesture
+	MG_DrawGesture(hDC, 3, 1, szGesture, w, h)
+	DllCall("ReleaseDC", "Ptr",ME_hGesPatBox, "Ptr",hDC)
+	DllCall("DeleteObject", "Ptr",MG_hFntBtn)
+	DllCall("DeleteObject", "Ptr",MG_hFntDir)
+}
+
+;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+;
+;	Hotkey Operations
+;
+;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;-------------------------------------------------------------------------------
 ; On New Item Shortcut Key Press
 ;														Implemented by Pyonkichi
@@ -522,13 +1418,25 @@ OnNewItemKeyPress()
 	global MainTabIdx
 	GuiControlGet, szCtrl, MEW_Main:FocusV
 	if (szCtrl="TVTarget1" || MainTabIdx==2) {
-		TargetNew(false)
+		AddNewTarget(false)
 	}
-	else if (szCtrl="LVGesture" || MainTabIdx==3) {
+	else if (MainTabIdx==3) {
 		GestureNew()
 	}
 }
-
+;-------------------------------------------------------------------------------
+; On Duplicate Shortcut Key Press
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+OnDuplicateKeyPress()
+{
+	global
+	if (MainTabIdx==1 || MainTabIdx==2) {
+		DuplicateTarget()
+	} else if (MainTabIdx==3) {
+		DuplicateGesture()
+	}
+}
 ;-------------------------------------------------------------------------------
 ; On Copy Shortcut Key Press
 ;														Implemented by Pyonkichi
@@ -538,12 +1446,10 @@ OnCopyKeyPress()
 	GuiControlGet, szCtrl, MEW_Main:FocusV
 	if (szCtrl="TVTarget1" || szCtrl="TVTarget2") {
 		CopyTarget()
-	}
-	else if (szCtrl="LVGesture" || szCtrl="LBGesture2") {
+	} else if (szCtrl="LBGesture") {
 		CopyGesture()
 	}
 }
-
 ;-------------------------------------------------------------------------------
 ; On Paste Shortcut Key Press
 ;														Implemented by Pyonkichi
@@ -554,842 +1460,83 @@ OnPasteKeyPress()
 		ImportFromClipboard()
 	}
 }
-
 ;-------------------------------------------------------------------------------
 ; On Delete Key Press
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
 OnDeleteKeyPress()
 {
+	local szCtrl
 	GuiControlGet, szCtrl, MEW_Main:FocusV
 	if (szCtrl = "LBButtons") {
-		DeleteTrigger()
+		DeleteButton()
 	}
-	else if (szCtrl="TVTarget1" || szCtrl="TVTarget2") {
+	else if ((szCtrl="TVTarget1" || szCtrl="TVTarget2") && !ME_bTvRenaming) {
 		TargetDelete()
 	}
-	else if (szCtrl="LVGesture" || szCtrl="LBGesture2") {
+	else if (szCtrl="LVGesture") {
+		ReleaseGesture(Gesture_Editing, Action_Editing)
+	}
+	else if (szCtrl="LBGesture") {
 		GestureDelete()
 	}
 	else if (szCtrl = "LVAction") {
-		Gosub, ActionDelete
+		ActionDelete(Gesture_Editing, Action_Editing)
 	}
 	else if (szCtrl = "LVRule") {
-		Gosub, RuleDelete
+		RuleDelete()
 	}
 	else if (szCtrl = "LBGesturePattern") {
-		Gosub, GesturePatternDelete
+		GesturePatternDelete()
 	}
 }
-
-;-------------------------------------------------------------------------------
-; On Rename Item Shortcut Key Press
-;														Implemented by Pyonkichi
-;-------------------------------------------------------------------------------
-OnRenameKeyPress()
-{
-	global MainTabIdx, Target_Editing, Gesture_Editing
-	if (MainTabIdx == 1) {
-		GuiControlGet, szCtrl, MEW_Main:FocusV
-		if (szCtrl="TVTarget1" && Target_Editing>1) {
-			SwitchTab(2)
-		}
-		else if (szCtrl = "LVGesture") {
-			SwitchTab(3)
-		}
-	}
-	if (MainTabIdx == 2) {
-		SetFocusETargetName()
-	} else if (MainTabIdx == 3) {
-		SetFocusEGestureName()
-	}
-}
-
 ;-------------------------------------------------------------------------------
 ; On Move Up List Item Shortcut Key Press
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
 OnMoveUpKeyPress()
 {
-	global Target_Editing, SortLVGesture
+	global Target_Editing
 	GuiControlGet, szCtrl, MEW_Main:FocusV
 	if (szCtrl="TVTarget1" || szCtrl="TVTarget2") {
 		TargetShift(Target_Editing, -1)
 	}
-	else if ((szCtrl="LVGesture" && SortLVGesture=0) || szCtrl="LBGesture2") {
+	else if (szCtrl="LBGesture") {
 		GestureUp()
 	}
 	else if (szCtrl = "LVAction") {
-		Gosub, ActionUp
+		ActionUp()
+	}
+	else if (szCtrl = "LVRule") {
+		RuleUp()
+	}
+	else if (szCtrl = "LBGesturePattern") {
+		GesturePatternUp()
 	}
 }
-
 ;-------------------------------------------------------------------------------
 ; On Move Down List Item Shortcut Key Press
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
 OnMoveDownKeyPress()
 {
-	global Target_Editing, SortLVGesture
+	global Target_Editing
 	GuiControlGet, szCtrl, MEW_Main:FocusV
 	if (szCtrl="TVTarget1" || szCtrl="TVTarget2") {
 		TargetShift(Target_Editing, 1)
 	}
-	else if ((szCtrl="LVGesture" && SortLVGesture=0) || szCtrl="LBGesture2") {
+	else if (szCtrl="LBGesture") {
 		GestureDown()
 	}
 	else if (szCtrl = "LVAction") {
-		Gosub, ActionDown
+		ActionDown()
 	}
-}
-
-;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-;
-;	Create Configuration Dialog Box
-;
-;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-CreateGui:
-wTab := ME_TListW1 + ME_GListW1 + ME_ListPad*2 + ME_AListW + 42
-hTab := ME_ListH + 65
-wAvlbl := wTab - 26
-Gui, MEW_Main:New, +HwndME_hWndMain +Delimiter`n
-Gui, MEW_Main:Add, Tab2, x8 y2 w%wTab% h%hTab% vMainTab gOnTabChange AltSubmit, %ME_LngTab001%
-MainTabIdx := 1
-MG_DDLHeight := GetDesktopHeight()
-
-;-------------------------------------------------------------------------------
-; Main : メイン(mark)
-;-------------------------------------------------------------------------------
-Gui, MEW_Main:Tab, 1
-
-Gui, MEW_Main:Add, Text, Section y+8 h16 vLabel1, %ME_LngText001%
-Gui, MEW_Main:Add, TreeView, xs y+6 w%ME_TListW1% h%ME_ListH% vTVTarget1 gTVTargetSelect HwndME_hTVTarget1 -Lines 0x1000 ImageList%MG_hImageList% AltSubmit
-
-Gui, MEW_Main:Add, Text, Section x+%ME_ListPad% ys h16 vLabel2, %ME_LngText002%
-
-;Gui, MEW_Main:Add, ListBox, xs y+6 w%ME_GListW1% h%ME_ListH% vLBGesture1 gLBGestureSelect AltSubmit
-
-;ジェスチャー一覧リストビュー １列目はジェスチャー固有の番号(idx）
-Gui, MEW_Main:Add, ListView, xs y+6 w%ME_GListW1% h%ME_ListH% Grid vLVGesture gOnLVGestureSelect hwndHLVGesture -Multi NoSortHdr -LV0x10 AltSubmit,id`n `nジェスチャー`nアクション
-Gosub, AdjustLVColumn
-;削除ボタン
-left := ME_GListW1 - 90
-Gui, MEW_Main:Add, Button, xp+%left% ys-2 w90 h22 vBActionDelete2	gActionDelete Disabled, アクション削除
-
-GuiControlGet, rcCtrl, MEW_Main:Pos, LVGesture
-DefListHeight := rcCtrlH
-
-Gui, MEW_Main:Add, Text, Section x+%ME_ListPad% ys h16 vLabel3, %ME_LngText003%
-
-Gui, MEW_Main:Add, ListView,xs y+6 w%ME_AListW% h%ME_AListH% Section Grid vLVAction gLVActionSelect -Multi NoSortHdr AltSubmit,%ME_LngListView002%
-LV_SetImageList(MG_hImageList)
-
-width := ME_AListW - 21
-width2 := width * ME_AListR // 100
-LV_ModifyCol(1, width2)
-LV_ModifyCol(2, width - width2)
-Gui, MEW_Main:Font, %ME_ArrowSize%, %ME_ArrowFont%
-Gui, MEW_Main:Add, Button, x+1 yp+23 w20 h20 vBActionUp gActionUp	  Disabled %ME_ArrowAlignUp%, %ME_LngButton007%
-Gui, MEW_Main:Font
-Gui, MEW_Main:Add, Button, y+20 w20 h20 vBActionDelete	gActionDelete Disabled, %ME_LngButton012%
-Gui, MEW_Main:Font, %ME_ArrowSize%, %ME_ArrowFont%
-Gui, MEW_Main:Add, Button, y+20 w20 h20 vBActionDown	gActionDown	  Disabled %ME_ArrowAlignDn%, %ME_LngButton008%
-Gui, MEW_Main:Font
-
-;表示切替時の入力補助リストボックス
-top := ME_AEditH + 38
-width := ME_AListW - 115
-height := ME_ListH - top
-Gui, MEW_Main:Add, ListBox, xs ys+%top% w110 h%height% vLBActionCategory gOnActionCategoryChange2 AltSubmit Hidden
-Gui, MEW_Main:Add, ListBox, x+6 yp w%width% h%height% vLBActionTemplate AltSubmit Hidden
-
-top := ME_AListH+7
-Gui, MEW_Main:Add, Text, xs ys+%top% h16 vLabel4, %ME_LngText004%
-left := ME_AListW - 142
-Gui, MEW_Main:Add, Button,	xs+%left% yp-4 w70 h22 vBAddAction	gBAddActionPress	Disabled, %ME_LngButton014%
-Gui, MEW_Main:Add, Button,	x+2		 w70 h22 vBUpdateAction	gBUpdateActionPress	Disabled, %ME_LngButton015%
-EnblAddAction := EnblUpdateAction := "Disable"
-
-height := ME_ListH - ME_AListH - 84
-Gui, MEW_Main:Add, Edit,   xs y+3 w%ME_AListW% h%height% Section vEAction	gOnActionEditModify -Wrap WantTab T8 +0x00100000 Disabled
-Gui, MEW_Main:Add, Button, x+1	   w20 h20	vBEditAction	gOnEditActionPress	Disabled, %ME_LngButton016%
-Gui, MEW_Main:Add, Button, xp y+4 w20 h20	vBClearAction	gOnClearActionPress	Disabled,%ME_LngButton012%
-
-tblText := Array(ME_LngText005)
-width := ME_AListW - 8 - GetMaxTextLength(tblText)
-top := height + 8
-Gui, MEW_Main:Add, Text,	xs ys+%top% vLabel5, %ME_LngText005%
-Gui, MEW_Main:Add, DropDownList, x+8  w%width% h%MG_DDLHeight% vDDLActionCategory gOnActionCategoryChange AltSubmit
-
-width := ME_AListW - 61
-Gui, MEW_Main:Add, DropDownList, xs y+8 w%width% h%MG_DDLHeight% vDDLActionTemplate AltSubmit
-Gui, MEW_Main:Add, Button,	x+2 yp-1 w60 h22 vBAddActionLine	gBAddActionLinePress Disabled, %ME_LngButton014%
-;-------------------------------------------------------------------------------
-; Targets : ターゲット
-;-------------------------------------------------------------------------------
-Gui, MEW_Main:Tab, 2
-
-Gui, MEW_Main:Add, Button, Section w25 h22 gTargetNew, %ME_LngButton005%
-Gui, MEW_Main:Add, Button,		x+0 w25 h22 gTargetDelete vBTargetDelete Disabled, %ME_LngButton006%
-Gui, MEW_Main:Font, %ME_ArrowSize%, %ME_ArrowFont%
-Gui, MEW_Main:Add, Button,		x+0 w25 h22 vBTargetUp	 gTargetUp	 Disabled %ME_ArrowAlignUp%, %ME_LngButton007%
-Gui, MEW_Main:Add, Button,		x+0 w25 h22 vBTargetDown gTargetDown Disabled %ME_ArrowAlignDn%, %ME_LngButton008%
-Gui, MEW_Main:Font
-Gui, MEW_Main:Add, Button,		x+0 w25 h22 gTargetSort, %ME_LngButton009%
-Gui, MEW_Main:Add, Button,		x+0 w25 h22 gCopyTarget vBCopyTarget Disabled, %ME_LngButton010%
-Gui, MEW_Main:Add, CheckBox,	x+0 w25 h22 0x1000 vConfig_FoldTarget gOnTargetFoldChange, %ME_LngButton011%
-Gui, MEW_Main:Add, TreeView, xs y+2 w%ME_TListW2% h%ME_ListH% vTVTarget2 gTVTargetSelect -Lines 0x1000 ImageList%MG_hImageList% AltSubmit
-
-ME_RListW := wTab - ME_TListW2 - ME_ListPad - 42
-tblText := Array(ME_LngText051)
-width := ME_RListW - 69 - GetMaxTextLength(tblText)
-Gui, MEW_Main:Add, Text,	x+%ME_ListPad% ys+1 vLabel6 Section, %ME_LngText051%
-Gui, MEW_Main:Add, Edit,	x+8	w%width% vETargetName   gETargetNameChange
-Gui, MEW_Main:Add, Button,	x+2	yp-1 w60 h22 vBTargetRename gTargetRename Disabled, %ME_LngButton013%
-
-height	:= ME_ListH - 213
-Gui, MEW_Main:Add, ListView, xs y+2 w%ME_RListW% h%height% Section -Multi NoSortHdr Grid vLVRule gLVRuleSelect AltSubmit, %ME_LngListView001%
-width := ME_RListW - 4
-width2 := width * 28 // 100
-LV_ModifyCol(1, width2)
-LV_ModifyCol(2, width - width2)
-Gui, MEW_Main:Font, %ME_ArrowSize%, %ME_ArrowFont%
-Gui, MEW_Main:Add, Button,	x+1 yp+23 w20 h20 vBRuleUp	  gRuleUp	  Disabled %ME_ArrowAlignUp%, %ME_LngButton007%
-Gui, MEW_Main:Font
-Gui, MEW_Main:Add, Button,	y+20 w20 h20 vBRuleDelete gRuleDelete Disabled, %ME_LngButton012%
-Gui, MEW_Main:Font, %ME_ArrowSize%, %ME_ArrowFont%
-Gui, MEW_Main:Add, Button,	y+20 w20 h20 vBRuleDown	  gRuleDown	  Disabled %ME_ArrowAlignDn%, %ME_LngButton008%
-Gui, MEW_Main:Font
-
-GuiControlGet, rcCtrl, MEW_Main:Pos, LVRule
-rcCtrlY += (rcCtrlH + 4)
-width := ME_RListW - 123
-Gui, MEW_Main:Add, DropDownList, xs y%rcCtrlY% w%width% vDDLLogic gDDLLogicChoose	Choose1	AltSubmit Disabled, %ME_LngDropDown001%
-Gui, MEW_Main:Add, Button,	x+2 yp-1 w60 h22 vBAddRule	  gBAddRulePress	Disabled, %ME_LngButton014%
-Gui, MEW_Main:Add, Button,	x+2		 w60 h22 vBUpdateRule gBUpdateRulePress Disabled, %ME_LngButton015%
-EnblAddRule := EnblUpdateRule := "Disable"
-
-tblText := Array(ME_LngText052, ME_LngText053, ME_LngText054)
-width := GetMaxTextLength(tblText)
-Gui, MEW_Main:Add, Text,	xs y+6 w%width% vLabel7 Disabled, %ME_LngText052%
-width2 := ME_RListW - 69 - width
-Gui, MEW_Main:Add, DropDownList,x+8 w%width2% vDDLRuleType gOnRuleTypeChange Choose1 AltSubmit Disabled, %ME_LngDropDown002%
-Gui, MEW_Main:Add, Button,	x+2 yp-1 w60 h22 vBRulePicker gBRulePickerPressed Disabled, %ME_LngButton017%
-
-Gui, MEW_Main:Add, Text,	xs y+6 w%width% vLabel8 Disabled, %ME_LngText053%
-width2 := ME_RListW - 29 - width
-Gui, MEW_Main:Add, Edit,	x+8 w%width2% vERuleValue gOnRuleEditModify Disabled
-Gui, MEW_Main:Add, Button,	x+0	yp-1 w22 h22 vBClearRule gClearRulePress Disabled, %ME_LngButton012%
-
-Gui, MEW_Main:Add, Text,	xs y+8 w%width% vLabel9 Disabled, %ME_LngText054%
-width2 := ME_RListW - 8 - width
-Gui, MEW_Main:Add, DropDownList,x+8 w%width2% vDDLMatchRule gOnRuleTypeChange Choose1 AltSubmit Disabled, %ME_LngDropDown003%
-
-Gui, MEW_Main:Add, CheckBox, xp+0 y+8 vChkNotMatch gOnRuleTypeChange Disabled, %ME_LngCheckBox001%
-Gui, MEW_Main:Add, CheckBox, x+20 vChkNotInhRules gOnNotInhRulesChange Disabled, %ME_LngCheckBox002%
-
-
-width2 := ME_RListW-4
-Gui, MEW_Main:Add, GroupBox, xs+4 w%width2% h80 Section vGroupIcon, %ME_LngGroupBox017%
-width2 := ME_RListW - 97
-Gui, MEW_Main:Add, Edit, xs+16 yp+18 w%width2% Section vEIconFile gOnIconChange
-Gui, MEW_Main:Add, Button,x+2 yp-1 w60 h22 vBBrowseIcon gOnBrowseIcon, %ME_LngButton027%
-
-Gui, MEW_Main:Add, Picture, xs+20 y+12 w16 h16 Section vPicIcon AltSubmit
-Gui, MEW_Main:Add, Edit, x+20 yp-2 w48 vEIconIndex gOnIconChange
-Gui, MEW_Main:Add, UpDown, Range1-1000 128 vUDIconIndex
-Gui, MEW_Main:Add, Button,	x+10 yp-2 w120 h24 vBApplyIcon gOnApplyIcon Disabled, %ME_LngButton028%
-
-;-------------------------------------------------------------------------------
-; Gestures : ジェスチャー
-;-------------------------------------------------------------------------------
-Gui, MEW_Main:Tab, 3
-
-Gui, MEW_Main:Add, Button, Section w25 h22 gGestureNew, %ME_LngButton005%
-Gui, MEW_Main:Add, Button,		x+0 w25 h22 vBGestureDelete1 gGestureDelete Disabled, %ME_LngButton006%
-Gui, MEW_Main:Font, %ME_ArrowSize%, %ME_ArrowFont%
-Gui, MEW_Main:Add, Button,		x+0 w25 h22 vBGestureUp1   gGestureUp   Disabled %ME_ArrowAlignUp%, %ME_LngButton007%
-Gui, MEW_Main:Add, Button,		x+0 w25 h22 vBGestureDown1 gGestureDown Disabled %ME_ArrowAlignDn%, %ME_LngButton008%
-Gui, MEW_Main:Font
-Gui, MEW_Main:Add, Button,		x+0 w25 h22 gGestureSort, %ME_LngButton009%
-Gui, MEW_Main:Add, Button,		x+0 w25 h22 gCopyGesture vBCopyGesture1 Disabled, %ME_LngButton010%
-Gui, MEW_Main:Add, ListBox,xs y+2 w%ME_GListW2% h%ME_ListH% vLBGesture2 gLBGestureSelect AltSubmit
-
-ME_PListW := wTab - ME_GListW2 - ME_ListPad - 42
-tblText := Array(ME_LngText051)
-width := ME_PListW - 69 - GetMaxTextLength(tblText)
-Gui, MEW_Main:Add, Text,	x+%ME_ListPad% ys+1 vLabel10 Section, %ME_LngText051%
-Gui, MEW_Main:Add, Edit,	x+8 w%width% vEGestureName gEGestureNameChange
-Gui, MEW_Main:Add, Button,	x+2 yp-1 w60 h22 vBGestureRename gGestureRename Disabled, %ME_LngButton013%
-
-height	:= ME_ListH - 360
-Gui, MEW_Main:Add, ListBox,	xs y+2 w%ME_PListW% h%height% vLBGesturePattern	gLBGesturePatternSelect Section AltSubmit
-
-Gui, MEW_Main:Font, %ME_ArrowSize%, %ME_ArrowFont%
-Gui, MEW_Main:Add, Button,	x+1	ys w20  h20	vBGesturePatternUp		gGesturePatternUp		Disabled %ME_ArrowAlignUp%, %ME_LngButton007%
-Gui, MEW_Main:Font
-Gui, MEW_Main:Add, Button,	y+20 w20  h20	vBGesturePatternDelete	gGesturePatternDelete	Disabled, %ME_LngButton012%
-Gui, MEW_Main:Font, %ME_ArrowSize%, %ME_ArrowFont%
-Gui, MEW_Main:Add, Button,	y+20 w20  h20	vBGesturePatternDown	gGesturePatternDown		Disabled %ME_ArrowAlignDn%, %ME_LngButton008%
-Gui, MEW_Main:Font
-
-top := height + 3
-width := ME_PListW - 103
-Gui, MEW_Main:Add, Edit,	xs ys+%top% w%width% vEGesture				gEGestureChange			Disabled
-Gui, MEW_Main:Add, Button,	x+2	yp-1 w50 h22 vBAddGesturePattern		gAddGesturePattern		Disabled, %ME_LngButton014%
-Gui, MEW_Main:Add, Button,	x+2		 w50 h22 vBUpdateGesturePattern		gUpdateGesturePattern	Disabled, %ME_LngButton015%
-EnblAddGesturePattern := EnblUpdateGesturePattern := "Disable"
-
-width := ME_PListW - 62 + 1
-Gui, MEW_Main:Add, Edit,	xs y+2 w%width%  h20 vGesturePatternBox -Tabstop Disabled
-Gui, MEW_Main:Add, Button,	x+0	yp-1 w22 h22 vBClearGesture				gClearGesturePress		Disabled, %ME_LngButton012%
-Gui, MEW_Main:Add, Button,	x+0	w40 h22 vGPBoxBS gGesturePatternBS Disabled, %ME_LngButton018%
-
-Gui, MEW_Main:Add, Text,	xs y+10 vLabel11 Section, %ME_LngText021%
-Gui, MEW_Main:Add, ListBox,xs y+8 w%ME_PListW% h136 vLBButtons gLBButtons AltSubmit
-left := ME_PListW - 129
-Gui, MEW_Main:Add, Button,	xs+%left% y+2 w130 vBAddTrigger gOnAddTriggerPress, %ME_LngButton019%
-
-Gui, MEW_Main:Add, Text,	xs y+3 vLabel12 Section, %ME_LngText022%
-Gui, MEW_Main:Font, S14, Wingdings
-Gui, MEW_Main:Add, Button, xs	  ys+20	w32 h32 vBStrokeUL	gDir7 Disabled,			% Chr(0xEB)
-Gui, MEW_Main:Add, Button, x+1			w32	h32 vBStrokeU	gDir8 Disabled +0x0400,	% Chr(0xE9)
-Gui, MEW_Main:Add, Button, x+1			w32	h32 vBStrokeUR	gDir9 Disabled,			% Chr(0xEC)
-Gui, MEW_Main:Add, Button, xs	  y+2	w32 h32 vBStrokeL	gDir4 Disabled,			% Chr(0xE7)
-Gui, MEW_Main:Add, Button, x+34			w32	h32 vBStrokeR	gDir6 Disabled,			% Chr(0xE8)
-Gui, MEW_Main:Add, Button, xs	  y+2	w32 h32 vBStrokeDL	gDir1 Disabled,			% Chr(0xED)
-Gui, MEW_Main:Add, Button, x+1			w32	h32 vBStrokeD	gDir2 Disabled +0x0800, % Chr(0xEA)
-Gui, MEW_Main:Add, Button, x+1			w32	h32 vBStrokeDR	gDir3 Disabled,			% Chr(0xEE)
-Gui, MEW_Main:Font
-
-Gui, MEW_Main:Add, Button,	x+10  ys+20	w200 h45 vBButtonUp	gBButtonUp Disabled, %ME_LngButton020%
-Gui, MEW_Main:Add, Button,		   y+10 w200 h45 vBGesturePatternBS gGesturePatternBS Disabled, %ME_LngButton021%
-
-GuiControlGet, ME_hGPBoxBase, MEW_Main:HWND, GesturePatternBox
-GuiControlGet, ME_GPBoxSize, MEW_Main:Pos, GesturePatternBox
-Gui, MGW_GPBox:New
-Gui, MGW_GPBox:+HwndME_hGesPatBox -Caption +Parent%ME_hGPBoxBase% +0x40000000 +E0x08000020 +LastFound
-Gui, MGW_GPBox:Show, x0 y0 w%ME_GPBoxSizeW% h%ME_GPBoxSizeH% NA
-Gui, MEW_Main:Default
-
-;-------------------------------------------------------------------------------
-; Recognition : 認識設定
-;-------------------------------------------------------------------------------
-Gui, MEW_Main:Tab, 4
-
-tblText := Array(ME_LngText100, ME_LngText101, ME_LngText102, ME_LngText103, ME_LngText104)
-width := GetMaxTextLength(tblText)+8
-
-Gui, MEW_Main:Add, GroupBox,xm+10 y+8 w%wAvlbl% h88 Section, %ME_LngGroupBox001%
-Gui, MEW_Main:Add, CheckBox,xs+12 yp+20 vConfig_8Dir gOn8DirChange, %ME_LngCheckBox003%
-Gui, MEW_Main:Add, CheckBox,xs+12 y+8 vConfig_ActiveAsTarget, %ME_LngCheckBox004%
-
-Gui, MEW_Main:Add, Text,xs+12 y+8 w%width% vLabel13, %ME_LngText100%
-Gui, MEW_Main:Add, Edit,x+2 w48 vConfig_Interval
-Gui, MEW_Main:Add, UpDown, Range0-10000 128
-
-
-width2 := wAvlbl - 320 - 12
-Gui, MEW_Main:Add, GroupBox,xm+10 ys+96 w%width2% h124 Section, %ME_LngGroupBox002%
-Gui, MEW_Main:Add, Text,xs+12 yp+18 w%width%  vLabel14, %ME_LngText101%
-Gui, MEW_Main:Add, Edit,x+2 w48 vConfig_Threshold
-Gui, MEW_Main:Add, UpDown, Range0-1000 128
-
-Gui, MEW_Main:Add, Text,xs+12 y+6 w%width%  vLabel15, %ME_LngText102%
-Gui, MEW_Main:Add, Edit,x+2 w48 vConfig_LongThresholdX
-Gui, MEW_Main:Add, UpDown, Range0-10000 128
-
-Gui, MEW_Main:Add, Text,xs+12 y+6 w%width%  vLabel16, %ME_LngText103%
-Gui, MEW_Main:Add, Edit,x+2 w48  vConfig_LongThresholdY
-Gui, MEW_Main:Add, UpDown, Range0-10000 128
-
-Gui, MEW_Main:Add, Text,xs+12 y+6 w%width%  vLabel17,%ME_LngText104%
-Gui, MEW_Main:Add, Edit,x+2 w48 vConfig_LongThreshold
-Gui, MEW_Main:Add, UpDown, Range0-10000 128 vUDLongThreshold
-
-
-left := width2+12
-width2 := wAvlbl - left
-Gui, MEW_Main:Add, GroupBox,xs+%left% ys w%width2% h124 Section, %ME_LngGroupBox003%
-Gui, MEW_Main:Add, Text,xs+12 yp+22 w96 vLabel18,%ME_LngText105%
-Gui, MEW_Main:Add, DropDownList,x+0 w41 vConfig_ORangeDefault Choose%Config_ORangeDefault% AltSubmit,0`n30`n45`n60`n90
-Config_ORangeDefault:=""
-
-Gui, MEW_Main:Add, Text,xs+12 y+12 w96 vLabel19,%ME_LngText106%
-Gui, MEW_Main:Add, DropDownList,x+0 w41 vConfig_ORangeA Choose%Config_ORangeA% AltSubmit,0`n30`n45`n60`n90
-Config_ORangeA:=""
-
-Gui, MEW_Main:Add, Text,xs+12 y+12 w96 vLabel20,%ME_LngText107%
-Gui, MEW_Main:Add, DropDownList,x+0 w41 vConfig_ORangeB Choose%Config_ORangeB% AltSubmit,0`n30`n45`n60`n90
-Config_ORangeB:=""
-
-
-tblText := Array(ME_LngText108, ME_LngText109, ME_LngText110)
-width := GetMaxTextLength(tblText)+8
-Gui, MEW_Main:Add, GroupBox, xm+10 ys+132 w%wAvlbl% h100 Section, %ME_LngGroupBox004%
-Gui, MEW_Main:Add, Text,xs+12 yp+18 w%width% vLabel21,%ME_LngText108%
-Gui, MEW_Main:Add, Edit,x+2 w48 vConfig_TimeoutThreshold
-Gui, MEW_Main:Add, UpDown, Range0-1000 128
-
-Gui, MEW_Main:Add, Text,xs+12 y+6 w%width% vLabel22,%ME_LngText109%
-Gui, MEW_Main:Add, Edit,x+2 w48 vConfig_Timeout
-Gui, MEW_Main:Add, UpDown, Range0-10000 128
-
-Gui, MEW_Main:Add, Text,xs+12 y+6 w%width% vLabel23,%ME_LngText110%
-Gui, MEW_Main:Add, Edit,x+2 w48 vConfig_DGInterval
-Gui, MEW_Main:Add, UpDown, Range0-10000 128
-
-
-width2 := wAvlbl - 320 - 12
-Gui, MEW_Main:Add, GroupBox, xm+10 ys+108 w%width2% h114 Section, %ME_LngGroupBox005%
-Gui, MEW_Main:Add, Text,xs+12 yp+18 vLabel24, %ME_LngText111%
-Gui, MEW_Main:Add, Edit,x+16 w48 vConfig_EdgeInterval
-Gui, MEW_Main:Add, UpDown, Range0-10000 128
-
-Gui, MEW_Main:Add, Text,xs+12 y+2 w140  vLabel25, %ME_LngText112%
-Gui, MEW_Main:Add, Text,xs+12 y+10 w65 Right vLabel26, %ME_LngText113%
-Gui, MEW_Main:Add, Edit,x+6 w48 vConfig_CornerX
-Gui, MEW_Main:Add, UpDown, Range1-10000 128
-
-Gui, MEW_Main:Add, Text,x+12 yp Right vLabel27, %ME_LngText114%
-Gui, MEW_Main:Add, Edit,x+6 w48 vConfig_CornerY
-Gui, MEW_Main:Add, UpDown, Range1-10000 128
-
-Gui, MEW_Main:Add, CheckBox,xs+12 y+10 vConfig_EdgeIndiv, %ME_LngCheckBox005%
-
-
-left := width2+12
-width2 := wAvlbl - left
-Gui, MEW_Main:Add, GroupBox,xs+%left% ys w%width2% h114 Section,%ME_LngGroupBox006%
-width2 -= 24
-Gui, MEW_Main:Add, CheckBox,xp+12 yp+20 w%width2% vConfig_DisableDefMB,  %ME_LngCheckBox006%
-Gui, MEW_Main:Add, CheckBox,      y+12   w%width2% vConfig_DisableDefX1B, %ME_LngCheckBox007%
-Gui, MEW_Main:Add, CheckBox,      y+12   w%width2% vConfig_DisableDefX2B, %ME_LngCheckBox008%
-
-;-------------------------------------------------------------------------------
-; Hints : ナビ
-;-------------------------------------------------------------------------------
-Gui, MEW_Main:Tab, 5
-
-Gui, MEW_Main:Add, GroupBox,y+8 w%wAvlbl% h70 Section, %ME_LngGroupBox007%
-Gui, MEW_Main:Add, CheckBox,xs+12 yp+20 vConfig_UseNavi, %ME_LngCheckBox009%
-
-Gui, MEW_Main:Add, Text,xs+12 y+10 vLabel28, %ME_LngText200%
-Gui, MEW_Main:Add, DropDownList,x+10 w126 vConfig_UseExNavi gOnNaviChange AltSubmit, %ME_LngDropDown004%
-GuiControl, MEW_Main:Choose, Config_UseExNavi, % Config_UseExNavi+1
-Config_UseExNavi:=""
-
-Gui, MEW_Main:Add, Text,xs+229 ys+16 w155 vLabel29, %ME_LngText201%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_NaviInterval
-Gui, MEW_Main:Add, UpDown, Range0-10000 128
-
-Gui, MEW_Main:Add, Text,xs+229 y+6 w155  vLabel30, %ME_LngText202%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_NaviPersist
-Gui, MEW_Main:Add, UpDown, Range0-10000 128
-
-
-Gui, MEW_Main:Add, GroupBox, xs y+16 w%wAvlbl% h155 Section, %ME_LngGroupBox008%
-Gui, MEW_Main:Add, CheckBox,xs+12 yp+20 vConfig_ExNaviTransBG gOnExNaviTransBGChange, %ME_LngCheckBox010%
-
-Gui, MEW_Main:Add, Text,xs+12 y+10 w160 vLabel31, %ME_LngText203%
-Gui, MEW_Main:Add, Edit,x+0 w58 Limit6 vConfig_ExNaviFG gOnColorChange
-Gui, MEW_Main:Add, TreeView, x+1 w20 h20 vColorExNaviFG
-
-Gui, MEW_Main:Add, Text,xs+12 y+6 w160 vLabel32, %ME_LngText204%
-Gui, MEW_Main:Add, Edit,x+0 w58 Limit6 vConfig_ExNaviBG gOnColorChange
-Gui, MEW_Main:Add, TreeView, x+1 w20 h20 vColorExNaviBG
-
-Gui, MEW_Main:Add, Button,xs+20 y+16 w202 h24 vExNaviIdvClr gOnExNaviIdvClr, %ME_LngButton024%
-
-Gui, MEW_Main:Add, Text,xs+273 ys+18 w132 vLabel33, %ME_LngText205%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_ExNaviTranspcy
-Gui, MEW_Main:Add, UpDown, Range0-255 128 vUDExNaviTranspcy
-
-Gui, MEW_Main:Add, Text,xs+273 y+6 w132 vLabel34, %ME_LngText206%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_ExNaviSize
-Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDExNaviSize
-
-Gui, MEW_Main:Add, Text,xs+273 y+6 w132 vLabel35, %ME_LngText207%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_ExNaviSpacing
-Gui, MEW_Main:Add, UpDown, Range-1000-1000 128 vUDExNaviSpacing
-
-Gui, MEW_Main:Add, Text,xs+273 y+6 w132 vLabel36, %ME_LngText208%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_ExNaviPadding
-Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDExNaviPadding
-
-Gui, MEW_Main:Add, Text,xs+273 y+1 w132 vLabel37, %ME_LngText209%
-Gui, MEW_Main:Add, Edit,x+0 yp+5 w48 vConfig_ExNaviMargin
-Gui, MEW_Main:Add, UpDown, Range-1-1000 128 vUDExNaviMargin
-
-
-Gui, MEW_Main:Add, GroupBox, xs y+21 w%wAvlbl% h228 Section, %ME_LngGroupBox009%
-Gui, MEW_Main:Add, Text,xs+12 yp+18 w160 vLabel38, %ME_LngText300%
-Gui, MEW_Main:Add, Edit,x+0 w58 Limit6 vConfig_AdNaviFG gOnColorChange
-Gui, MEW_Main:Add, TreeView, x+1 w20 h20 vColorAdNaviFG
-
-Gui, MEW_Main:Add, Text,xs+12 y+6 w160 vLabel39, %ME_LngText301%
-Gui, MEW_Main:Add, Edit,x+0 w58 Limit6 vConfig_AdNaviNI gOnColorChange
-Gui, MEW_Main:Add, TreeView, x+1 w20 h20 vColorAdNaviNI
-
-Gui, MEW_Main:Add, Text,xs+12 y+6 w160 vLabel40, %ME_LngText302%
-Gui, MEW_Main:Add, Edit,x+0 w58 Limit6 vConfig_AdNaviBG gOnColorChange
-Gui, MEW_Main:Add, TreeView, x+1 w20 h20 vColorAdNaviBG
-
-Gui, MEW_Main:Add, Text,xs+12 y+6 w191 vLabel41, %ME_LngText303%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_AdNaviTranspcy
-Gui, MEW_Main:Add, UpDown, Range0-255 128 vUDAdNaviTranspcy
-
-Gui, MEW_Main:Add, Text,xs+12 y+6 w191 vLabel42, %ME_LngText304%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_AdNaviSize
-Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDAdNaviSize
-
-Gui, MEW_Main:Add, Text,xs+12 y+6 w89 vLabel43, %ME_LngText305%
-Gui, MEW_Main:Add, Edit,x+0 w150 vConfig_AdNaviFont
-
-Gui, MEW_Main:Add, Text,xs+12 y+6 w88 vLabel44, %ME_LngText306%
-Gui, MEW_Main:Add, DropDownList,x+0 w150 vConfig_AdNaviPosition gOnNaviPosChange AltSubmit, %ME_LngDropDown005%
-GuiControl, MEW_Main:Choose, Config_AdNaviPosition, % Config_AdNaviPosition+1
-Config_AdNaviPosition:=""
-
-Gui, MEW_Main:Add, CheckBox,xs+12 y+10 vConfig_AdNaviOnClick, %ME_LngCheckBox011%
-
-Gui, MEW_Main:Add, Text,xs+273 ys+18 w132 vLabel45, %ME_LngText307%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_AdNaviPaddingL
-Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDAdNaviPaddingL
-
-Gui, MEW_Main:Add, Text,xs+273 y+6 w132 vLabel46, %ME_LngText308%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_AdNaviPaddingR
-Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDAdNaviPaddingR
-
-Gui, MEW_Main:Add, Text,xs+273 y+6 w132 vLabel47, %ME_LngText309%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_AdNaviPaddingT
-Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDAdNaviPaddingT
-
-Gui, MEW_Main:Add, Text,xs+273 y+6 w132 vLabel48, %ME_LngText310%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_AdNaviPaddingB
-Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDAdNaviPaddingB
-
-Gui, MEW_Main:Add, Text,xs+273 y+6 w132 vLabel49, %ME_LngText311%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_AdNaviRound
-Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDAdNaviRound
-
-Gui, MEW_Main:Add, Text,xs+273 y+1 w132 vLabel50, %ME_LngText312%
-Gui, MEW_Main:Add, Edit,x+0 yp+5 w48 vConfig_AdNaviMargin
-Gui, MEW_Main:Add, UpDown, Range-1-1000 128 vUDAdNaviMargin
-
-Gui, MEW_Main:Add, Text,xs+273 yp w132 vLabel51, %ME_LngText313%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_AdNaviSpaceX
-Gui, MEW_Main:Add, UpDown, Range-10000-10000 128 vUDAdNaviSpaceX
-
-Gui, MEW_Main:Add, Text,xs+273 y+6 w132 vLabel52, %ME_LngText314%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_AdNaviSpaceY
-Gui, MEW_Main:Add, UpDown, Range-10000-10000 128 vUDAdNaviSpaceY
-
-;-------------------------------------------------------------------------------
-; Trail and Logs : 軌跡・ログ
-;-------------------------------------------------------------------------------
-Gui, MEW_Main:Tab, 6
-
-; Trail
-Gui, MEW_Main:Add, GroupBox,y+8 w%wAvlbl% h230 Section, %ME_LngGroupBox010%
-Gui, MEW_Main:Add, CheckBox,xs+12 yp+20 vConfig_ShowTrail gOnShowTrailChange, %ME_LngCheckBox012%
-Gui, MEW_Main:Add, CheckBox,xs+24 y+14	 vConfig_DrawTrailWnd, %ME_LngCheckBox014%
-
-Gui, MEW_Main:Add, Text,xs+24 y+12 w189 vLabel53, %ME_LngText400%
-Gui, MEW_Main:Add, Edit,x+0 w58 vConfig_TrailColor gOnColorChange
-Gui, MEW_Main:Add, TreeView, x+1 w20 h20 vColorTrailColor
-
-Gui, MEW_Main:Add, Text,xs+24 y+12 w220 vLabel54, %ME_LngText401%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_TrailTranspcy
-Gui, MEW_Main:Add, UpDown, Range0-255 128 vUDTrailTranspcy
-
-Gui, MEW_Main:Add, Text,xs+24 y+12 w220 vLabel55, %ME_LngText402%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_TrailWidth
-Gui, MEW_Main:Add, UpDown, Range0-100 128 vUDTrailWidth
-
-Gui, MEW_Main:Add, Text,xs+24 y+12 w220 vLabel56, %ME_LngText403%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_TrailStartMove
-Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDTrailStartMove
-
-Gui, MEW_Main:Add, Text,xs+24 y+12 w220 vLabel57, %ME_LngText404%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_TrailInterval
-Gui, MEW_Main:Add, UpDown, Range0-10000 128 vUDTrailInterval
-
-; Logs
-Gui, MEW_Main:Add, GroupBox,xs y+20 w%wAvlbl% h240 Section, %ME_LngGroupBox011%
-Gui, MEW_Main:Add, CheckBox,xs+12 yp+20 vConfig_ShowLogs gOnShowLogsChange, %ME_LngCheckBox013%
-
-Gui, MEW_Main:Add, Text,xs+24 y+10 vLabel58, %ME_LngText306%
-Gui, MEW_Main:Add, DropDownList,x+10 w150 vConfig_LogPosition gOnNaviChange AltSubmit, %ME_LngDropDown006%
-GuiControl, MEW_Main:Choose, Config_LogPosition, % Config_LogPosition
-Config_LogPosition:=""
-
-Gui, MEW_Main:Add, Text,xs+14 y+6 w60 Right vLabel59, %ME_LngText421%
-Gui, MEW_Main:Add, Edit,x+10 w48 vConfig_LogPosX
-Gui, MEW_Main:Add, UpDown, Range1-10000 128 vUDLogPosX
-
-Gui, MEW_Main:Add, Text,x+11 yp Right vLabel60, %ME_LngText422%
-Gui, MEW_Main:Add, Edit,x+10 w48 vConfig_LogPosY
-Gui, MEW_Main:Add, UpDown, Range1-10000 128 vUDLogPosY
-
-tblText := Array(ME_LngText423, ME_LngText424, ME_LngText201)
-width := GetMaxTextLength(tblText)+8
-Gui, MEW_Main:Add, Text,xs+255 ys+17 w%width% vLabel61, %ME_LngText423%
-Gui, MEW_Main:Add, Edit,x+2 w48 vConfig_LogMax
-Gui, MEW_Main:Add, UpDown, Range0-10000 128 vUDLogMax
-
-Gui, MEW_Main:Add, Text,xs+255 y+6 w%width%  vLabel62, %ME_LngText424%
-Gui, MEW_Main:Add, Edit,x+2 w48 vConfig_LogSizeW
-Gui, MEW_Main:Add, UpDown, Range0-10000 128 vUDLogSizeW
-
-Gui, MEW_Main:Add, Text,xs+255 y+6 w%width%  vLabel63, %ME_LngText201%
-Gui, MEW_Main:Add, Edit,x+2 w48 vConfig_LogInterval
-Gui, MEW_Main:Add, UpDown, Range0-10000 128 vUDLogInterval
-
-Gui, MEW_Main:Add, Text,xs+24 yp+34 w160 vLabel64, %ME_LngText300%
-Gui, MEW_Main:Add, Edit,x+0 w58 Limit6 vConfig_LogFG gOnColorChange
-Gui, MEW_Main:Add, TreeView, x+1 w20 h20 vColorLogFG
-
-Gui, MEW_Main:Add, Text,xs+24 y+6 w160 vLabel65, %ME_LngText302%
-Gui, MEW_Main:Add, Edit,x+0 w58 Limit6 vConfig_LogBG gOnColorChange
-Gui, MEW_Main:Add, TreeView, x+1 w20 h20 vColorLogBG
-
-Gui, MEW_Main:Add, Text,xs+24 y+6 w191 vLabel66, %ME_LngText303%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_LogTranspcy
-Gui, MEW_Main:Add, UpDown, Range0-255 128 vUDLogTranspcy
-
-Gui, MEW_Main:Add, Text,xs+24 y+6 w191 vLabel67, %ME_LngText304%
-Gui, MEW_Main:Add, Edit,x+0 w48 vConfig_LogFontSize
-Gui, MEW_Main:Add, UpDown, Range0-1000 128 vUDLogFontSize
-
-Gui, MEW_Main:Add, Text,xs+24 y+6 w89 vLabel68, %ME_LngText305%
-Gui, MEW_Main:Add, Edit,x+0 w150 vConfig_LogFont
-
-;-------------------------------------------------------------------------------
-; Others : その他
-;-------------------------------------------------------------------------------
-Gui, MEW_Main:Tab, 7
-tblText := Array(ME_LngText451, ME_LngText452)
-width := GetMaxTextLength(tblText)+8
-width2 := wAvlbl-12*2-width
-
-Gui, MEW_Main:Add, GroupBox,y+8 w%wAvlbl% h62 Section, %ME_LngGroupBox014%
-Gui, MEW_Main:Add, Button,xs+18 yp+20 w160 h30 gOnRegStartup, %ME_LngButton022%
-Gui, MEW_Main:Add, Button,x+14 w160 h30 gOnDelStartup, %ME_LngButton023%
-
-
-Gui, MEW_Main:Add, GroupBox, xs y+20 w%wAvlbl% h80,%ME_LngGroupBox012%
-Gui, MEW_Main:Add, Text,xs+12 yp+20 w%width% vLabel69,%ME_LngText451%
-Gui, MEW_Main:Add, Hotkey,x+0 w%width2% vConfig_HotkeyEnable gOnHotkeyChange
-
-Gui, MEW_Main:Add, Text,xs+12 y+8 w%width% vLabel70,%ME_LngText452%
-Gui, MEW_Main:Add, Hotkey,x+0 w%width2% vConfig_HotkeyNavi gOnHotkeyChange
-
-
-Gui, MEW_Main:Add, GroupBox,xs y+20 w%wAvlbl% h52, %ME_LngGroupBox013%
-width := wAvlbl-12*2-62
-Gui, MEW_Main:Add, Edit,xs+12 yp+20 w%width% vConfig_ScriptEditor
-Gui, MEW_Main:Add, Button,x+2 yp-1 w60 h22 gOnBrowseEditor, %ME_LngButton027%
-
-if (MG_IsNewOS())
-{
-	Gui, MEW_Main:Add, GroupBox,xs y+19 w%wAvlbl% h52, %ME_LngGroupBox015%
-	Gui, MEW_Main:Add, Text,xs+12 yp+20 vLabel71, %ME_LngText453%
-	Gui, MEW_Main:Add, Edit,x+8 w135 vConfig_UserName
-	Gui, MEW_Main:Add, Text,x+16 vLabel72, %ME_LngText454%
-	Gui, MEW_Main:Add, Edit,x+8 w135 vConfig_Password Password
-}
-
-
-Gui, MEW_Main:Add, GroupBox,xs y+20 w%wAvlbl% h102, %ME_LngGroupBox016%
-Gui, MEW_Main:Add, CheckBox,xs+17 yp+24 vConfig_TraySubmenu, %ME_LngCheckBox015%
-
-Gui, MEW_Main:Add, CheckBox,xs+17 y+14 vConfig_AdjustDlg gOnAdjustDlgHeight, %ME_LngCheckBox016%
-Gui, MEW_Main:Add, Text,xs+40 y+6 vLabel73, %ME_LngText455%
-Gui, MEW_Main:Add, Edit,x+8 w60 vConfig_DlgHeightLimit gOnAdjustDlgHeight
-Gui, MEW_Main:Add, UpDown, Range0-10000 128 vUDDlgHeightLimit
-
-;追加設定 mark
-Gui, MEW_Main:Add, GroupBox,xs y+20 w%wAvlbl% h100, [Mod] ジェスチャー一覧の表示方法
-Dummy := !(ChangeLVColor)
-
-Gui, MEW_Main:Add, Radio, xs+17 yp+20 vDummy gRBChangeLVColor Checked%Dummy%, 先頭にマーク
-Gui, MEW_Main:Add, Radio, xs+17 y+8 vChangeLVColor gRBChangeLVColor Checked%ChangeLVColor%, 色分け
-Gui, MEW_Main:Add, Text, x+40 yp-19, ※マーク、色設定はMG_Edit.ahk本体を編集することで変更可能
-Gui, MEW_Main:Add, Text, y+8, ※色分け表示にはClass_LV_Colors.ahkが必要
-If !IsFunc("LV_Colors.Row")		;Class_LV_Colors.ahkの組み込みチェック
-{
-	GuiControl, MEW_Main:Disable, ChangeLVColor
-	GuiControl, MEW_Main:, Dummy, 1
-	ChangeLVColor := 0
-}
-Gui, MEW_Main:Add, CheckBox, xs+17 y+12 vShowDefaultAction gCBShowDefaultAction Checked%ShowDefaultAction%, すべてのターゲットでデフォルトのアクションを表示
-;-------------------------------------------------------------------------------
-; Common buttons : 共通ボタン(mark)
-;-------------------------------------------------------------------------------
-Gui, MEW_Main:Tab
-GuiControlGet, rcTab, MEW_Main:Pos, MainTab
-tabRight  := rcTabX + rcTabW
-tabBottom := rcTabY + rcTabH
-top  := tabBottom + 8
-Gui, MEW_Main:Add, Button, x%rcTabX% y%top% w160 h24 vBFromClipboard gImportFromClipboard, %ME_LngButton004%
-;切り替えボタン
-;Gui, MEW_Main:Add, Button, x+10 yp w60 h24	vBSortGesture	gBSortGesturePress, ソート
-;Gui, MEW_Main:Add, Button, x+10 yp w60 h24	vBChangeLayout	gBChangeLayoutPress, 表示切替
-
-width=80
-spc=6
-left := tabRight - (130+width*2+spc*2)
-Gui, MEW_Main:Add, Button, x%left% y%top% w130 h24 vBHelp gShowHelp, %ME_LngButton003%
-Gui, MEW_Main:Add, Button, x+%spc% w%width% h24 vBSaveExit gSaveExit, %ME_LngButton001%
-Gui, MEW_Main:Add, Button, x+%spc% w%width% h24 vBExit gME_Exit, %ME_LngButton002%
-
-;-------------------------------------------------------------------------------
-; Adjust Position of Static Text
-;-------------------------------------------------------------------------------
-Loop, 73
-{
-	GuiControlGet, pos, MEW_Main:pos, Label%A_Index%
-	if (!ErrorLevel)
-	{
-		posY+=4
-		posX+=2
-		GuiControl, MEW_Main:Move, Label%A_Index%, x%posX% y%posY%
+	else if (szCtrl = "LVRule") {
+		RuleDown()
 	}
-}
-return
-
-;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-;
-;	Window Message Handler
-;
-;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-;-------------------------------------------------------------------------------
-; WM_COMMAND Message Handler
-;														Implemented by Pyonkichi
-;-------------------------------------------------------------------------------
-OnCommand(wParam, lParam)
-{
-	global
-	if ((wParam>>16) != 0x0200) {
-		return
+	else if (szCtrl = "LBGesturePattern") {
+		GesturePatternDown()
 	}
-	static edtName := [ "ETargetName",	 "EGestureName"	  ]
-	static btnRenm := [ "BTargetRename", "BGestureRename" ]
-	static subRenm := [ "TargetRename",	 "GestureRename"  ]
-	Loop, 2
-	{
-		if (lParam == ControlGetHandle(edtName[A_Index]))
-		{
-			if (ControlIsEnabled(btnRenm[A_Index])) {
-				Gosub, % subRenm[A_Index]
-				break
-			}
-		}
-	}
-}
-
-;-------------------------------------------------------------------------------
-; WM_NOTIFY Message Handler
-;														Implemented by Pyonkichi
-;-------------------------------------------------------------------------------
-OnNotify(wParam, lParam)
-{
-	if ((NumGet(lParam+0, A_PtrSize*2, "Ptr")&0xffffffff) == 4294967182)
-	{
-		;On ListView Item Double Click
-		if (NumGet(lParam+0, 0, "Ptr") == ControlGetHandle("LVAction")) {
-			EditAction()
-		}
-	}
-}
-
-;-------------------------------------------------------------------------------
-; WM_RBUTTONUP Message Handler
-;														Implemented by Pyonkichi
-;-------------------------------------------------------------------------------
-OnRButtonUp(wParam, lParam)
-{
-	global
-	if (A_GuiControl=="LBButtons")
-	{
-		MouseClick, Left
-		Gui, MEW_Main:Submit, Nohide
-		if (!LBButtons) {
-			return
-		}
-		local szTrigger := % Button_%LBButtons%
-		Loop, Parse, MG_DefButtons, `n
-		{
-			if (A_LoopField = szTrigger) {
-				return
-			}
-		}
-		Menu, menuDelete, Add
-		Menu, menuDelete, DeleteAll
-		Menu, menuDelete, Add, %ME_LngMenu106%, OnDelTriggerSelect
-		Menu, menuDelete, Show
-	}
-	else if (A_GuiControl=="LBGesture1" || A_GuiControl=="LBGesture2")
-	{
-		MouseClick, Left
-		Gui, MEW_Main:Submit, Nohide
-		if (!LBGesture2) {		;書き換え
-			return
-		}
-		ShowListContextMenu("G", Gesture_Editing)
-	}
-}
-
-;-------------------------------------------------------------------------------
-; WM_KEYDOWN Message Handler
-;														Implemented by Pyonkichi
-;-------------------------------------------------------------------------------
-OnKeyDown(wParam, lParam, uMsg, hWnd)
-{
-	if (wParam == 0x0D)
-	{
-		;On Enter Key Down
-		if (hWnd==ControlGetHandle("ETargetName")
-		&&	ControlIsEnabled("BTargetRename"))
-		{
-			TargetRename()
-			GuiControl, MEW_Main:Focus, TVTarget2
-		}
-		else if (hWnd==ControlGetHandle("EGestureName")
-		&&		 ControlIsEnabled("BGestureRename"))
-		{
-			GestureRename()
-			GuiControl, MEW_Main:Focus, LBGesture2
-		}
-		else if (hWnd==ControlGetHandle("EIconFile")
-		||		 hWnd==ControlGetHandle("EIconIndex"))
-		{
-			if (ControlIsEnabled("BApplyIcon")) {
-				OnApplyIcon()
-			}
-		}
-	}
-}
-
-;-------------------------------------------------------------------------------
-; WM_PAINT Message Handler
-;														Implemented by Pyonkichi
-;-------------------------------------------------------------------------------
-OnPaint(wParam, lParam, uMsg, hWnd)
-{
-	global
-	if (hWnd!=ME_hGesPatBox) {
-		return
-	}
-	local w := ME_GPBoxSizeW-1
-	Gui, MGW_GPBox:Show, x0 y0 w%w% h%ME_GPBoxSizeH% NA
-	Gui, MGW_GPBox:Show, x0 y0 w%ME_GPBoxSizeW% h%ME_GPBoxSizeH% NA
-	GuiControlGet, szGesture, MEW_Main:, EGesture
-	local hDC := DllCall("GetWindowDC", "Ptr",ME_hGesPatBox, "Ptr")
-	DllCall("SetBkMode", "Ptr",hDC, "Ptr",1)
-	MG_DrawGesture(hDC, 2, 0, szGesture, &ME_GPBoxSizeW, &ME_GPBoxSizeH)
-	DllCall("ReleaseDC", "Ptr",ME_hGesPatBox, "Ptr",hDC)
 }
 
 ;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -1398,13 +1545,26 @@ OnPaint(wParam, lParam, uMsg, hWnd)
 ;
 ;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;-------------------------------------------------------------------------------
+; Check whether any list is activated
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+IsAnyListActive()
+{
+	GuiControlGet, szCtrl, MEW_Main:FocusV
+	return (szCtrl="TVTarget1" || szCtrl="TVTarget2"  || szCtrl="LVRule"
+		|| szCtrl="LVGesture" || szCtrl="LBGesture" || szCtrl="LBGesturePattern"
+		|| szCtrl="LVAction")
+}
+
+;-------------------------------------------------------------------------------
 ; Get Handle of GUI Control
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-ControlGetHandle(ctrl, wnd="MEW_Main:")
+ControlGetHandle(ctrl, wnd="MEW_Main")
 {
+	local hCtrl
 	hCtrl := 0
-	GuiControlGet, hCtrl, %wnd%Hwnd, %ctrl%
+	GuiControlGet, hCtrl, %wnd%:Hwnd, %ctrl%
 	return hCtrl
 }
 
@@ -1416,18 +1576,6 @@ ControlIsEnabled(ctrl, wnd="MEW_Main:")
 {
 	GuiControlGet, bEnabled, %wnd%Enabled, %ctrl%
 	return bEnabled
-}
-
-;-------------------------------------------------------------------------------
-; Get System Icons
-;														Implemented by Pyonkichi
-;-------------------------------------------------------------------------------
-GetSystemIcons()
-{
-	local szShell32 := A_WinDir "\System32\shell32.dll"
-	Target_Default_IconFile	:= szShell32 ",16"
-	Target_Default_Icon		:= IL_Add(MG_hImageList, szShell32, 16)
-	Target_Blank_Icon		:= IL_Add(MG_hImageList, szShell32, 50)
 }
 
 ;-------------------------------------------------------------------------------
@@ -1447,30 +1595,54 @@ GetDesktopHeight()
 ;-------------------------------------------------------------------------------
 LoadButtons()
 {
-	global
-	MG_BtnNames := RegExReplace(MG_DefButtons, "\n", "_")
-	Loop, %A_ScriptDir%\Components\Buttons\*.ahk
+	local szBuf, cnt, szDesc
+
+	MG_BtnNames := []
+	MG_BtnNames.RemoveAt(1, MG_BtnNames.MaxIndex())
+	cnt := 0
+	Loop, Parse, MG_DefButtons, `n
 	{
-		if (RegExMatch(A_LoopFileName, "^([a-zA-Z0-9]+)\.ahk$", $)
-		&&	!InStr("_" MG_BtnNames "_", "_" $1 "_")) {
-			Join(MG_BtnNames, $1, "_")
+		MG_BtnNames.InsertAt(++cnt, A_LoopField)
+	}
+	Loop, %MG_DirUserBtn%*.ahk
+	{
+		if (RegExMatch(A_LoopFileName, "^([a-zA-Z0-9]+)\.ahk$", $) && !MG_GetButtonIndex($1)) {
+			MG_BtnNames.InsertAt(++cnt, $1)
 		}
 	}
-	LBButtons := ""
-	Loop, Parse, MG_BtnNames, _
+	Loop, %MG_DirButtons%*.ahk
 	{
-		if (Button_%A_LoopField%) {
-			Join(LBButtons, Button_%A_LoopField%)
-		} else {
-			Join(LBButtons, A_LoopField)
+		if (RegExMatch(A_LoopFileName, "^([a-zA-Z0-9]+)\.ahk$", $) && !MG_GetButtonIndex($1)) {
+			MG_BtnNames.InsertAt(++cnt, $1)
 		}
-		Join(ButtonRegEx, A_LoopField, "|")
-		Button_%A_Index% := A_LoopField
 	}
+	LBButtons := ButtonRegEx := ""
+	Loop, %cnt%
+	{
+		szDesc := GetButtonData(MG_DirUserBtn . MG_BtnNames[A_Index] ".ahk")
+		Join(LBButtons, szDesc)
+		Join(ButtonRegEx, MG_BtnNames[A_Index], "|")
+	}
+	Join(LBButtons, ME_LngOthers015)
 }
 
 ;-------------------------------------------------------------------------------
-; Own InputBox
+; Gets index of the specified button
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+MG_GetButtonIndex(szBtn)
+{
+	global MG_BtnNames
+	Loop, % MG_BtnNames.MaxIndex() {
+		if (MG_BtnNames[A_Index] = szBtn) {
+			return A_Index
+		}
+	}
+	return 0
+}
+
+;-------------------------------------------------------------------------------
+; Own Input Box
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
 MG_InputBox(ByRef OutputVar, szTitle, szPrompt, szDefault, OwnerWin="MEW_Main")
@@ -1480,17 +1652,17 @@ MG_InputBox(ByRef OutputVar, szTitle, szPrompt, szDefault, OwnerWin="MEW_Main")
 	Gui, MEW_InBox:Margin , 10, 10
 	Gui, MEW_InBox:Font, S11
 	Gui, MEW_InBox:Add, Text, vIbText, %szPrompt%
-	Gui, MEW_InBox:Show, Hide
 
 	GuiControlGet, rcCtrl, MEW_InBox:Pos, IbText
-	local width := (rcCtrlW >= 300) ? rcCtrlW : 300
+	local Ew := (rcCtrlW >= 300) ? rcCtrlW : 300
 	if (szDefault != "#NoInput#") {
-		Gui, MEW_InBox:Add, Edit, y+8 w%width% vIbValue, %szDefault%
+		Gui, MEW_InBox:Add, Edit, y+8 w%Ew% vIbValue, %szDefault%
 	}
-	local left := width-157
+	local Bx, Bw:=80, Bs:=8
+	Bx := rcCtrlX + Ew - Bw*2 - Bs
 	Gui, MEW_InBox:Font
-	Gui, MEW_InBox:Add, Button, vAcceptValue gOnAcceptValue x%left% y+8 w80 Default, %ME_LngButton001%
-	Gui, MEW_InBox:Add, Button, gOnCancelValue x+8 yp+0 w80,						 %ME_LngButton002%
+	Gui, MEW_InBox:Add, Button, vAcceptValue gOnAcceptValue x%Bx% y+8 w%Bw% Default, %ME_LngButton001%
+	Gui, MEW_InBox:Add, Button, gOnCancelValue x+8 yp+0 w%Bw%,						 %ME_LngButton002%
 
 	local fOK := false
 	Gui, MEW_InBox:Show, AutoSize, %szTitle%
@@ -1525,7 +1697,6 @@ GetMaxTextLength(tblText)
 	{
 		Gui, MEW_Dummy:Add, Text, vDmyTxt%A_Index%, % tblText[A_Index]
 	}
-	Gui, MEW_Dummy:Show, Hide
 	local max:=0
 	Loop, % tblText.MaxIndex()
 	{
@@ -1539,15 +1710,18 @@ GetMaxTextLength(tblText)
 }
 
 ;-------------------------------------------------------------------------------
-; Adjust the dialog box height to the number of items(mark)
+; Adjust the dialog box height to the number of items
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
 AdjustDialogHeight(bAdjPos=false)
 {
 	local bAdjust, height
+
 	Critical
+	Gui, MEW_Main:-DPIScale
 	GuiControlGet, bAdjust, MEW_Main:, Config_AdjustDlg
-	GuiControlGet, rcCtrl, MEW_Main:Pos, LVGesture
+	GuiControlGet, rcCtrl, MEW_Main:Pos, LBGesture
+	Gui, MEW_Main:+DPIScale
 	;---------------------------------------------------------------------------
 	; Reset to the default height
 	if (!bAdjust)
@@ -1563,15 +1737,14 @@ AdjustDialogHeight(bAdjPos=false)
 	else
 	{
 		local winY, winH, framW, lbItemH, tvItemH, lbNeed, tvNeed, tvStyle, bSB, sbH, extra
-		Gui, MEW_Main:+LastFound
+		Gui, MEW_Main:-DPIScale +LastFound
 		WinGetPos,,winY,,winH
+		Gui, MEW_Main:+DPIScale
 		Loop, 2
 		{
-			;SendMessage, 0x100E,,,, % "ahk_id" ControlGetHandle("LVGesture")
-			;lbItemH := ErrorLevel
-			;lbNeed := lbItemH * Gesture_Count
-			lbNeed := LVM_ApproximateViewRect(HLVGesture)	;追加
-			lbItemH := lbNeed / Gesture_Count				;追加
+			SendMessage, 0x01A1,,,, % "ahk_id" ControlGetHandle("LBGesture")
+			lbItemH := ErrorLevel
+			lbNeed := lbItemH * Gesture_Count
 			framW := Mod(rcCtrlH, lbItemH)
 
 			SendMessage, 0x111C,,,, % "ahk_id" ControlGetHandle("TVTarget1")
@@ -1623,8 +1796,10 @@ AdjustDialogHeight(bAdjPos=false)
 				WinMove,,winY
 			}
 			if (bSB) {
+				Gui, MEW_Main:-DPIScale
 				GuiControl, MEW_Main:Move, TVTarget1, h%height%
 				GuiControl, MEW_Main:Move, TVTarget2, h%height%
+				Gui, MEW_Main:+DPIScale
 			} else {
 				break
 			}
@@ -1632,28 +1807,27 @@ AdjustDialogHeight(bAdjPos=false)
 	}
 	;---------------------------------------------------------------------------
 	; Adjust the dialog box height
-	GuiControl, MEW_Main:Move, LVGesture, h%height%
-	GuiControl, MEW_Main:Move, LBGesture2, h%height%
-	GuiControl, MEW_Main:Move, TVTarget1, h%height%
-	GuiControl, MEW_Main:Move, TVTarget2, h%height%
-
-	static tblH := [ "MainTab", "LVRule", "LBGesturePattern", "LVAction" ]
-	static tblY := [ "Label4", "BAddAction", "BUpdateAction", "EAction"
-				   , "BEditAction", "BClearAction", "Label5", "DDLActionCategory"
+	local diff, gbH
+	static tblH := [ "MainTab", "LVGesture", "LVRule", "LBButtons", "LVAction" ]
+	static tblY := [ "Label3", "BAddAction", "BUpdateAction", "EAction"
+				   , "BEditAction", "BClearAction", "Label4", "Label5", "DDLActionCategory"
 				   , "DDLActionTemplate", "BAddActionLine"
-				   , "DDLLogic", "BAddRule", "BUpdateRule", "Label7", "DDLRuleType"
-				   , "BRulePicker", "Label8", "ERuleValue", "BClearRule", "Label9"
+				   , "DDLLogic", "BAddRule", "BUpdateRule", "Label12", "DDLRuleType"
+				   , "BRulePicker", "Label13", "ERuleValue", "BClearRule", "Label14"
 				   , "DDLMatchRule", "ChkNotMatch", "ChkNotInhRules", "GroupIcon", "EIconFile"
 				   , "BBrowseIcon", "PicIcon", "EIconIndex", "UDIconIndex", "BApplyIcon"
-				   , "EGesture", "BAddGesturePattern", "BUpdateGesturePattern"
-				   , "GesturePatternBox", "BClearGesture", "GPBoxBS", "Label11", "LBButtons"
-				   , "BAddTrigger", "Label12"
+				   , "Label23"
 				   , "BStrokeUL", "BStrokeU", "BStrokeUR", "BStrokeL", "BStrokeR"
-				   , "BStrokeDL", "BStrokeD", "BStrokeDR", "BButtonUp", "BGesturePatternBS"
-				   , "BFromClipboard", "BHelp", "BSaveExit", "BExit", "BSortGesture", "BChangeLayout"]
-	local diff, gbH
-	diff := height - rcCtrlH
+				   , "BStrokeDL", "BStrokeD", "BStrokeDR", "BButtonDown", "BButtonUp"
+				   , "BFromClipboard", "BHelp", "BSaveExit", "BExit" ]
+
 	; Resize Controls
+	Gui, MEW_Main:-DPIScale
+	GuiControl, MEW_Main:Move, TVTarget1, h%height%
+	GuiControl, MEW_Main:Move, TVTarget2, h%height%
+	GuiControl, MEW_Main:Move, LBGesture, h%height%
+
+	diff := height - rcCtrlH
 	GuiControlGet, rcCtrl, MEW_Main:Pos, GroupIcon
 	gbH := rcCtrlH
 	GuiControl, MEW_Main:Move, GroupIcon, h0
@@ -1670,18 +1844,8 @@ AdjustDialogHeight(bAdjPos=false)
 		GuiControl, MEW_Main:Move, % tblY[idx], % "y" rcCtrlY+diff
 	}
 	GuiControl, MEW_Main:Move, GroupIcon, h%gbH%
-	ChangeLayout()		;追加
+	Gui, MEW_Main:+DPIScale
 	Gui, MEW_Main:Show, Autosize
-}
-
-;リストビューの高さを取得 https://autohotkey.com/board/topic/90696-ahk-gui-listview-row-heights/より
-LVM_ApproximateViewRect(hLV,p_NumberOfItems=-1,X=-1,Y=-1,ByRef r_Width="",ByRef r_Height="")
-{
-    Static LVM_APPROXIMATEVIEWRECT:=0x1040              ;-- LVM_FIRST + 64
-    SendMessage ,LVM_APPROXIMATEVIEWRECT ,p_NumberOfItems ,X&0xFFFF|(Y&0xFFFF)<<16,,ahk_id %hLV%
-    r_Width :=ErrorLevel&0xFFFF ;-- LOWORD
-    r_Height:=ErrorLevel>>16    ;-- HIWORD
-    Return r_Height
 }
 
 ;-------------------------------------------------------------------------------
@@ -1691,7 +1855,7 @@ LVM_ApproximateViewRect(hLV,p_NumberOfItems=-1,X=-1,Y=-1,ByRef r_Width="",ByRef 
 GetDisplayTargetNum()
 {
 	local cnt
-	GuiControlGet, Config_FoldTarget, MEW_Main:, Config_FoldTarget
+
 	if (!Config_FoldTarget) {
 		return Target_Count
 	}
@@ -1710,107 +1874,117 @@ GetDisplayTargetNum()
 ;-------------------------------------------------------------------------------
 SaveModification(ope="Check", edit="")
 {
-	global
-	static fModified:=0
+	local ret:=false
+	static bModified:=false, bModifiedBk:=false
+
+	if (ope = "Resume") {
+		Sleep, 1
+		bModified := bModifiedBk
+		return ret
+	}
+
 	Critical
-	if (ope = "Modified")
+	if (ope = "Suspend") {
+		bModifiedBk := bModified
+		bModified := false
+	}
+	else if (ope = "Reset") {
+		bModified := false
+	}
+	else if (ope = "Modified")
 	{
 		if ((Target_Editing  && (edit="ERuleValue"))
 		||	(Gesture_Editing && (edit="EGesture" || edit="EAction")))
 		{
-			fModified := 1
+			bModified := true
 		}
 	}
-	else if (ope = "Reset")
+	else if (ope = "Check" && bModified)
 	{
-		fModified := 0
-	}
-	else if (ope = "Check" && fModified)
-	{
-		fModified := 0
-		if (MainTabIdx==1)
-		{
+		ret := true
+		bModified := false
+		if (MainTabIdx==1) {
 			GuiControlGet, EAction, MEW_Main:, EAction
 			if (EAction = "") {
 				Critical, Off
-				return
+				return ret
 			}
 		}
-		local  idxEdt  := [ Gesture_Editing		 , Target_Editing		, Gesture_Editing			]
-			 , statAdd := [ EnblAddAction		 , EnblAddRule			, EnblAddGesturePattern		]
-			 , statUpd := [ EnblUpdateAction	 , EnblUpdateRule		, EnblUpdateGesturePattern	]
-		static subAdd  := [ "BAddActionPress"	 , "BAddRulePress"		, "AddGesturePattern"		]
-			 , subUpd  := [ "BUpdateActionPress" , "BUpdateRulePress"	, "UpdateGesturePattern"	]
-		if (MainTabIdx<=3 && idxEdt[MainTabIdx])
-		{
+		local  idxEdt  := [ Gesture_Editing	 , Target_Editing	, Gesture_Editing			]
+			 , statAdd := [ EnblAddAction	 , EnblAddRule		, EnblAddGesturePattern		]
+			 , statUpd := [ EnblUpdateAction , EnblUpdateRule	, EnblUpdateGesturePattern	]
+		static subAdd  := [ "AddAction"		 , "AddRule"		, "AddGesturePattern"		]
+			 , subUpd  := [ "UpdateAction"	 , "UpdateRule"		, "UpdateGesturePattern"	]
+
+		if (MainTabIdx<=3 && idxEdt[MainTabIdx]) {
 			if (statUpd[MainTabIdx] = "Enable") {
-				Gosub, % subUpd[MainTabIdx]
+				Func(subUpd[MainTabIdx]).(false)
 			}
 			else if (statAdd[MainTabIdx] = "Enable") {
-				Gosub, % subAdd[MainTabIdx]
+				Func(subAdd[MainTabIdx]).(false)
 			}
 		}
 	}
 	Critical, Off
-
+	return ret
 }
 
 ;-------------------------------------------------------------------------------
 ; On Main Tab Change
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnTabChange:
+OnTabChange() {
+	global
 	SaveModification()
 	GuiControlGet, MainTabIdx, MEW_Main:, MainTab
-return
+}
 
 ;-------------------------------------------------------------------------------
-; On "Add Trigger" Button Press
+; Add Trigger
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnAddTriggerPress:
-	OnAddTriggerPress()
-return
-OnAddTriggerPress()
+AddTrigger()
 {
-	global
+	local szEdgeName
 	ScreenEdges := ""
 	Menu, menuTrigger, Add
 	Menu, menuTrigger, DeleteAll
 	Menu, menuEdge, Add
 	Menu, menuEdge, DeleteAll
-	Loop, %A_ScriptDir%\Components\Buttons\ScreenEdges\*.ahk
+	Loop, %MG_DirScrEdge%*.ahk
 	{
-		local szEdgeName := RegExReplace(A_LoopFileName, "\.ahk")
+		if (FileExist(MG_DirUserBtn . A_LoopFileName)) {
+			continue
+		}
+		szEdgeName := RegExReplace(A_LoopFileName, "\.ahk")
 		Join(ScreenEdges, szEdgeName)
-		szEdgeName := "Button_" . szEdgeName
+		szEdgeName := "Button_" szEdgeName
 		szEdgeName := %szEdgeName%
 		Menu, menuEdge, Add, %szEdgeName%, AddScreenEdge
 	}
 	Menu, menuTrigger, Add, %ME_LngMenu049%, :menuEdge
 	Menu, menuTrigger, Add
-	Menu, menuTrigger, Add, %ME_LngMenu050%, DefineNewButton
+	Menu, menuTrigger, Add, %ME_LngMenu050%, CreateUserButton
 	Menu, menuTrigger, Show
 }
 
 ;-------------------------------------------------------------------------------
-; Add Screen Edge Recognition Module to List Box
+; Add Screen Edge Recognition module
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-AddScreenEdge:
-	AddScreenEdge()
-return
 AddScreenEdge()
 {
-	global
+	local szEdgeName
 	Loop, Parse, ScreenEdges, `n
 	{
-		local szEdgeName := "Button_" . A_LoopField
+		szEdgeName := "Button_" A_LoopField
 		szEdgeName := %szEdgeName%
-		if (A_ThisMenuItem = szEdgeName)
-		{
-			FileCopy, %A_ScriptDir%\Components\Buttons\ScreenEdges\%A_LoopField%.ahk
-					, %A_ScriptDir%\Components\Buttons\%A_LoopField%.ahk, 1
+		if (A_ThisMenuItem = szEdgeName) {
+			if (FileExist(MG_DirUserBtn) != "D") {
+				FileCreateDir, %MG_DirUserBtn%
+			}
+			FileCopy, %MG_DirScrEdge%%A_LoopField%.ahk
+					, %MG_DirUserBtn%%A_LoopField%.ahk, 1
 			break
 		}
 	}
@@ -1819,33 +1993,41 @@ AddScreenEdge()
 }
 
 ;-------------------------------------------------------------------------------
-; Define New Button
+; Create user defined button
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-DefineNewButton:
-	DefineNewButton()
-return
-DefineNewButton()
+CreateUserButton() {
+	DlgUserButton()
+}
+DlgUserButton(defDesc="", defName="", defKey="")
 {
-	global
-	Gui, MEW_Trg:-MaximizeBox -MinimizeBox +HwndME_hWndTrg +OwnerMEW_Main +Delimiter`n +LastFound
+	local tblText, width, Bx, Bw, Bs, stat, szKey
 
-	local tblText := Array(ME_LngText023, ME_LngText024)
-	local width := GetMaxTextLength(tblText)+8
+	Gui, MEW_Trg:New, -MaximizeBox -MinimizeBox +HwndME_hWndTrg +OwnerMEW_Main +Delimiter`n +LastFound
+
+	tblText := Array(ME_LngText023, ME_LngText024, ME_LngText025)
+	width := GetMaxTextLength(tblText)+8
 	Gui, MEW_Trg:Add, Text,x12 y20 w%width%, %ME_LngText023%
-	Gui, MEW_Trg:Add, Edit,x+0 yp-4 w174 vTriggerName gOnEditTrigger
+	Gui, MEW_Trg:Add, Edit,x+0 yp-4 w214 vTriggerDescrip gOnEditTrigger, %defDesc%
 
 	Gui, MEW_Trg:Add, Text, x12 y+12 w%width%, %ME_LngText024%
-	Gui, MEW_Trg:Add, Edit, x+0 yp-4 w151 vTriggerKey gOnEditTrigger
-	Gui, MEW_Trg:Add, Button, x+2 yp-1 w22 h22 gOnTriggerInput, ...
+	Gui, MEW_Trg:Add, Edit, x+0 yp-4 w214 vTriggerName gOnEditTrigger Section, %defName%
 
-	Gui, MEW_Trg:Show, Hide
-	local width
-	WinGetPos,,,width
-	local left := width - 185
-	Gui, MEW_Trg:Add, Button, vAcceptTrigger gOnAcceptTrigger x%left% y+14 w80 Default Disabled, %ME_LngButton001%
-	Gui, MEW_Trg:Add, Button, gOnCancelTrigger x+8 yp+0 w80, %ME_LngButton002%
-	Gui, MEW_Trg:Show, AutoSize, %ME_LngCapt004%
+	Gui, MEW_Trg:Add, Text, x12 y+12 w%width%, %ME_LngText025%
+	Gui, MEW_Trg:Add, Edit, x+0 yp-4 w151 vTriggerKey gOnEditTrigger Section, %defKey%
+	Gui, MEW_Trg:Add, Button, x+2 yp-1 w62 h22 gOnTriggerInput, %ME_LngButton010%
+
+	stat := RegExMatch(defKey, "^\*") ? "Checked" : ""
+	Gui, MEW_Trg:Add, CheckBox, xs y+8 h14 VcbIgnoreModifier gOnIgnoreModifier %stat%, %ME_LngCheckBox018%
+	cbIgnoreModifier := 0
+
+	GuiControlGet, rcCtrl, MEW_Trg:Pos, TriggerDescrip
+	Bw:=80, Bs:=8
+	Bx := rcCtrlX + rcCtrlW - Bw*2 - Bs + 1
+	stat := (defDesc && defName && defKey) ? "" : "Disabled"
+	Gui, MEW_Trg:Add, Button, vAcceptTrigger gOnAcceptTrigger x%Bx% y+18 w%Bw% Default %stat%, %ME_LngButton001%
+	Gui, MEW_Trg:Add, Button, gOnCancelTrigger x+%Bs% yp+0 w%Bw%, %ME_LngButton002%
+	Gui, MEW_Trg:Show, AutoSize, %ME_LngCapt005%
 
 	WinWaitClose,  ahk_id %ME_hWndTrg%
 	return
@@ -1854,31 +2036,41 @@ DefineNewButton()
 	; On Edit Trigger
 OnEditTrigger:
 	Gui, MEW_Trg:Submit, Nohide
-	local stat := (TriggerName="" || TriggerKey="") ? "Disable" : "Enable"
+	if (A_GuiControl = "TriggerKey") {
+		GuiControl, MEW_Trg:, cbIgnoreModifier, % (SubStr(TriggerKey, 1, 1)=="*") ? 1 : 0
+	}
+	stat := (TriggerDescrip=="" || TriggerName=="" || RegExReplace(TriggerKey, "^[~*]", "")=="") ? "Disable" : "Enable"
 	GuiControl, MEW_Trg:%stat%, AcceptTrigger
 	return
-
 	;---------------------------------------------------------------------------
-	; On Input Key button press
+	; On Input Key button
 OnTriggerInput:
-	local szKey
 	DlgKeyInput(szKey)
-	szKey := RegExReplace(szKey, "[{}]")
-	GuiControl, MEW_Trg:, TriggerKey, %szKey%
+	szKey := (cbIgnoreModifier ? "*" : "") RegExReplace(szKey, "[{}]")
+	if (szKey) {
+		GuiControl, MEW_Trg:, TriggerKey, %szKey%
+	}
+	WinActivate, ahk_id %ME_hWndTrg%
 	return
-
+	;---------------------------------------------------------------------------
+	; On Ignore Modifier
+OnIgnoreModifier:
+	Gui, MEW_Trg:Submit, Nohide
+	if (cbIgnoreModifier && (SubStr(TriggerKey, 1, 1)!="*")) {
+		TriggerKey := "*" TriggerKey
+	} else if (!cbIgnoreModifier && (SubStr(TriggerKey, 1, 1)=="*")) {
+		TriggerKey := SubStr(TriggerKey, 2)
+	}
+	GuiControl, MEW_Trg:, TriggerKey, %TriggerKey%
+	return
 	;---------------------------------------------------------------------------
 	; Accepted
 OnAcceptTrigger:
 	Gui, MEW_Trg:Submit, Nohide
-	if (TriggerName!="" && TriggerKey!="")
-	{
-		if (AddButton(TriggerName, TriggerKey)) {
-			Gui, MEW_Trg:Destroy
-		}
+	if (SaveButton(TriggerDescrip, TriggerName, TriggerKey, defName)) {
+		Gui, MEW_Trg:Destroy
 	}
 	return
-
 	;---------------------------------------------------------------------------
 	; Canceled
 OnCancelTrigger:
@@ -1889,31 +2081,113 @@ MEW_TrgGuiEscape:
 }
 
 ;-------------------------------------------------------------------------------
-; Add New Trigger Button
+; Save user defined button
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-AddButton(name, key)
+SaveButton(desc, name, key, szOrg)
 {
-	global
-	local szKey := RegExReplace("^~","",key)
-	local szPathBtn  := A_ScriptDir . "\Components\Buttons\" . name . ".ahk"
-	local szPathEdge := A_ScriptDir . "\Components\Buttons\ScreenEdges\" . name . ".ahk"
-	if (!FileExist(szPathBtn) && !FileExist(szPathEdge))
+	local szPath, szTrim, szBkup, szKey, szBtn, bDel:=false, bDefName:=false
+
+	; Blank check
+	desc:=Trim(desc), name:=Trim(name), key:=RegExReplace(key,"\s","")
+	if (!desc || !name || !key) {
+		return false
+	}
+	; Name check
+	if (!RegExMatch(name, "^([a-zA-Z0-9]+)$")) {
+		MsgBox, 0x30, %ME_LngCapt005%, %ME_LngMessage011%
+		return false
+	}
+	if (FileExist(MG_DirScrEdge . name ".ahk")) {
+		MsgBox, 0x30, %ME_LngCapt005%, %ME_LngMessage012%
+		return false
+	}
+	szBkup := MG_DirUserBtn "~tmp"
+	if (szPath := GetButtonPath(name)) {
+		if (name != szOrg) {
+			MsgBox, 0x31, %ME_LngCapt005%, %ME_LngMessage013%
+			IfMsgBox, Cancel
+			{
+				return false
+			}
+		}
+		FileCopy, %szPath%, %szBkup%, 1
+		FileDelete, %szPath%
+		bDel := true
+	}
+	else if (IsDefaultBtnName(name)) {
+		MsgBox, 0x31, %ME_LngCapt005%, %ME_LngMessage015%
+		IfMsgBox, Cancel
+		{
+			return false
+		}
+		bDefName := true
+	}
+	; Key check
+	szTrim := RegExReplace(key, "^[~*]*", "")
+	szPath := ""
+	Loop, %MG_DirUserBtn%*.ahk
 	{
-		local szBtn
-		szBtn = 
-(LTrim
-		Goto,MG_%name%_End
+		GetButtonData(A_LoopFileFullPath, szKey)
+		if ((szTrim = RegExReplace(szKey, "^[~*]*", "")) && (A_LoopFileFullPath != GetButtonPath(szOrg))) {
+			szPath := A_LoopFileFullPath
+			break
+		}
+	}
+	if (!szPath) {
+		if (!bDefName && IsDefaultButton(szTrim)) {
+			MsgBox, 0x30, %ME_LngCapt005%, %ME_LngMessage016%
+			return false
+		}
+		Loop, %MG_DirButtons%*.ahk
+		{
+			GetButtonData(A_LoopFileFullPath, szKey)
+			if ((szTrim = RegExReplace(szKey, "^[~*]*", "")) && (A_LoopFileFullPath != GetButtonPath(szOrg))) {
+				if (!bDefName || !IsDefaultButton(szTrim)) {
+					szPath := A_LoopFileFullPath
+					break
+				}
+			}
+		}
+	}
+	if (szPath) {
+		MsgBox, 0x31, %ME_LngCapt005%, %ME_LngMessage014%
+		IfMsgBox, Cancel
+		{
+			if (bDel) {
+				FileCopy, %szBkup%, % MG_DirUserBtn . name ".ahk"
+				FileDelete, %szBkup%
+			}
+			return false
+		}
+		FileDelete, %szPath%
+	}
+	FileDelete, %szBkup%
+	if (szOrg && name!=szOrg) {
+		FileDelete, % GetButtonPath(szOrg)
+	}
+	; Creating button module
+	szBtn =
+	(LTrim
+		;Description = %desc%
+		Goto, MG_%name%_End
 
 		MG_%name%_Enable:
-		`tHotkey,*%key%,MG_%name%_DownHotkey,On
-		`tHotkey,*%key% up,MG_%name%_UpHotkey,On
+		`tif (!MG_AlwaysHook) {
+		`t`tMG_%name%_HookEnabled := Func("MG_IsHookEnabled_%name%")
+		`t`tHotkey, If, `% MG_%name%_HookEnabled
+		`t}
+		`tHotkey, %key%, MG_%name%_DownHotkey, On
+		`tHotkey, %key% up, MG_%name%_UpHotkey, On
+		`tHotkey, If
+		`tMG_%name%_Enabled := 1
 		return
 
 		MG_%name%_Disable:
-		`tHotkey,*%key%,MG_%name%_DownHotkey,Off
-		`tHotkey,*%key% up,MG_%name%_UpHotkey,Off
+		`tHotkey, %key%, MG_%name%_DownHotkey, Off
+		`tHotkey, %key% up, MG_%name%_UpHotkey, Off
+		`tMG_%name%_Enabled := 0
 		return
 
 		MG_%name%_DownHotkey:
@@ -1925,67 +2199,156 @@ AddButton(name, key)
 		return
 
 		MG_%name%_Down:
-		`tSetMouseDelay,-1
-		`tSend,{Blind}{%szKey% Down}
+		`tMG_SendButton("%name%", "%szTrim%", "Down")
 		return
 
 		MG_%name%_Up:
-		`tSetMouseDelay,-1
-		`tSend,{Blind}{%szKey% Up}
+		`tMG_SendButton("%name%", "%szTrim%", "Up")
 		return
 
-		MG_%name%_End:
+		MG_%name%_Check:
+		`tMG_CheckButton("%name%", "%szTrim%")
+		return
 
-)
-		FileAppend, %szBtn%, %szPathBtn%, UTF-8
-		LoadButtons()
-		GuiControl, MEW_Main:, LBButtons, `n%LBButtons%
-		return true
+		MG_%name%_End:`n
+	)
+	if (FileExist(MG_DirUserBtn) != "D") {
+		FileCreateDir, %MG_DirUserBtn%
 	}
-	else
-	{
-		MsgBox, 0x30, %ME_LngCapt004%, %ME_LngMessage007%
-		return false
-	}
+	szPath := MG_DirUserBtn . name ".ahk"
+	FileAppend, %szBtn%, %szPath%, UTF-8
+	LoadButtons()
+	GuiControl, MEW_Main:, LBButtons, `n%LBButtons%
+	return true
 }
 
 ;-------------------------------------------------------------------------------
-; Delete Defined Trigger
+; Get button data
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnDelTriggerSelect:
-	DeleteTrigger()
-return
-DeleteTrigger()
+GetButtonData(szPath, ByRef szKey="")
 {
-	global
+	local szBuf:="", szDesc:=""
+
+	FileRead, szBuf, %szPath%
+	szBuf := RegExReplace(szBuf, "Hotkey[\t\s]*?,[\t\s]*?If")
+	if (RegExMatch(szBuf, "Hotkey[\t\s]*,[\t\s]*(.+?)[\t\s]*,", $)) {
+		szKey := $1
+	}
+	if (RegExMatch(szBuf, "m)^.*Description[\s\t]*=[\s\t]*(.+).*$", $)) {
+		szDesc := $1
+	}
+	if (!szDesc) {
+		RegExMatch(szPath, ".+\\(.+)\.ahk", $)
+		szDesc := "Button_" $1
+		szDesc := %szDesc% ? %szDesc% : $1
+	}
+	return szDesc
+}
+
+;-------------------------------------------------------------------------------
+; Edit user defined button
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+EditButton()
+{
+	local szPath, szDesc, szName, szKey
+
 	Gui, MEW_Main:Submit, Nohide
-	if (!LBButtons) {
+	SendMessage, 0x018B,,,, % "ahk_id " ControlGetHandle("LBButtons")
+	szName := MG_BtnNames[LBButtons]
+	if (!LBButtons || LBButtons==ErrorLevel || !szPath:=GetButtonPath(szName, true)) {
 		return
 	}
-	local szTrigger := % Button_%LBButtons%
-	Loop, Parse, MG_DefButtons, `n
-	{
-		if (A_LoopField = szTrigger) {
-			return
-		}
-	}
-	local szPath = A_ScriptDir . "\Components\Buttons\" . szTrigger . ".ahk"
-	FileDelete, %szPath%
+	szDesc := GetButtonData(szPath, szKey)
+	DlgUserButton(szDesc, szName, szKey)
+}
 
-	local sel := LBButtons
+;-------------------------------------------------------------------------------
+; Delete user defined button
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+DeleteButton()
+{
+	local szPath, szName, sel
+
+	Gui, MEW_Main:Submit, Nohide
+	SendMessage, 0x018B,,,, % "ahk_id " ControlGetHandle("LBButtons")
+	szName := MG_BtnNames[LBButtons]
+	if (!LBButtons || LBButtons==ErrorLevel || !szPath:=GetButtonPath(szName)) {
+		return
+	}
+	MsgBox, 0x31, %ME_LngCapt003%, %ME_LngMessage017%
+	IfMsgBox, Cancel
+	{
+		return
+	}
+	FileDelete, %szPath%
+	sel := LBButtons
 	LoadButtons()
 	GuiControl, MEW_Main:, LBButtons, `n%LBButtons%
 	GuiControl, MEW_Main:Choose, LBButtons, %sel%
 }
 
 ;-------------------------------------------------------------------------------
+; Determine whether the symbol is default button name
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+IsDefaultBtnName(szName) {
+	global
+	return RegExMatch(MG_DefButtons, "(^" szName "\n|\n" szName "\n|\n" szName "$)")
+}
+
+;-------------------------------------------------------------------------------
+; Determine whether the button is default
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+IsDefaultButton(szBtn)
+{
+	static aryDefBtns := ["LButton", "RButton", "MButton", "XButton1", "XButton2"
+						, "WheelUp", "WheelDown", "WheelLeft", "WheelRight"]
+	Loop, % aryDefBtns.MaxIndex() {
+		if (szBtn = aryDefBtns[A_Index]) {
+			return true
+		}
+	}
+	return false
+}
+
+;-------------------------------------------------------------------------------
+; Get path name of the button module
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+GetButtonPath(szBtn, bIncDef=false)
+{
+	local szPath
+
+	szPath := MG_DirUserBtn . szBtn ".ahk"
+	if (FileExist(szPath)) {
+		return szPath
+	}
+	if (bIncDef || !IsDefaultBtnName(szBtn)) {
+		szPath := MG_DirButtons . szBtn ".ahk"
+		if (FileExist(szPath)) {
+			return szPath
+		}
+	}
+	return ""
+}
+
+;-------------------------------------------------------------------------------
+; On Release Gesture Press
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+OnReleaseGesturePress() {
+	global
+	ReleaseGesture(Gesture_Editing, Action_Editing)
+}
+
+;-------------------------------------------------------------------------------
 ; On Edit Action Press
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnEditActionPress:
-	EditAction()
-return
 EditAction()
 {
 	global Target_Editing, EAction, ME_hWndMain
@@ -1993,7 +2356,7 @@ EditAction()
 		return
 	}
 	Gui, MEW_Main:Submit, Nohide
-	szActTemp := A_Temp . "\~MG_ActTmp.ahk"
+	szActTemp := A_Temp "\~MG_ActTmp.ahk"
 	file := FileOpen(szActTemp, "w `n", "UTF-8")
 	if (!file) {
 		return
@@ -2002,20 +2365,14 @@ EditAction()
 	file.Close
 
 	GuiControlGet, szEditor, MEW_Main:, Config_ScriptEditor
-	GuiControlGet, szUserName, MEW_Main:, Config_UserName
-	GuiControlGet, szPassword, MEW_Main:, Config_Password
 	if (szEditor != "") {
-		szEditor := """" . MG_VarInStr(szEditor) . """"
+		szEditor := """" MG_VarInStr(szEditor) """"
 	}
 	else {
 		szEditor := "notepad"
 	}
 	DisableActionControls(true)
-	if (MG_IsNewOS() && szUserName) {
-		RunAs, %szUserName%, %szPassword%
-	}
-	RunWait, % szEditor . " " . szActTemp,, UseErrorLevel
-	RunAs
+	MG_RunAsUser(szEditor " " szActTemp,,, true)
 	DisableActionControls(false)
 	WinActivate, ahk_id %ME_hWndMain%
 
@@ -2031,57 +2388,60 @@ EditAction()
 		}
 	}
 	FileDelete, %szActTemp%
+	GuiControl, MEW_Main:Focus, EAction
 }
 
 ;-------------------------------------------------------------------------------
 ; On Clear Action Press
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnClearActionPress:
+OnClearActionPress() {
 	GuiControl, MEW_Main:, EAction,
 	SaveModification("Modified", "EAction")
-return
+}
 
 ;-------------------------------------------------------------------------------
 ; Disable Action Controls
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-DisableActionControls(fDisable)
+DisableActionControls(bDisable)
 {
-	local stat := fDisable ? "Disable" : "Enable"
+	local stat := bDisable ? "Disable" : "Enable"
 	GuiControl, MEW_Main:%stat%, TVTarget1
-	GuiControl, MEW_Main:%stat%, TVTarget2
 	GuiControl, MEW_Main:%stat%, LVGesture
-	GuiControl, MEW_Main:%stat%, LBGesture2
+	GuiControl, MEW_Main:%stat%, TVTarget2
+	GuiControl, MEW_Main:%stat%, LBGesture
 	GuiControl, MEW_Main:%stat%, LVAction
+	GuiControl, MEW_Main:%stat%, BReleaseGesture
 	GuiControl, MEW_Main:%stat%, BActionUp
 	GuiControl, MEW_Main:%stat%, BActionDelete
-	GuiControl, MEW_Main:%stat%, BActionDelete2
 	GuiControl, MEW_Main:%stat%, BActionDown
+	GuiControl, MEW_Main:%stat%, BAddAction
+	GuiControl, MEW_Main:%stat%, BUpdateAction
 	GuiControl, MEW_Main:%stat%, EAction
 	GuiControl, MEW_Main:%stat%, BEditAction
 	GuiControl, MEW_Main:%stat%, BClearAction
 	GuiControl, MEW_Main:%stat%, BAddActionLine
+	if (!bDisable) {
+		ChangeActionButtonStat()
+	}
 }
 
 ;-------------------------------------------------------------------------------
 ; On Icon Edit Change
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnIconChange:
-	OnIconChange()
-return
 OnIconChange()
 {
 	local icon
 	Gui, MEW_Main:Submit, Nohide
 	icon := EIconIndex ? "*Icon" EIconIndex " " : ""
-	icon .= "*w16 *h16 " . MG_VarInStr(EIconFile)
+	icon .= "*w" MG_AdjustToDPI(16) " *h" MG_AdjustToDPI(16) " " MG_VarInStr(EIconFile)
 	GuiControl, MEW_Main:, PicIcon, %icon%
 	local stat := EIconFile ? "Enable" : "Disable"
 	GuiControl, MEW_Main:%stat%, EIconIndex
 	GuiControl, MEW_Main:%stat%, UDIconIndex
-	stat := (Target_Editing>0) ? "Enable" : "Disable"
+	stat := (Target_Editing>1) ? "Enable" : "Disable"
 	GuiControl, MEW_Main:%stat%, BApplyIcon
 }
 
@@ -2089,21 +2449,20 @@ OnIconChange()
 ; On Browse Icon Button Press
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnBrowseIcon:
+OnBrowseIcon()
+{
+	global
 	Gui, MEW_Main:Submit, Nohide
 	FileSelectFile, EIconFile,, % MG_VarInStr(EIconFile), %ME_LngCapt025%, %ME_LngText558%
 	if (EIconFile) {
 		GuiControl, MEW_Main:, EIconFile, %EIconFile%
 	}
-return
+}
 
 ;-------------------------------------------------------------------------------
 ; On Apply Icon Button Press
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnApplyIcon:
-	OnApplyIcon()
-return
 OnApplyIcon()
 {
 	local idx
@@ -2113,41 +2472,44 @@ OnApplyIcon()
 		idx := EIconIndex>0 ? EIconIndex : 1
 		Target_%Target_Editing%_IconFile := EIconFile ? EIconFile "," idx : ""
 		Target_%Target_Editing%_Icon := EIconFile ? IL_Add(MG_hImageList, MG_VarInStr(EIconFile), idx) : 0
+		SaveModification("Suspend")
 		ShowTargets()
 		ShowTarget(Target_Editing)
 		ShowGesture(Gesture_Editing)
-		ShowAction(Gesture_Editing, Action_Editing, false)
+		ShowAction(Gesture_Editing, Action_Editing)
+		Sleep, 1
+		SaveModification("Resume")
 	}
 }
 
 ;-------------------------------------------------------------------------------
-; On 8-Dir Change
+; On Direction Mode Change
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-On8DirChange:
-	On8DirChange()
-return
-On8DirChange(bConvert=true)
+OnDirChange() {
+	DirModeChange()
+}
+DirModeChange(bConvert=true)
 {
-	local chk, stat, msg, pat
-	GuiControlGet, chk, MEW_Main:, Config_8Dir
-	stat := chk ? "Enable" : "Disable"
-	GuiControl, MEW_Main:%stat%, Label17
+	local stat, msg, pat
+	GuiControlGet, Config_8Dir, MEW_Main:, Config_8Dir
+	stat := Config_8Dir ? "Enable" : "Disable"
+	GuiControl, MEW_Main:%stat%, Label35
 	GuiControl, MEW_Main:%stat%, Config_LongThreshold
 	GuiControl, MEW_Main:%stat%, UDLongThreshold
-	GuiControl, MEW_Main:%stat%, Label18
+	GuiControl, MEW_Main:%stat%, Label36
 	GuiControl, MEW_Main:%stat%, Config_ORangeDefault
-	GuiControl, MEW_Main:%stat%, Label19
+	GuiControl, MEW_Main:%stat%, Label37
 	GuiControl, MEW_Main:%stat%, Config_ORangeA
-	GuiControl, MEW_Main:%stat%, Label20
+	GuiControl, MEW_Main:%stat%, Label38
 	GuiControl, MEW_Main:%stat%, Config_ORangeB
 
 	if (!bConvert) {
 		return
 	}
-	msg := RegExReplace(ME_LngMessage008, "\[#REPLASE#\]", chk ? 8 : 4)
-	msg .= (!chk) ? ME_LngMessage009 :
-	MsgBox, 36, %ME_LngCapt001%, %msg%
+	msg := RegExReplace(ME_LngMessage021, MG_ReplaceStr, Config_8Dir ? 8 : 4)
+	msg .= (!Config_8Dir) ? ME_LngMessage022 :
+	MsgBox, 0x24, %ME_LngCapt001%, %msg%
 	IfMsgBox, Yes
 	{
 		Loop, %Gesture_Count%
@@ -2155,7 +2517,7 @@ On8DirChange(bConvert=true)
 			pat := ""
 			Loop, Parse, Gesture_%A_Index%_Patterns, `n
 			{
-				Join(pat, MG_CnvDirMode(A_LoopField, chk))
+				Join(pat, MG_CnvDirMode(A_LoopField, Config_8Dir))
 			}
 			Gesture_%A_Index%_Patterns := pat
 		}
@@ -2165,7 +2527,7 @@ On8DirChange(bConvert=true)
 }
 
 ;-------------------------------------------------------------------------------
-; Convert Gesture Direction Mode
+; Convert gesture direction mode
 ;	szGesture : Gesture string to be converted
 ;	mode	  : 1=4-dir to 8-dir  0=8-dir to 4-dir
 ;														Implemented by Pyonkichi
@@ -2174,30 +2536,24 @@ MG_CnvDirMode(szGesture, mode)
 {
 	global MG_BtnNames
 	szOut := ""
-	max:=StrLen(szGesture), pos := 1
-	while (pos <= max)
-	{
-		if (SubStr(szGesture, pos, 1) == "_")
-		{
+	max := StrLen(szGesture)
+	pos := 1
+	while (pos <= max) {
+		if (SubStr(szGesture, pos, 1) == "_") {
 			szOut .= "_"
 			offset := 1
 		}
-		else
-		{
-			fMatched = 0
-			Loop, Parse, MG_BtnNames, _
-			{
-				if (A_LoopField
-				&&	InStr(SubStr(szGesture, pos), A_LoopField) == 1)
-				{
-					szOut .= A_LoopField
-					offset := StrLen(A_LoopField)
-					fMatched = 1
+		else {
+			bMatch := false
+			Loop, % MG_BtnNames.MaxIndex() {
+				if (InStr(SubStr(szGesture, pos), MG_BtnNames[A_Index])==1) {
+					szOut .= MG_BtnNames[A_Index]
+					offset := StrLen(MG_BtnNames[A_Index])
+					bMatch := true
 					break
 				}
 			}
-			if (!fMatched)
-			{
+			if (!bMatch) {
 				dir := SubStr(szGesture, pos, 1)
 				if (mode) {
 					dir := (dir="D") ? "2" : (dir="L") ? "4" : (dir="R") ? "6" : (dir="U") ? "8" : dir
@@ -2218,7 +2574,9 @@ MG_CnvDirMode(szGesture, mode)
 ; On Hotkey Change
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnHotkeyChange:
+OnHotkeyChange()
+{
+	global
 	Gui, MEW_Main:Submit, Nohide
 	if (Config_HotkeyEnable = Config_HotkeyNavi)
 	{
@@ -2229,33 +2587,256 @@ OnHotkeyChange:
 			GuiControl, MEW_Main:, Config_HotkeyEnable
 		}
 	}
-return
+}
+
+;-------------------------------------------------------------------------------
+; Select excluded windows of activation
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+DlgRegActvtExclud()
+{
+	local sel, col1, col2, col3, col4, width, szTemp, title, class, exe, aryTmp, cnt
+
+	sel:=0, col1:=25, col2:=200, col3:=200, col4:=200
+	width := col1 + col2 + col3 + col4 + 22
+	Gui, MEW_ActvtExclud:New
+	Gui, MEW_ActvtExclud:Default
+	Gui, MEW_ActvtExclud:+Delimiter`n -MaximizeBox -MinimizeBox +HwndME_hWndActvEx +OwnerMEW_Main
+	Gui, MEW_ActvtExclud:Add, ListView, x10 y10 w%width% h172 LV1 -Multi NoSortHdr vLVActvEx gOnActvExSelect AltSubmit, `n%ME_LngListView005%
+	Gui, MEW_ActvtExclud:Add, Edit, x37  w%col2% vEActExTitle gOnActExChange Disabled
+	Gui, MEW_ActvtExclud:Add, Edit, x+1 w%col3% vEActExClass gOnActExChange Disabled
+	Gui, MEW_ActvtExclud:Add, Edit, x+1 w%col4% vEActExExe gOnActExChange Disabled Section
+	Gui, MEW_ActvtExclud:Add, Button, gOnSelWindows x37 y+8 w200, %ME_LngButton023%
+	Gui, MEW_ActvtExclud:Add, Button, gOnDeleteActvEx vBDeleteActvEx x+8 w80 Disabled, %ME_LngButton011%
+	Gui, MEW_ActvtExclud:Add, Button, gOnAcceptActvEx xs+33 yp w80 Default, %ME_LngButton001%
+	Gui, MEW_ActvtExclud:Add, Button, gOnCancelActvEx x+8 w80, %ME_LngButton002%
+	Gui, MEW_ActvtExclud:ListView, LVActvEx
+	LV_ModifyCol(1, col1)
+	LV_ModifyCol(2, col2)
+	LV_ModifyCol(3, col3)
+	LV_ModifyCol(4, col4)
+	GuiControl, MEW_ActvtExclud: -Redraw, LVActvEx
+	LV_Delete()
+	Loop, % MG_ActvtExclud.MaxIndex()
+	{
+		LV_Add("", A_Index, MG_ActvtExclud[A_Index][1], MG_ActvtExclud[A_Index][2], MG_ActvtExclud[A_Index][3])
+	}
+	LV_Add("", LV_GetCount()+1)
+	GuiControl, MEW_ActvtExclud: +Redraw, LVActvEx
+	Gui, MEW_ActvtExclud:Show,, %ME_LngCapt009%
+
+	WinWaitClose,  ahk_id %ME_hWndActvEx%
+	Gui, MEW_Main:Default
+	return
+
+	;---------------------------------------------------------------------------
+	; Target is selected
+OnActvExSelect:
+	sel := LV_GetNext()
+	if (!sel)
+	{
+		GuiControl, MEW_ActvtExclud: Disable, EActExTitle
+		GuiControl, MEW_ActvtExclud: Disable, EActExClass
+		GuiControl, MEW_ActvtExclud: Disable, EActExExe
+		GuiControl, MEW_ActvtExclud: Disable, BDeleteActvEx
+		GuiControl, MEW_ActvtExclud:, EActExTitle,
+		GuiControl, MEW_ActvtExclud:, EActExClass,
+		GuiControl, MEW_ActvtExclud:, EActExExe,
+		return
+	}
+	if (A_GuiEvent!="Normal" && A_GuiEvent!="K") {
+		return
+	}
+	GuiControl, MEW_ActvtExclud: Enable, EActExTitle
+	GuiControl, MEW_ActvtExclud: Enable, EActExClass
+	GuiControl, MEW_ActvtExclud: Enable, EActExExe
+	GuiControl, MEW_ActvtExclud: Enable, BDeleteActvEx
+	LV_GetText(szTemp, sel, 2)
+	GuiControl, MEW_ActvtExclud:, EActExTitle, %szTemp%
+	LV_GetText(szTemp, sel, 3)
+	GuiControl, MEW_ActvtExclud:, EActExClass, %szTemp%
+	LV_GetText(szTemp, sel, 4)
+	GuiControl, MEW_ActvtExclud:, EActExExe, %szTemp%
+	if (sel == LV_GetCount()) {
+		LV_Add("", LV_GetCount()+1)
+	}
+	return
+
+	;---------------------------------------------------------------------------
+	; On text change
+OnActExChange:
+	if (!sel) {
+		return
+	}
+	GuiControlGet, szTemp, MEW_ActvtExclud:, %A_GuiControl%
+	LV_Modify(sel, "Col" (A_GuiControl="EActExTitle" ? 2
+						  : (A_GuiControl="EActExClass" ? 3
+						  : (A_GuiControl="EActExExe"   ? 4 : ""))), szTemp)
+	return
+
+	;---------------------------------------------------------------------------
+	; Select target from existing windows
+OnSelWindows:
+	if (DlgTaskList(title, class, exe)) {
+		sel := LV_GetCount()
+		LV_Modify(sel,, sel, title, class, exe)
+		LV_Modify(sel, "Select")
+		LV_Modify(sel, "Focus")
+		LV_Add("", LV_GetCount()+1)
+		Gosub, OnActvExSelect
+	}
+	return
+
+	;---------------------------------------------------------------------------
+	; Delete selected target
+OnDeleteActvEx:
+	sel := LV_GetNext()
+	if (!sel) {
+		return
+	}
+	if (sel < LV_GetCount()) {
+		cnt := sel+1
+		while (cnt <= LV_GetCount()) {
+			LV_GetText(title, cnt, 2)
+			LV_GetText(class, cnt, 3)
+			LV_GetText(exe,   cnt, 4)
+			LV_Modify(cnt-1,,, title, class, exe)
+			cnt++
+		}
+		Gosub, OnActvExSelect
+		LV_Delete(LV_GetCount())
+	} else {
+		GuiControl, MEW_ActvtExclud:, EActExTitle,
+		GuiControl, MEW_ActvtExclud:, EActExClass,
+		GuiControl, MEW_ActvtExclud:, EActExExe,
+	}
+	return
+
+	;---------------------------------------------------------------------------
+	; Accepted
+OnAcceptActvEx:
+	MG_ActvtExclud.RemoveAt(1, MG_ActvtExclud.MaxIndex())
+	cnt := 0
+	Loop, % LV_GetCount()
+	{
+		LV_GetText(title, A_Index, 2)
+		LV_GetText(class, A_Index, 3)
+		LV_GetText(exe,   A_Index, 4)
+		if (!title && !class && !exe) {
+			continue
+		}
+		cnt++
+		aryTmp := Array(title, class, exe)
+		MG_ActvtExclud.InsertAt(cnt, aryTmp)
+	}
+	Gui, MEW_ActvtExclud:Destroy
+	return
+
+	;---------------------------------------------------------------------------
+	; Canceled
+OnCancelActvEx:
+MEW_ActvtExcludGuiClose:
+MEW_ActvtExcludGuiEscape:
+	Gui, MEW_ActvtExclud:Destroy
+	return
+}
+
+;-------------------------------------------------------------------------------
+; Show Task List
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+DlgTaskList(ByRef title, ByRef class, ByRef exe)
+{
+	local sel, col1, col2, col3, width, nWnd, hWnd, ret:=false
+
+	sel:=0, col1:=200, col2:=200, col3:=200
+	width := col1 + col2 + col3 + 22
+	Gui, MEW_TaskList:New
+	Gui, MEW_TaskList:Default
+	Gui, MEW_TaskList:+Delimiter`n -MaximizeBox -MinimizeBox +HwndME_hWndTskLst +OwnerMEW_ActvtExclud
+	Gui, MEW_TaskList:Add, ListView, x10 y10 w%width% h400 LV1 section -Multi vLVTaskList gOnTaskSelect AltSubmit, %ME_LngListView005%
+	Gui, MEW_TaskList:Add, Button, gOnSelectTask x+-168 y+8 w80 Default, %ME_LngButton024%
+	Gui, MEW_TaskList:Add, Button, gOnCancelSelTsk x+8 w80, %ME_LngButton002%
+	Gui, MEW_TaskList:ListView, LVTaskList
+	LV_ModifyCol(1, col1)
+	LV_ModifyCol(2, col2)
+	LV_ModifyCol(3, col3)
+	WinGet, nWnd, List,,,!!!_dummy_dummy_dummy_!!!
+	Loop, %nWnd%
+	{
+		hWnd := nWnd%A_Index%
+		if (hWnd==ME_hWndActvEx || hWnd==ME_hWndTskLst || !MG_IsActivationTarget(hWnd, false)) {
+			continue
+		}
+		IfWinExist, ahk_id %hWnd%
+		{
+			WinGetTitle, title
+		    WinGetClass, class
+		    WinGet, exe, ProcessName
+    		LV_Add("", title, class, exe)
+		}
+	}
+	Gui, MEW_TaskList:Show,, %ME_LngCapt010%
+
+	WinWaitClose,  ahk_id %ME_hWndTskLst%
+	Gui, MEW_ActvtExclud:Default
+	return ret
+
+	;---------------------------------------------------------------------------
+	; Double-click
+OnTaskSelect:
+	if (A_GuiEvent=="DoubleClick") {
+		Gosub, OnSelectTask
+	}
+	return
+
+	;---------------------------------------------------------------------------
+	; Selected
+OnSelectTask:
+	sel := LV_GetNext()
+	if (sel) {
+		LV_GetText(title, sel, 1)
+		LV_GetText(class, sel, 2)
+		LV_GetText(exe,   sel, 3)
+		ret := true
+	}
+	Gui, MEW_TaskList:Destroy
+	return
+
+	;---------------------------------------------------------------------------
+	; Canceled
+OnCancelSelTsk:
+MEW_TaskListGuiClose:
+MEW_TaskListGuiEscape:
+	ret := false
+	Gui, MEW_TaskList:Destroy
+	return
+}
 
 ;-------------------------------------------------------------------------------
 ; On Browse Script Editor Press
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnBrowseEditor:
+OnBrowseEditor()
+{
+	global
 	Gui, MEW_Main:Submit, Nohide
-	FileSelectFile, Config_ScriptEditor,, % MG_VarInStr(Config_ScriptEditor), %ME_LngCapt005%, %ME_LngText556%
+	FileSelectFile, Config_ScriptEditor,, % MG_VarInStr(Config_ScriptEditor), %ME_LngCapt006%, %ME_LngText556%
 	if (Config_ScriptEditor) {
 		GuiControl, MEW_Main:, Config_ScriptEditor, %Config_ScriptEditor%
 	}
-return
+}
 
 ;-------------------------------------------------------------------------------
 ; On Adjust Dialog Height Change
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnAdjustDlgHeight:
-	OnAdjustDlgHeight()
-return
 OnAdjustDlgHeight()
 {
 	local chk
 	GuiControlGet, chk, MEW_Main:, Config_AdjustDlg
 	MG_CtrlStat := chk ? "Enable" : "Disable"
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label73
+	GuiControl, MEW_Main:%MG_CtrlStat%, Label134
 	GuiControl, MEW_Main:%MG_CtrlStat%, Config_DlgHeightLimit
 	GuiControl, MEW_Main:%MG_CtrlStat%, UDDlgHeightLimit
 	AdjustDialogHeight()
@@ -2265,11 +2846,13 @@ OnAdjustDlgHeight()
 ; On Register to Startup
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnRegStartup:
-	bAdmin:=false
+OnRegStartup()
+{
+	local bAdmin:=false
+
 	if (MG_IsNewOS())
 	{
-		MsgBox, 36, %ME_LngCapt001%, %ME_LngMessage010%
+		MsgBox, 0x24, %ME_LngCapt001%, %ME_LngMessage031%
 		IfMsgBox, Yes
 		{
 			bAdmin:=true
@@ -2277,30 +2860,30 @@ OnRegStartup:
 	}
 	if (bAdmin) {
 		FileDelete, %A_Startup%\MouseGestureL.lnk
-		bResult := RegisterTaskScheduler(A_ScriptDir . "\MouseGestureL.ahk")
+		bResult := RegisterTaskScheduler(A_ScriptDir "\MouseGestureL.ahk")
 	}
 	else {
 		RegisterTaskScheduler("Delete")
 		bResult := RegisterStartup()
 	}
 	if (bResult) {
-		MsgBox,, %ME_LngCapt001%, %ME_LngMessage011%
+		MsgBox,, %ME_LngCapt001%, %ME_LngMessage032%
 	}
-return
+}
 
 RegisterTaskScheduler(szMGL)
 {
 	if (!MG_IsNewOS()) {
 		return
 	}
-	szPath := A_Temp . "\~MG_SchTasks.bat"
+	szPath := A_Temp "\~MG_SchTasks.bat"
 	file := FileOpen(szPath, "w `n")
 	if (!file) {
 		return
 	}
 	if (szMGL != "Delete") {
 		szCommand := "SCHTASKS /Create /TN ""MouseGestureL.ahk"" /TR ""\"""
-		szCommand .= A_AhkPath . "\"" \""" . szMGL
+		szCommand .= A_AhkPath "\"" \""" szMGL
 		szCommand .= "\"""" /SC ONLOGON /RL HIGHEST /F`n"
 	}
 	else {
@@ -2318,12 +2901,12 @@ RegisterTaskScheduler(szMGL)
 
 RegisterStartup()
 {
-	if (A_AhkPath = (A_ScriptDir . "\MouseGestureL.exe")) {
+	if (A_AhkPath = (A_ScriptDir "\MouseGestureL.exe")) {
 		szPath := A_AhkPath
 	} else {
-		szPath := A_ScriptDir . "\MouseGestureL.ahk"
+		szPath := A_ScriptDir "\MouseGestureL.ahk"
 	}
-	FileCreateShortcut, %szPath%, %A_Startup%\MouseGestureL.lnk, %A_ScriptDir%,, MouseGestureL.ahk, %A_WinDir%\System32\main.cpl,, 1
+	FileCreateShortcut, %szPath%, %A_Startup%\MouseGestureL.lnk, %A_ScriptDir%,, MouseGestureL.ahk, %A_ScriptDir%\Components\MouseGestureL.ico,, 1
 	return % !ErrorLevel
 }
 
@@ -2331,157 +2914,163 @@ RegisterStartup()
 ; On Remove from Startup
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnDelStartup:
+OnDelStartup()
+{
+	local bResult
 	FileDelete, %A_Startup%\MouseGestureL.lnk
 	bResult := !ErrorLevel
 	bResult |= RegisterTaskScheduler("Delete")
 	if (bResult) {
-		MsgBox,, %ME_LngCapt001%, %ME_LngMessage012%
+		MsgBox,, %ME_LngCapt001%, %ME_LngMessage033%
 	}
-return
+}
 
 ;-------------------------------------------------------------------------------
 ; On Hint Type Change
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnNaviChange:
+OnNaviChange()
+{
+	local idx, stat
 	GuiControlGet, idx, MEW_Main:, Config_UseExNavi
 
-	MG_CtrlStat := (idx==2 || idx==3) ? "Enable" : "Disable"
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_ExNaviTransBG
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label31
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_ExNaviFG
-	GuiControl, MEW_Main:%MG_CtrlStat%, ColorExNaviFG
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label32
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_ExNaviBG
-	GuiControl, MEW_Main:%MG_CtrlStat%, ColorExNaviBG
-	GuiControl, MEW_Main:%MG_CtrlStat%, ExNaviIdvClr
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label33
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_ExNaviTranspcy
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDExNaviTranspcy
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label34
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_ExNaviSize
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDExNaviSize
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label35
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_ExNaviSpacing
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDExNaviSpacing
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label36
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_ExNaviPadding
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDExNaviPadding
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label37
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_ExNaviMargin
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDExNaviMargin
+	stat := (idx==2 || idx==3) ? "Enable" : "Disable"
+	GuiControl, MEW_Main:%stat%, Config_ExNaviTransBG
+	GuiControl, MEW_Main:%stat%, Label64
+	GuiControl, MEW_Main:%stat%, Config_ExNaviFG
+	GuiControl, MEW_Main:%stat%, ColorExNaviFG
+	GuiControl, MEW_Main:%stat%, Label65
+	GuiControl, MEW_Main:%stat%, Config_ExNaviBG
+	GuiControl, MEW_Main:%stat%, ColorExNaviBG
+	GuiControl, MEW_Main:%stat%, ExNaviIdvClr
+	GuiControl, MEW_Main:%stat%, Label66
+	GuiControl, MEW_Main:%stat%, Config_ExNaviTranspcy
+	GuiControl, MEW_Main:%stat%, UDExNaviTranspcy
+	GuiControl, MEW_Main:%stat%, Label67
+	GuiControl, MEW_Main:%stat%, Config_ExNaviSize
+	GuiControl, MEW_Main:%stat%, UDExNaviSize
+	GuiControl, MEW_Main:%stat%, Label68
+	GuiControl, MEW_Main:%stat%, Config_ExNaviSpacing
+	GuiControl, MEW_Main:%stat%, UDExNaviSpacing
+	GuiControl, MEW_Main:%stat%, Label69
+	GuiControl, MEW_Main:%stat%, Config_ExNaviPadding
+	GuiControl, MEW_Main:%stat%, UDExNaviPadding
+	GuiControl, MEW_Main:%stat%, Label70
+	GuiControl, MEW_Main:%stat%, Config_ExNaviMargin
+	GuiControl, MEW_Main:%stat%, UDExNaviMargin
 
-	MG_CtrlStat := (idx==4 || idx==5) ? "Enable" : "Disable"
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_AdNaviOnClick
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label38
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_AdNaviFG
-	GuiControl, MEW_Main:%MG_CtrlStat%, ColorAdNaviFG
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label39
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_AdNaviNI
-	GuiControl, MEW_Main:%MG_CtrlStat%, ColorAdNaviNI
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label40
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_AdNaviBG
-	GuiControl, MEW_Main:%MG_CtrlStat%, ColorAdNaviBG
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label41
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_AdNaviTranspcy
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDAdNaviTranspcy
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label42
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_AdNaviFont
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label43
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_AdNaviSize
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDAdNaviSize
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label44
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_AdNaviPosition
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label45
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_AdNaviPaddingL
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDAdNaviPaddingL
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label46
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_AdNaviPaddingR
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDAdNaviPaddingR
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label47
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_AdNaviPaddingT
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDAdNaviPaddingT
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label48
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_AdNaviPaddingB
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDAdNaviPaddingB
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label49
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_AdNaviRound
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDAdNaviRound
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label50
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_AdNaviMargin
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDAdNaviMargin
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label51
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_AdNaviSpaceX
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDAdNaviSpaceX
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label52
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_AdNaviSpaceY
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDAdNaviSpaceY
+	stat := (idx==4 || idx==5) ? "Enable" : "Disable"
+	GuiControl, MEW_Main:%stat%, Config_AdNaviOnClick
+	GuiControl, MEW_Main:%stat%, Label71
+	GuiControl, MEW_Main:%stat%, Config_AdNaviFG
+	GuiControl, MEW_Main:%stat%, ColorAdNaviFG
+	GuiControl, MEW_Main:%stat%, Label72
+	GuiControl, MEW_Main:%stat%, Config_AdNaviNI
+	GuiControl, MEW_Main:%stat%, ColorAdNaviNI
+	GuiControl, MEW_Main:%stat%, Label73
+	GuiControl, MEW_Main:%stat%, Config_AdNaviBG
+	GuiControl, MEW_Main:%stat%, ColorAdNaviBG
+	GuiControl, MEW_Main:%stat%, Label74
+	GuiControl, MEW_Main:%stat%, Config_AdNaviTranspcy
+	GuiControl, MEW_Main:%stat%, UDAdNaviTranspcy
+	GuiControl, MEW_Main:%stat%, Label75
+	GuiControl, MEW_Main:%stat%, Config_AdNaviFont
+	GuiControl, MEW_Main:%stat%, Label76
+	GuiControl, MEW_Main:%stat%, Config_AdNaviSize
+	GuiControl, MEW_Main:%stat%, UDAdNaviSize
+	GuiControl, MEW_Main:%stat%, Label77
+	GuiControl, MEW_Main:%stat%, Config_AdNaviPosition
+	GuiControl, MEW_Main:%stat%, Label78
+	GuiControl, MEW_Main:%stat%, Config_AdNaviPaddingL
+	GuiControl, MEW_Main:%stat%, UDAdNaviPaddingL
+	GuiControl, MEW_Main:%stat%, Label79
+	GuiControl, MEW_Main:%stat%, Config_AdNaviPaddingR
+	GuiControl, MEW_Main:%stat%, UDAdNaviPaddingR
+	GuiControl, MEW_Main:%stat%, Label80
+	GuiControl, MEW_Main:%stat%, Config_AdNaviPaddingT
+	GuiControl, MEW_Main:%stat%, UDAdNaviPaddingT
+	GuiControl, MEW_Main:%stat%, Label81
+	GuiControl, MEW_Main:%stat%, Config_AdNaviPaddingB
+	GuiControl, MEW_Main:%stat%, UDAdNaviPaddingB
+	GuiControl, MEW_Main:%stat%, Label82
+	GuiControl, MEW_Main:%stat%, Config_AdNaviRound
+	GuiControl, MEW_Main:%stat%, UDAdNaviRound
+	GuiControl, MEW_Main:%stat%, Label83
+	GuiControl, MEW_Main:%stat%, Config_AdNaviMargin
+	GuiControl, MEW_Main:%stat%, UDAdNaviMargin
+	GuiControl, MEW_Main:%stat%, Label84
+	GuiControl, MEW_Main:%stat%, Config_AdNaviSpaceX
+	GuiControl, MEW_Main:%stat%, UDAdNaviSpaceX
+	GuiControl, MEW_Main:%stat%, Label85
+	GuiControl, MEW_Main:%stat%, Config_AdNaviSpaceY
+	GuiControl, MEW_Main:%stat%, UDAdNaviSpaceY
 
-	Gosub, OnExNaviTransBGChange
-return
+	OnExNaviTransBGChange()
+}
 
 ;-------------------------------------------------------------------------------
 ; On Arrow Hints Transparent Background Change
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnExNaviTransBGChange:
-	MG_CtrlStat := "Disable"
+OnExNaviTransBGChange()
+{
+	local idx, chk, stat:="Disable"
 	GuiControlGet, idx, MEW_Main:, Config_UseExNavi
-	if (idx==2 || idx==3)
-	{
+	if (idx==2 || idx==3) {
 		GuiControlGet, chk, MEW_Main:, Config_ExNaviTransBG
-		MG_CtrlStat := chk ? "Disable" : "Enable"
+		stat := chk ? "Disable" : "Enable"
 	}
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label32
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_ExNaviBG
-	GuiControl, MEW_Main:%MG_CtrlStat%, ColorExNaviBG
-return
+	GuiControl, MEW_Main:%stat%, Label65
+	GuiControl, MEW_Main:%stat%, Config_ExNaviBG
+	GuiControl, MEW_Main:%stat%, ColorExNaviBG
+}
 
 ;-------------------------------------------------------------------------------
 ; On Coler Setting Change
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnColorChange:
-	GuiControlGet, SampleColor, MEW_Main:, %A_GuiControl%
-	ColorTarget := RegExReplace(A_GuiControl, "Config_", "Color")
-	GuiControl, MEW_Main:+Background%SampleColor%, %ColorTarget%
-return
+OnColorChange() {
+	local szColor, target
+	GuiControlGet, szColor, MEW_Main:, %A_GuiControl%
+	target := RegExReplace(A_GuiControl, "Config_", "Color")
+	GuiControl, MEW_Main:+Background%szColor%, %target%
+}
 
 ;-------------------------------------------------------------------------------
 ; Set Individual Colors of Arrow Hints
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnExNaviIdvClr:
-	DlgExNaviIndividualColor()
-return
-DlgExNaviIndividualColor()
+SetIdvArrowClr()
 {
-	global
+	local col1, col2, w1, w2, w3, w4, m1, m2
 	static idxRow
+
 	idxRow := 0
+	col1:=150, col2:=90
+	w1 := col1 + col2 + 22
 	Gui, MEW_Color:New
 	Gui, MEW_Color:Default
 	Gui, MEW_Color:+Delimiter`n -MaximizeBox -MinimizeBox +HwndME_hWndColor +OwnerMEW_Main
-	Gui, MEW_Color:Add, ListView, x10 y10 w184 h172 LV1 section -Multi NoSortHdr vLVColors gOnTriggerSelect AltSubmit, %ME_LngListView003%
-	LV_ModifyCol(1, 70)
-	LV_ModifyCol(2, 90)
+	Gui, MEW_Color:Add, ListView, x10 y10 w%w1% h172 LV1 section -Multi NoSortHdr vLVColors gOnTriggerSelect AltSubmit, %ME_LngListView004%
+	LV_ModifyCol(1, col1)
+	LV_ModifyCol(2, col2)
 	Gui, MEW_Color:ListView, LVColors
 	GuiControl, MEW_Color: -Redraw, LVColors
 	LV_Delete()
 	local szColor
-	Loop, Parse, MG_BtnNames, _
-	{
-		szColor := Config_ExNaviFG_%A_LoopField%
-		LV_Add("", A_LoopField, szColor)
+	Loop, % MG_BtnNames.MaxIndex() {
+		szColor := "Config_ExNaviFG_" MG_BtnNames[A_Index]
+		LV_Add("", GetButtonData(GetButtonPath(MG_BtnNames[A_Index], true)), %szColor%)
 	}
 	GuiControl, MEW_Color: +Redraw, LVColors
-	Gui, MEW_Color:Add, Text, xs-2 y+10 w68 Right, %ME_LngText210%
-	Gui, MEW_Color:Add, Edit, x+6 yp-4 w91 Limit6 Disabled vEArrowColor gOnArrowColorChange
-	Gui, MEW_Color:Add, TreeView, x+1 w20 h20 vColorBox
-	Gui, MEW_Color:Add, Button, gOnAcceptColor x+-168 y+10 w80, %ME_LngButton001%
+	w3:=col2, w4:=20, m1:=6, m2:=1
+	w2:=w1-w3-m1-m2-w4
+	Gui, MEW_Color:Add, Text, xs y+10 w%w2% Right, %ME_LngText210%
+	Gui, MEW_Color:Add, Edit, x+%m1% yp-4 w%w3% Limit6 Disabled vEArrowColor gOnArrowColorChange
+	Gui, MEW_Color:Add, TreeView, x+%m2% w%w4% h20 vColorBox
+	Gui, MEW_Color:Add, Button, gOnAcceptColor x+-168 y+14 w80, %ME_LngButton001%
 	Gui, MEW_Color:Add, Button, gOnCancelColor x+8 yp+0 w80, %ME_LngButton002%
-	Gui, MEW_Color:Show,, %ME_LngCapt006%
+	Gui, MEW_Color:Show,, %ME_LngCapt007%
 
 	WinWaitClose,  ahk_id %ME_hWndColor%
 	Gui, MEW_Main:Default
@@ -2563,7 +3152,7 @@ CorrectColorHex(ByRef szColor, fLength=false)
 		len := StrLen(szColor)
 		Loop, % (6 - len)
 		{
-			szColor := "0" . szColor
+			szColor := "0" szColor
 		}
 	}
 }
@@ -2572,197 +3161,222 @@ CorrectColorHex(ByRef szColor, fLength=false)
 ; On Hint Display Position Change
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnNaviPosChange:
+OnNaviPosChange()
+{
+	local idx, stat
 	GuiControlGet, idx, MEW_Main:, Config_AdNaviPosition
 	stat := (idx==1) ? "Show" : "Hide"
-	GuiControl, MEW_Main:%stat%, Label50
+	GuiControl, MEW_Main:%stat%, Label83
 	GuiControl, MEW_Main:%stat%, Config_AdNaviMargin
 	GuiControl, MEW_Main:%stat%, UDAdNaviMargin
 	stat := (idx==1) ? "Hide" : "Show"
-	GuiControl, MEW_Main:%stat%, Label51
+	GuiControl, MEW_Main:%stat%, Label84
 	GuiControl, MEW_Main:%stat%, Config_AdNaviSpaceX
 	GuiControl, MEW_Main:%stat%, UDAdNaviSpaceX
-	GuiControl, MEW_Main:%stat%, Label52
+	GuiControl, MEW_Main:%stat%, Label85
 	GuiControl, MEW_Main:%stat%, Config_AdNaviSpaceY
 	GuiControl, MEW_Main:%stat%, UDAdNaviSpaceY
-return
+}
 
 ;-------------------------------------------------------------------------------
 ; On Show Trail Change
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnShowTrailChange:
+OnShowTrailChange()
+{
+	local chk, stat
 	GuiControlGet, chk, MEW_Main:, Config_ShowTrail
-	MG_CtrlStat := chk ? "Enable" : "Disable"
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_DrawTrailWnd
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label53
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_TrailColor
-	GuiControl, MEW_Main:%MG_CtrlStat%, ColorTrailColor
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label54
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_TrailTranspcy
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDTrailTranspcy
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label55
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_TrailWidth
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDTrailWidth
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label56
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_TrailStartMove
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDTrailStartMove
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label57
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_TrailInterval
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDTrailInterval
-return
+	stat := chk ? "Enable" : "Disable"
+	GuiControl, MEW_Main:%stat%, Config_DrawTrailWnd
+	GuiControl, MEW_Main:%stat%, Label101
+	GuiControl, MEW_Main:%stat%, Config_TrailColor
+	GuiControl, MEW_Main:%stat%, ColorTrailColor
+	GuiControl, MEW_Main:%stat%, Label102
+	GuiControl, MEW_Main:%stat%, Config_TrailTranspcy
+	GuiControl, MEW_Main:%stat%, UDTrailTranspcy
+	GuiControl, MEW_Main:%stat%, Label103
+	GuiControl, MEW_Main:%stat%, Config_TrailWidth
+	GuiControl, MEW_Main:%stat%, UDTrailWidth
+	GuiControl, MEW_Main:%stat%, Label104
+	GuiControl, MEW_Main:%stat%, Config_TrailStartMove
+	GuiControl, MEW_Main:%stat%, UDTrailStartMove
+	GuiControl, MEW_Main:%stat%, Label105
+	GuiControl, MEW_Main:%stat%, Config_TrailInterval
+	GuiControl, MEW_Main:%stat%, UDTrailInterval
+}
 
 ;-------------------------------------------------------------------------------
 ; On Show Logs Change
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnShowLogsChange:
+OnShowLogsChange()
+{
+	local chk, stat
 	GuiControlGet, chk, MEW_Main:, Config_ShowLogs
-	MG_CtrlStat := chk ? "Enable" : "Disable"
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label58
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_LogPosition
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label59
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_LogPosX
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDLogPosX
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label60
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_LogPosY
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDLogPosY
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label61
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_LogMax
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDLogMax
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label62
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_LogSizeW
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDLogSizeW
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label63
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_LogInterval
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDLogInterval
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label64
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_LogFG
-	GuiControl, MEW_Main:%MG_CtrlStat%, ColorLogFG
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label65
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_LogBG
-	GuiControl, MEW_Main:%MG_CtrlStat%, ColorLogBG
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label66
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_LogTranspcy
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDLogTranspcy
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label67
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_LogFontSize
-	GuiControl, MEW_Main:%MG_CtrlStat%, UDLogFontSize
-	GuiControl, MEW_Main:%MG_CtrlStat%, Label68
-	GuiControl, MEW_Main:%MG_CtrlStat%, Config_LogFont
-return
-
-;-------------------------------------------------------------------------------
-; Show Help Document
-;														Implemented by Pyonkichi
-;-------------------------------------------------------------------------------
-ShowHelp:
-	MG_ShowHelp()
-return
+	stat := chk ? "Enable" : "Disable"
+	GuiControl, MEW_Main:%stat%, Label106
+	GuiControl, MEW_Main:%stat%, Config_LogPosition
+	GuiControl, MEW_Main:%stat%, Label107
+	GuiControl, MEW_Main:%stat%, Config_LogPosX
+	GuiControl, MEW_Main:%stat%, UDLogPosX
+	GuiControl, MEW_Main:%stat%, Label108
+	GuiControl, MEW_Main:%stat%, Config_LogPosY
+	GuiControl, MEW_Main:%stat%, UDLogPosY
+	GuiControl, MEW_Main:%stat%, Label109
+	GuiControl, MEW_Main:%stat%, Config_LogMax
+	GuiControl, MEW_Main:%stat%, UDLogMax
+	GuiControl, MEW_Main:%stat%, Label110
+	GuiControl, MEW_Main:%stat%, Config_LogSizeW
+	GuiControl, MEW_Main:%stat%, UDLogSizeW
+	GuiControl, MEW_Main:%stat%, Label111
+	GuiControl, MEW_Main:%stat%, Config_LogInterval
+	GuiControl, MEW_Main:%stat%, UDLogInterval
+	GuiControl, MEW_Main:%stat%, Label112
+	GuiControl, MEW_Main:%stat%, Config_LogFG
+	GuiControl, MEW_Main:%stat%, ColorLogFG
+	GuiControl, MEW_Main:%stat%, Label113
+	GuiControl, MEW_Main:%stat%, Config_LogBG
+	GuiControl, MEW_Main:%stat%, ColorLogBG
+	GuiControl, MEW_Main:%stat%, Label114
+	GuiControl, MEW_Main:%stat%, Config_LogTranspcy
+	GuiControl, MEW_Main:%stat%, UDLogTranspcy
+	GuiControl, MEW_Main:%stat%, Label115
+	GuiControl, MEW_Main:%stat%, Config_LogFontSize
+	GuiControl, MEW_Main:%stat%, UDLogFontSize
+	GuiControl, MEW_Main:%stat%, Label116
+	GuiControl, MEW_Main:%stat%, Config_LogFont
+}
 
 ;-------------------------------------------------------------------------------
 ; On Direction Button Press
 ;														Implemented by lukewarm
 ;-------------------------------------------------------------------------------
-Dir1:
+Dir1() {
+	global
 	Gui, MEW_Main:Submit, NoHide
 	if(Config_8Dir){
 		GuiControl, MEW_Main:, EGesture,%EGesture%1
 	}
-return
-
-Dir2:
+}
+Dir2() {
+	global
 	Gui, MEW_Main:Submit, NoHide
 	if(Config_8Dir){
 		GuiControl, MEW_Main:, EGesture,%EGesture%2
 	}else{
 		GuiControl, MEW_Main:, EGesture,%EGesture%D
 	}
-return
-
-Dir3:
+}
+Dir3() {
+	global
 	Gui, MEW_Main:Submit, NoHide
 	if(Config_8Dir){
 		GuiControl, MEW_Main:, EGesture,%EGesture%3
 	}
-return
-
-Dir4:
+}
+Dir4() {
+	global
 	Gui, MEW_Main:Submit, NoHide
 	if(Config_8Dir){
 		GuiControl, MEW_Main:, EGesture,%EGesture%4
 	}else{
 		GuiControl, MEW_Main:, EGesture,%EGesture%L
 	}
-return
-
-Dir6:
+}
+Dir6() {
+	global
 	Gui, MEW_Main:Submit, NoHide
 	if(Config_8Dir){
 		GuiControl, MEW_Main:, EGesture,%EGesture%6
 	}else{
 		GuiControl, MEW_Main:, EGesture,%EGesture%R
 	}
-return
-
-Dir7:
+}
+Dir7() {
+	global
 	Gui, MEW_Main:Submit, NoHide
 	if(Config_8Dir){
 		GuiControl, MEW_Main:, EGesture,%EGesture%7
 	}
-return
-
-Dir8:
+}
+Dir8() {
+	global
 	Gui, MEW_Main:Submit, NoHide
 	if(Config_8Dir){
 		GuiControl, MEW_Main:, EGesture, %EGesture%8
 	}else{
 		GuiControl, MEW_Main:, EGesture, %EGesture%U
 	}
-return
-
-Dir9:
+}
+Dir9() {
+	global
 	Gui, MEW_Main:Submit, NoHide
 	if(Config_8Dir){
 		GuiControl, MEW_Main:, EGesture, %EGesture%9
 	}
-return
+}
 
 ;-------------------------------------------------------------------------------
-; On Button List Events
+; Triggers list events
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-LBButtons:
+LBTriggerEvents()
+{
+	global
+	Gui, MEW_Main:Submit, NoHide
 	;---------------------------------------------------------------------------
-	; On Double Click
-	if (A_GuiEvent="DoubleClick")
-	{
-		Gui, MEW_Main:Submit, NoHide
-		if (LBGesture2) {
-			GuiControl, MEW_Main:, EGesture, % EGesture . Button_%LBButtons% . "_"
+	; Click
+	if (A_GuiEvent="Normal") {
+		OnGesturePatChange(false)
+		SendMessage, 0x018B,,,, % "ahk_id " ControlGetHandle("LBButtons")
+		if (LBButtons == ErrorLevel) {
+			AddTrigger()
 		}
 	}
-return
+	;---------------------------------------------------------------------------
+	; Double Click
+	else if (A_GuiEvent="DoubleClick") {
+		if (LBGesture && ControlIsEnabled("BButtonDown")) {
+			OnBButtonDown()
+		}
+	}
+}
 
 ;-------------------------------------------------------------------------------
-; On Trigger Up Button Press
+; On Trigger Down button press
 ;														Implemented by lukewarm
 ;-------------------------------------------------------------------------------
-BButtonUp:
+OnBButtonDown()
+{
+	global
+	Gui, MEW_Main:Submit, NoHide
+	SendMessage, 0x018B,,,, % "ahk_id " ControlGetHandle("LBButtons")
+	if (LBButtons>0 && LBButtons<ErrorLevel) {
+		GuiControl, MEW_Main:, EGesture, % EGesture . MG_BtnNames[LBButtons] "_"
+	}
+}
+
+;-------------------------------------------------------------------------------
+; On Trigger Up button press
+;														Implemented by lukewarm
+;-------------------------------------------------------------------------------
+OnBButtonUp()
+{
+	global
 	Gui, MEW_Main:Submit, NoHide
 	GuiControl, MEW_Main:, EGesture, %EGesture%_
-return
+}
 
 ;-------------------------------------------------------------------------------
 ; Add New Target Entry
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-TargetNew:
-	TargetNew(false)
-return
-TargetNew(bSub=false, bMove=false)
+TargetNew() {
+	AddNewTarget(false)
+}
+AddNewTarget(bSub=false, bMove=false)
 {
 	global
 	local idx, nCh, parent
@@ -2786,7 +3400,7 @@ TargetNew(bSub=false, bMove=false)
 			}
 			idx--
 		}
-		Target_%idx%_Name	  := "Target_" . Target_Count
+		Target_%idx%_Name	  := ME_LngOthers003 "_" Target_Count
 		Target_%idx%_Count	  := 0
 		Target_%idx%_Icon	  := 0
 		Target_%idx%_IconFile := ""
@@ -2797,7 +3411,7 @@ TargetNew(bSub=false, bMove=false)
 	}
 	else
 	{
-		Target_%idx%_Name	  := "Target_" . Target_Count
+		Target_%idx%_Name	  := ME_LngOthers003 "_" Target_Count
 		Target_%idx%_Count	  := 0
 		Target_%idx%_Icon	  := 0
 		Target_%idx%_IconFile := ""
@@ -2830,10 +3444,10 @@ TargetNew(bSub=false, bMove=false)
 EnableRuleControls()
 {
 	GuiControl, MEW_Main:Enable, DDLLogic
-	GuiControl, MEW_Main:Enable, Label7
+	GuiControl, MEW_Main:Enable, Label12
 	GuiControl, MEW_Main:Enable, DDLRuleType
 	GuiControl, MEW_Main:Enable, BRulePicker
-	GuiControl, MEW_Main:Enable, Label8
+	GuiControl, MEW_Main:Enable, Label13
 	GuiControl, MEW_Main:Enable, ERuleValue
 	GuiControl, MEW_Main:Enable, BClearRule
 	GuiControl, MEW_Main:Enable, ChkNotMatch
@@ -2846,8 +3460,7 @@ EnableRuleControls()
 SwitchTab(idx)
 {
 	Global
-	if (MainTabIdx != idx)
-	{
+	if (MainTabIdx != idx) {
 		SaveModification()
 		MainTabIdx := idx
 		GuiControl, MEW_Main:Choose, MainTab, %idx%
@@ -2856,7 +3469,7 @@ SwitchTab(idx)
 		} else if (idx == 2) {
 			GuiControl, MEW_Main:Focus, TVTarget2
 		} else if (idx == 3) {
-			GuiControl, MEW_Main:Focus, LBGesture2
+			GuiControl, MEW_Main:Focus, LBGesture
 		}
 	}
 }
@@ -2866,14 +3479,14 @@ SwitchTab(idx)
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-TargetUp:
+TargetUp() {
+	global
 	TargetShift(Target_Editing, -1)
-return
-
-TargetDown:
+}
+TargetDown() {
+	global
 	TargetShift(Target_Editing, 1)
-return
-
+}
 TargetShift(idx, shift, bShow=true, bSkipSub=true)
 {
 	global
@@ -2926,9 +3539,8 @@ GetNextTarget(idx, shift)
 ;-------------------------------------------------------------------------------
 GetChildTargetNum(idx)
 {
-	local nCh, next
-	nCh := 0
-	next := idx + 1
+	local nCh:=0, next:=idx+1
+
 	if ((idx > 0) && (Target_%next%_Parent == idx))
 	{
 		while ((next<=Target_Count) && (Target_%next%_Level > Target_%idx%_Level)) {
@@ -2988,30 +3600,27 @@ TargetShiftWithChildren(idx, shift, nCh)
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-TargetDelete:
-	TargetDelete()
-return
 TargetDelete()
 {
 	local szFull, szGes, szInc, szTarget, szMsg
 	if (Target_Editing <= 1) {
 		return
 	}
-	szFull := MakeTargetFullName(Target_Editing)
+	szFull := GetTargetFullName(Target_Editing)
 	szGes := CheckTargetUsed(szFull)
 	szInc := CheckTargetIncluded(szFull)
 	if (szGes!="" || szInc!="")
 	{
-		szTarget := RegExReplace(ME_LngMessage001, "\[#REPLASE#\]", szFull)
+		szTarget := RegExReplace(ME_LngMessage001, MG_ReplaceStr, szFull)
 		szMsg := ""
 		if (szGes!="") {
-			szMsg := szTarget . RegExReplace(ME_LngMessage003, "\[#REPLASE#\]", szGes)
+			szMsg := szTarget . RegExReplace(ME_LngMessage003, MG_ReplaceStr, szGes)
 		}
 		if (szInc!="") {
-			szMsg .= szTarget . RegExReplace(ME_LngMessage004, "\[#REPLASE#\]", szInc)
+			szMsg .= szTarget . RegExReplace(ME_LngMessage004, MG_ReplaceStr, szInc)
 		}
 		szMsg .= ME_LngMessage005
-		MsgBox, 33, %ME_LngCapt003%, %szMsg%
+		MsgBox, 0x21, %ME_LngCapt003%, %szMsg%
 		IfMsgBox, Cancel
 		{
 			return
@@ -3035,10 +3644,11 @@ TargetDelete()
 	}
 	Target_Count -= nCh+1
 	ClearRule()
-	ClearAction(false, true, false)
+	ClearAction(false, "BE")
 	ShowTargets()
 	ShowTarget(Target_Editing>Target_Count ? Target_Count : Target_Editing)
 	ShowGesture(Gesture_Editing)
+	ShowAssignedGestures(0, false)
 	SelectAssignedAction()
 	AdjustDialogHeight()
 	SaveModification("Reset")
@@ -3058,12 +3668,12 @@ CheckTargetUsed(szTarget, bDelete=false)
 		local ges := A_Index
 		Loop, % Gesture_%A_Index%_Count
 		{
-			if (TargetIsAssigned(ges, A_Index, szTarget))
+			if (IsTargetAssigned(ges, A_Index, szTarget))
 			{
 				if (bDelete) {
-					ActionDelete(ges, A_Index, false)
+					ActionDelete(ges, A_Index, false, false)
 				} else {
-					local szName := RegExReplace(ME_LngMessage001, "\[#REPLASE#\]", Gesture_%ges%_Name)
+					local szName := RegExReplace(ME_LngMessage001, MG_ReplaceStr, Gesture_%ges%_Name)
 					Join(szList, szName, ME_LngMessage002)
 				}
 			}
@@ -3076,11 +3686,11 @@ CheckTargetUsed(szTarget, bDelete=false)
 ; Check whether the target is assigned to specified gesture
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-TargetIsAssigned(ges, idx, tgt)
+IsTargetAssigned(ges, idx, szTarget)
 {
 	global
-	return ((Gesture_%ges%_%idx%_Target = tgt)
-		 || (InStr(Gesture_%ges%_%idx%_Target, tgt . MG_TgDelim)==1))
+	return ((Gesture_%ges%_%idx%_Target == szTarget)
+		 || (InStr(Gesture_%ges%_%idx%_Target, szTarget . MG_TgDelim)==1))
 }
 
 ;-------------------------------------------------------------------------------
@@ -3098,16 +3708,16 @@ CheckTargetIncluded(szTarget, ope="Check", szNewName="")
 		{
 			local idx2 := A_Index
 			if ((InStr(Target_%idx1%_%idx2%_Type, "Include") == 1)
-			&&	((Target_%idx1%_%idx2%_Value = szTarget) || (InStr(Target_%idx1%_%idx2%_Value, szTarget . MG_TgDelim)==1)))
+			&&	((Target_%idx1%_%idx2%_Value == szTarget) || (InStr(Target_%idx1%_%idx2%_Value, szTarget . MG_TgDelim)==1)))
 			{
 				if (ope = "Rename") {
 					Target_%idx1%_%idx2%_Value := RegExReplace(Target_%idx1%_%idx2%_Value, szTarget, szNewName)
 				}
 				else if (ope = "Delete") {
-					RuleDelete(idx1, idx2, false)
+					DeleteRule(idx1, idx2, false)
 				}
 				else {
-					local szName := RegExReplace(ME_LngMessage001, "\[#REPLASE#\]", MakeTargetFullName(idx1))
+					local szName := RegExReplace(ME_LngMessage001, MG_ReplaceStr, GetTargetFullName(idx1))
 					Join(szList, szName, ME_LngMessage002)
 				}
 			}
@@ -3120,9 +3730,6 @@ CheckTargetIncluded(szTarget, ope="Check", szNewName="")
 ; Sort Target List
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-TargetSort:
-	TargetSort()
-return
 TargetSort()
 {
 	global
@@ -3251,23 +3858,26 @@ SetFocusETargetName()
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-TargetRename:
-	TargetRename()
-return
-TargetRename()
+TargetRename() {
+	global
+	Gui, MEW_Main:Submit, NoHide
+	RenameTarget(ETargetName)
+}
+RenameTarget(name)
 {
 	local szFull, szFull2
-	Gui, MEW_Main:Submit, NoHide
-	szFull := MakeTargetFullName(Target_Editing)
-	Target_%Target_Editing%_Name := ETargetName
-	szFull2 := MakeTargetFullName(Target_Editing)
+	szFull := GetTargetFullName(Target_Editing)
+	Target_%Target_Editing%_Name := name
+	szFull2 := GetTargetFullName(Target_Editing)
 	CheckTargetIncluded(szFull, "Rename", szFull2)
 	Gui, MEW_Main:Default
-	Gui, MEW_Main:TreeView, TVTarget1
-	TV_Modify(TvIndexToId(Target_Editing),,ETargetName)
+	if (Target_Editing > 1) {
+		Gui, MEW_Main:TreeView, TVTarget1
+		TV_Modify(TvIndexToId(Target_Editing),,name)
+	}
 	Gui, MEW_Main:TreeView, TVTarget2
 	GuiControl, MEW_Main:-g, TVTarget2
-	TV_Modify(TvIndexToId(Target_Editing),,ETargetName)
+	TV_Modify(TvIndexToId(Target_Editing),,name)
 	GuiControl, MEW_Main:+gTVTargetSelect, TVTarget2
 
 	local ges:=0, pat:=0, bUpdate:=false
@@ -3278,9 +3888,9 @@ TargetRename()
 		Loop, % Gesture_%ges%_Count
 		{
 			pat++
-			if (TargetIsAssigned(ges, pat, szFull)) {
+			if (IsTargetAssigned(ges, pat, szFull)) {
 				bUpdate:=true
-				Gesture_%ges%_%pat%_Target := RegExReplace(Gesture_%ges%_%pat%_Target, szFull, szFull2)
+				StringReplace, Gesture_%ges%_%pat%_Target, Gesture_%ges%_%pat%_Target, %szFull%, %szFull2%
 			}
 		}
 	}
@@ -3296,29 +3906,32 @@ TargetRename()
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-ETargetNameChange:
-	ETargetNameChange()
-return
-ETargetNameChange()
-{
+ETargetNameChange() {
 	global
 	Gui, MEW_Main:Submit, NoHide
-	if (Target_Editing && !RegExMatch(ETargetName, "^(|" . MG_RuleNames . "|Icon|And|Level|NotInherit|G|" . MC_DefTargetName . ")$|.*(=|" . MG_TgDelim . ").*"))
+	GuiControl, % "MEW_Main:" (CheckTargetName(ETargetName) ? "Enable" : "Disable"), BTargetRename
+}
+
+;-------------------------------------------------------------------------------
+; Check Target Name
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+CheckTargetName(name)
+{
+	global
+	if (Target_Editing && !RegExMatch(name, "^(|" MG_RuleNames "|Icon|And|Level|NotInherit|G|" MG_DefTargetName ")$|.*(=|" MG_TgDelim ").*"))
 	{
 		Loop, %Target_Count%
 		{
 			if ((Target_%A_Index%_Parent == Target_%Target_Editing%_Parent)
-			&&	(Target_%A_Index%_Name = ETargetName))
+			&&	(Target_%A_Index%_Name == name))
 			{
-				GuiControl, MEW_Main:Disable, BTargetRename
-				return
+				return false
 			}
 		}
-		GuiControl, MEW_Main:Enable, BTargetRename
+		return true
 	}
-	else {
-		GuiControl, MEW_Main:Disable, BTargetRename
-	}
+	return false
 }
 
 ;-------------------------------------------------------------------------------
@@ -3342,18 +3955,21 @@ ShowTargets(bSelFirst=false)
 	GuiControl, MEW_Main:+gTVTargetSelect, TVTarget2
 	Loop, %Target_Count%
 	{
-		GuiControlGet, Config_FoldTarget, MEW_Main:, Config_FoldTarget
 		opt := Config_FoldTarget ? "" : "Expand "
 		opt .= Target_%A_Index%_Icon ? "Icon"Target_%A_Index%_Icon : "Icon"Target_Blank_Icon
 		name := Target_%A_Index%_Name
 		Gui, MEW_Main:TreeView, TVTarget1
 		if (A_Index == 1) {
-			TV_Add(MC_DefTargetName, 0, "Icon"Target_Default_Icon)
+			TV_Add(ME_LngOthers001, 0, "Icon"Target_Default_Icon)
 		} else {
 			TV_Add(name, TvIndexToId(Target_%A_Index%_Parent), opt)
 		}
 		Gui, MEW_Main:TreeView, TVTarget2
-		TV_Add(name, TvIndexToId(Target_%A_Index%_Parent), opt)
+		if (A_Index == 1) {
+			TV_Add(ME_LngOthers002, 0, "Icon"Target_Ignored_Icon)
+		} else {
+			TV_Add(name, TvIndexToId(Target_%A_Index%_Parent), opt)
+		}
 	}
 	if (bSelFirst) {
 		Gui, MEW_Main:TreeView, TVTarget1
@@ -3368,14 +3984,14 @@ ShowTargets(bSelFirst=false)
 }
 
 ;-------------------------------------------------------------------------------
-; Make Full Name of Target
+; Get full name of the target
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-MakeTargetFullName(idx, bAction=false)
+GetTargetFullName(idx, bAction=false)
 {
 	global
 	if (bAction && idx<=1) {
-		return MC_DefTargetName
+		return MG_DefTargetName
 	}
 	local name, parent
 	name := Target_%idx%_Name
@@ -3388,51 +4004,38 @@ MakeTargetFullName(idx, bAction=false)
 }
 
 ;-------------------------------------------------------------------------------
-; On Target Fold Change
+; Toggle sub targets folding
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnTargetFoldChange:
-	SwitchTargetFolding()
-return
-SwitchTargetFolding(bToggle=false)
+SwitchTargetFolding()
 {
 	global
-	if (bToggle) {
-		GuiControlGet, Config_FoldTarget, MEW_Main:, Config_FoldTarget
-		GuiControl, MEW_Main:, Config_FoldTarget, % Config_FoldTarget ? 0 : 1
-	}
+	Config_FoldTarget := !Config_FoldTarget
+	SetButtonIcon("BFoldTarget", Config_FoldTarget ? Icon_Fold : Icon_Expand, Config_FoldTarget ? ME_LngTooltip016 : ME_LngTooltip017)
 	ShowTargets()
 	ShowTarget(Target_Editing)
 	AdjustDialogHeight()
 }
 
 ;-------------------------------------------------------------------------------
-; Target Tree View Events(mark)
+; Target Tree View Events
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-TVTargetSelect:
+TVTargetSelect() {
 	TargetSelect()
-return
-TargetSelect()
+}
+TargetSelect(bSel=false)
 {
-	static idx
-	local sel, tv
+	local idx, sel, tv, name
 	Gui, MEW_Main:Default
 	Gui, MEW_Main:TreeView, %A_GuiControl%
 	;---------------------------------------------------------------------------
 	; On Selection Change
-	if (A_GuiEvent == "S")
+	if (A_GuiEvent=="S" || bSel)
 	{
 		sel := TV_GetSelection()
-		if (sel)
-		{
-			Gui, MEW_Main:Submit, NoHide
-			SaveModification()
-			EnableRuleControls()
-			ShowTarget(TvIdToIndex(sel), false)
-			ShowRule(Target_Editing, 0)
-			SelectAssignedAction()
-			LVActionSelectFlag ? UpdateLVGesture() : UpdateLVGesture(1)	;右上のLVから選択したときの分岐
+		if (sel) {
+			SelectTarget(TvIdToIndex(sel), false)
 		}
 	}
 	;---------------------------------------------------------------------------
@@ -3440,16 +4043,17 @@ TargetSelect()
 	else if (A_GuiEvent=="RightClick" || A_GuiEvent=="d")
 	{
 		idx := TvIdToIndex(A_EventInfo)
-		UpdateLVGesture(1)			;追加
-		ShowTarget(idx, false)
-		SetTimer, ShowTVTargetContextMenu, -1	;Contextmenu表示時に左クリックのイベントが発生しない対策
-		;ShowListContextMenu("T", idx)
+		TV_Modify(TvIndexToId(idx))
+		TargetSelect(true)
+		ShowListContextMenu("T", idx)
 	}
 	;---------------------------------------------------------------------------
 	; On Double Click
 	else if (A_GuiEvent == "DoubleClick")
 	{
-		SetTimer, ToggleTabs, -1
+		if (!GetChildTargetNum(TvIdToIndex(A_EventInfo))) {
+			SetTimer, ToggleTabs, -1
+		}
 	}
 	;---------------------------------------------------------------------------
 	; On Drag Start
@@ -3457,6 +4061,34 @@ TargetSelect()
 	{
 		idx := TvIdToIndex(A_EventInfo)
 		ShowTarget(idx, false)
+	}
+	;---------------------------------------------------------------------------
+	; On Rename Start
+	else if (A_GuiEvent == "E")
+	{
+		ME_bTvRenaming := true
+	}
+	;---------------------------------------------------------------------------
+	; On Rename Finish
+	else if (A_GuiEvent == "e")
+	{
+		ME_bTvRenaming := false
+		TV_GetText(name, A_EventInfo)
+		if (Target_Editing==1) {
+			Gui, MEW_Main:TreeView, %A_GuiControl%
+			TV_Modify(TvIndexToId(1),, A_GuiControl="TVTarget1" ? ME_LngOthers001 : ME_LngOthers002)
+		}
+		else if (CheckTargetName(name)) {
+			RenameTarget(name)
+			GuiControl, MEW_Main:, ETargetName, %name%
+		}
+		else {
+			name := Target_%Target_Editing%_Name
+			Gui, MEW_Main:TreeView, TVTarget1
+			TV_Modify(TvIndexToId(Target_Editing),,name)
+			Gui, MEW_Main:TreeView, TVTarget2
+			TV_Modify(TvIndexToId(Target_Editing),,name)
+		}
 	}
 	;---------------------------------------------------------------------------
 	; On Expand / Fold
@@ -3474,70 +4106,92 @@ TargetSelect()
 ToggleTabs:
 	SwitchTab(MainTabIdx==1 ? 2 : 1)
 	return
-
-ShowTVTargetContextMenu:
-	ShowListContextMenu("T", idx)
-	return
 }
 
+;-------------------------------------------------------------------------------
+; Select Specified Target
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+SelectTarget(idx, bSelList=true)
+{
+	global
+	Gui, MEW_Main:Submit, NoHide
+	SaveModification()
+	EnableRuleControls()
+	ShowTarget(idx, false)
+	ShowRule(Target_Editing, 0)
+	SelectAssignedAction()
+	ShowAssignedGestures(idx)
+	if (idx==1 && MG_ActionExists(Gesture_Editing, MG_DefTargetName)) {
+		GuiControl, MEW_Main:Choose, LBDefAction, 1
+	}
+	if (bSelList) {
+		Gui, MEW_Main:Default
+		Gui, MEW_Main:TreeView, TVTarget1
+		GuiControl, MEW_Main:-g, TVTarget1
+		TV_Modify(TvIndexToId(idx))
+		GuiControl, MEW_Main:+gTVTargetSelect, TVTarget1
+		Gui, MEW_Main:TreeView, TVTarget2
+		GuiControl, MEW_Main:-g, TVTarget2
+		TV_Modify(TvIndexToId(idx))
+		GuiControl, MEW_Main:+gTVTargetSelect, TVTarget2
+	}
+}
 
 ;-------------------------------------------------------------------------------
-; Show Context Menu of Gesture/Target List(mark)
+; Show context menu of gesture/target list
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
 ShowListContextMenu(list, idx)
 {
-	local name, ges, hit, stat, itemName, szBuf
+	local name, ges, hit, stat, itemName
 	;...........................................................................
 	; Create Menu
 	Menu, menuContext, Add
 	Menu, menuContext, DeleteAll
 	if (list="T"){
-		;ShowAssignedGestureMenu(idx, false)		;3行コメントアウト
-		;Menu, menuContext, Add, %ME_LngMenu101%, :menuGestureList
-		;Menu, menuContext, Add
+		ShowUnassignedGestureMenu(0, false)
+		if (MainTabIdx == 1) {
+			Menu, menuContext, Add, %ME_LngMenu101%, OnListContextSelect
+		}
+		Menu, menuContext, Add, %ME_LngMenu102%, OnListContextSelect
 		Menu, menuContext, Add, %ME_LngMenu103%, OnListContextSelect
-		Menu, menuContext, Add, %ME_LngMenu104%, OnListContextSelect
-		Menu, menuContext, Add, %ME_LngMenu105%, OnListContextSelect
+		Menu, menuContext, Add
+		Menu, menuContext, Add, %ME_LngMenu104%, :menuGestureAdd
 	}
 	else {
-		Menu, menuContext, Add, %ME_LngMenu121%, OnListContextSelect
-		Menu, menuContext, Add, %ME_LngMenu122%, OnListContextSelect
+		Menu, menuContext, Add, %ME_LngMenu141%, OnListContextSelect
 	}
 	Menu, menuContext, Add
+	Menu, menuContext, Add, %ME_LngMenu105%, OnListContextSelect
 	Menu, menuContext, Add, %ME_LngMenu106%, OnListContextSelect
+	Menu, menuContext, Add
 	Menu, menuContext, Add, %ME_LngMenu107%, OnListContextSelect
-	Menu, menuContext, Add
 	Menu, menuContext, Add, %ME_LngMenu108%, OnListContextSelect
-	Menu, menuContext, Add, %ME_LngMenu109%, OnListContextSelect
 	Menu, menuContext, Add
+	Menu, menuContext, Add, %ME_LngMenu109%, OnListContextSelect
 	Menu, menuContext, Add, %ME_LngMenu110%, OnListContextSelect
 	Menu, menuContext, Add, %ME_LngMenu111%, OnListContextSelect
-	Menu, menuContext, Add, %ME_LngMenu112%, OnListContextSelect
 	if (list="T") {
 		Menu, menuContext, Add
-		Menu, menuContext, Add, %ME_LngMenu113%, OnListContextSelect
+		Menu, menuContext, Add, %ME_LngMenu112%, OnListContextSelect
 	}
 
 	stat := ItemCanDelete(list, idx)
 	if (list="T") {
-		Menu, menuContext, %stat%, %ME_LngMenu104%
+		Menu, menuContext, %stat%, %ME_LngMenu103%
 	}
+	Menu, menuContext, %stat%, %ME_LngMenu105%
+	stat := ItemCanCopy(list, idx) ? "Enable" : "Disable"
 	Menu, menuContext, %stat%, %ME_LngMenu106%
-	if (list="T" && MainTabIdx==1 && idx==1) {
-		Menu, menuContext, Disable, %ME_LngMenu105%
-	}
-	stat := ItemCanCopy(list, idx)
 	Menu, menuContext, %stat%, %ME_LngMenu107%
-	Menu, menuContext, %stat%, %ME_LngMenu108%
 	stat := ItemCanMoveUp(list, idx)
-	Menu, menuContext, %stat%, %ME_LngMenu110%
+	Menu, menuContext, %stat%, %ME_LngMenu109%
 	stat := ItemCanMoveDown(list, idx)
-	Menu, menuContext, %stat%, %ME_LngMenu111%
+	Menu, menuContext, %stat%, %ME_LngMenu110%
 	if (list="T") {
-		GuiControlGet, Config_FoldTarget, MEW_Main:, Config_FoldTarget
 		if (Config_FoldTarget) {
-			Menu, menuContext, Check, %ME_LngMenu113%
+			Menu, menuContext, Check, %ME_LngMenu112%
 		}
 	}
 	;...........................................................................
@@ -3545,48 +4199,41 @@ ShowListContextMenu(list, idx)
 	itemName := ""
 	Menu, menuContext, Show
 
-	if (itemName = ME_LngMenu103) {
-		TargetNew(false)
+	if (itemName = ME_LngMenu101) {
+		SwitchTab(2)
 	}
-	else if (itemName = ME_LngMenu104) {
-		(list="T") ? TargetNew(true) :
+	else if (itemName = ME_LngMenu102) {
+		AddNewTarget(false)
+	}
+	else if (itemName = ME_LngMenu103) {
+		(list="T") ? AddNewTarget(true) :
 	}
 	else if (itemName = ME_LngMenu105) {
-		SetFocusETargetName()
-	}
-	else if (itemName = ME_LngMenu106) {
 		(list="T") ? TargetDelete() : GestureDelete()
 	}
-	else if (itemName = ME_LngMenu107) {
-		szBuf := (list="T") ? CopyTarget(false) : CopyGesture(false)
-		if (list="T" && Target_%Target_Editing%_Level>1) {
-			Target_Editing := Target_%Target_Editing%_Parent
-		}
-		ImportFromClipboard(szBuf)
+	else if (itemName = ME_LngMenu106) {
+		(list="T") ? DuplicateTarget() : DuplicateGesture()
 	}
-	else if (itemName = ME_LngMenu108) {
+	else if (itemName = ME_LngMenu107) {
 		(list="T") ? CopyTarget() : CopyGesture()
 	}
-	else if (itemName = ME_LngMenu109) {
+	else if (itemName = ME_LngMenu108) {
 		ImportFromClipboard()
 	}
-	else if (itemName = ME_LngMenu110) {
+	else if (itemName = ME_LngMenu109) {
 		(list="T") ? TargetShift(idx, -1) : GestureUp()
 	}
-	else if (itemName = ME_LngMenu111) {
+	else if (itemName = ME_LngMenu110) {
 		(list="T") ? TargetShift(idx, 1) : GestureDown()
 	}
-	else if (itemName = ME_LngMenu112) {
+	else if (itemName = ME_LngMenu111) {
 		(list="T") ? TargetSort() : GestureSort()
 	}
-	else if (itemName = ME_LngMenu113) {
-		SwitchTargetFolding(true)
+	else if (itemName = ME_LngMenu112) {
+		SwitchTargetFolding()
 	}
-	else if (itemName = ME_LngMenu121) {
+	else if (itemName = ME_LngMenu141) {
 		GestureNew()
-	}
-	else if (itemName = ME_LngMenu122) {
-		SetFocusEGestureName()
 	}
 	return
 
@@ -3596,48 +4243,140 @@ OnListContextSelect:
 }
 
 ;-------------------------------------------------------------------------------
-; Show Context Menu of Action List(mark)
+; Show unassigned gesture menu
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+ShowUnassignedGestureMenu(idx=0, bShow=true, bAdd=true)
+{
+	local menuname, name, ges, item, hitG, hitT, gesName
+	;...........................................................................
+	; Create Menu
+	menuname := bAdd ? "menuGestureAdd" : "menuGestureChange"
+	idx := (idx > 0) ? idx : Target_Editing
+	name := GetTargetFullName(idx, true)
+	Menu, %menuname%, Add
+	Menu, %menuname%, DeleteAll
+	hitG := false
+	Loop, %Gesture_Count%
+	{
+		ges := A_Index
+		hitT := false
+		Loop, % Gesture_%ges%_Count {
+			if (Gesture_%ges%_%A_Index%_Target == name) {
+				hitT := true
+				break
+			}
+		}
+		if (!hitT) {
+			Menu, %menuname%, Add, % Gesture_%ges%_Name, % bAdd ? "OnAddGestureMenuSelect" : "OnChangeGestureMenuSelect"
+			hitG := true
+		}
+	}
+	if (!hitG) {
+		Menu, %menuname%, Add, %ME_LngMenu000%
+		Menu, %menuname%, Disable, %ME_LngMenu000%
+	}
+	if (bAdd) {
+		Menu, %menuname%, Add
+		Menu, %menuname%, Add, %ME_LngMenu121%, OnNewGestureMenuSelect
+	}
+	;...........................................................................
+	; Show Menu
+	if (bShow) {
+		Menu, %menuname%, Show
+	}
+	return
+
+OnAddGestureMenuSelect:
+	ShowGesture(GestureIndexOf(A_ThisMenuItem))
+	AddAction()
+	return
+
+OnChangeGestureMenuSelect:
+	ChangeGesture(GestureIndexOf(A_ThisMenuItem))
+	return
+
+OnNewGestureMenuSelect:
+	GestureNew()
+	AddAction()
+	SwitchTab(3)
+	return
+}
+
+;-------------------------------------------------------------------------------
+; Add Action
+;														Implemented by lukewarm
+;														Modified by Pyonkichi
+;-------------------------------------------------------------------------------
+AddAction()
+{
+	local idx := ++Gesture_%Gesture_Editing%_Count
+	UpdateAction(true, idx)
+}
+
+;-------------------------------------------------------------------------------
+; Change Gesture
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+ChangeGesture(ges_d)
+{
+	local szTgt, ges_s, tgt_s, tgt_d
+
+	Gui, MEW_Main:Submit, NoHide
+	szTgt := GetTargetFullName(Target_Editing, 1)
+	ges_s := Gesture_Editing
+	tgt_s := Action_Editing
+	tgt_d := ++Gesture_%ges_d%_Count
+	Gesture_%ges_d%_%tgt_d%_Target := Gesture_%ges_s%_%tgt_s%_Target
+    Gesture_%ges_d%_%tgt_d%_Action := Gesture_%ges_s%_%tgt_s%_Action
+	ActionDelete(ges_s, tgt_s, false, false)
+	ShowGesture(ges_d)
+	ShowAssignedGestures(0, false)
+	ShowAction(ges_d, tgt_d)
+	SaveModification("Reset")
+}
+
+;-------------------------------------------------------------------------------
+; Show Context Menu of Action List
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
 ShowActionListContextMenu(idx)
 {
-	local target, stat, itemName
+	local stat, itemName
 	;...........................................................................
 	; Create Menu
-	target := TargetIndexOf(Gesture_%Gesture_Editing%_%idx%_Target)
-	ShowAssignedGestureMenu(target, false)
-	ShowTargetListMenu(true, false)
+	ShowTargetListMenu(2, false)
 	Menu, menuContext, Add
 	Menu, menuContext, DeleteAll
-	;Menu, menuContext, Add, %ME_LngMenu101%, :menuGestureList
-	;Menu, menuContext, Add
-	Menu, menuContext, Add, %ME_LngMenu131%, :menuTargetList
-	Menu, menuContext, Add, %ME_LngMenu106%, OnActListContextSelect
+	Menu, menuContext, Add, %ME_LngMenu151%, :menuTargetList
 	Menu, menuContext, Add
+	Menu, menuContext, Add, %ME_LngMenu105%, OnActListContextSelect
+	Menu, menuContext, Add
+	Menu, menuContext, Add, %ME_LngMenu109%, OnActListContextSelect
 	Menu, menuContext, Add, %ME_LngMenu110%, OnActListContextSelect
-	Menu, menuContext, Add, %ME_LngMenu111%, OnActListContextSelect
 
 	stat := (idx <= 1) ? "Disable" : "Enable"
-	Menu, menuContext, %stat%, %ME_LngMenu110%
+	Menu, menuContext, %stat%, %ME_LngMenu109%
 	stat := (idx >= Gesture_%Gesture_Editing%_Count) ? "Disable" : "Enable"
-	Menu, menuContext, %stat%, %ME_LngMenu111%
+	Menu, menuContext, %stat%, %ME_LngMenu110%
 
 	;...........................................................................
 	; Show Menu
 	itemName := ""
 	Menu, menuContext, Show
 
-	if (itemName = ME_LngMenu106) {
+	if (itemName = ME_LngMenu105) {
 		ActionDelete(Gesture_Editing, idx)
 	}
-	else if (itemName = ME_LngMenu110) {
-		Gosub, ActionUp
+	else if (itemName = ME_LngMenu109) {
+		ActionUp()
 	}
-	else if (itemName = ME_LngMenu111) {
-		Gosub, ActionDown
+	else if (itemName = ME_LngMenu110) {
+		ActionDown()
 	}
 	else if (MenuSelectedTarget) {
-		UpdateAction(Gesture_Editing, idx, MenuSelectedTarget, Gesture_%Gesture_Editing%_%idx%_Action)
+		UpdateAction(true, idx, MenuSelectedTarget, Gesture_%Gesture_Editing%_%idx%_Action)
+		SelectTarget(TargetIndexOf(MenuSelectedTarget))
 	}
 	return
 
@@ -3647,60 +4386,52 @@ OnActListContextSelect:
 }
 
 ;-------------------------------------------------------------------------------
-; Show Assigned Gestures Menu of Specified Target
+; Show Target List Menu
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-ShowAssignedGestureMenu(idx=0, bShow=true)
+ShowTargetListMenu(mode=0, bShow=true)
 {
-	local name, ges, item, hit, gesName
-	if (MainTabIdx > 2) {
-		return
-	}
-	;...........................................................................
-	; Create Menu
-	idx := (idx > 0) ? idx : Target_Editing
-	name := MakeTargetFullName(idx, true)
-	Menu, menuGestureList, Add
-	Menu, menuGestureList, DeleteAll
-	hit := false
-	Loop, %Gesture_Count%
+	local name, icon, hit
+
+	Menu, menuTargetList, Add
+	Menu, menuTargetList, DeleteAll
+	Loop, %Target_Count%
 	{
-		if (MainTabIdx==2 && idx==1) {
-			break
-		}
-		ges := A_Index
-		Loop, % Gesture_%ges%_Count
-		{
-			if (Gesture_%ges%_%A_Index%_Target = name) {
-				item := Gesture_%ges%_Name "`t" MakeActionSummaryStr(Gesture_%ges%_%A_Index%_Action)
-				Menu, menuGestureList, Add, %item%, OnGestureListMenuSelect
-				if (ges == Gesture_Editing) {
-					Menu, menuGestureList, Default, %item%
+		name := GetTargetFullName(A_Index, mode)
+		if (mode == 2) {
+			hit := false
+			Loop, % Gesture_%Gesture_Editing%_Count {
+				if (name == Gesture_%Gesture_Editing%_%A_Index%_Target) {
+					hit := true
+					break
 				}
-				hit := true
-				break
+			}
+			if (hit) {
+				continue
 			}
 		}
+		else if (A_Index == Target_Editing) {
+			continue
+		}
+		Menu, menuTargetList, Add, %name%, OnTargetListMenuSelect
+		icon := (mode && A_Index==1) ? MG_IconFile "," Icon_Default : Target_%A_Index%_IconFile
+		RegExMatch(icon, "^(.+?)\s*,\s*(.*?)$", $)
+		icon := MG_VarInStr($1)
+		if (FileExist(icon)) {
+			Menu, menuTargetList, Icon, %name%, %icon%, %$2%
+		}
 	}
-	if (!hit) {
-		Menu, menuGestureList, Add, %ME_LngMenu102%, OnGestureListMenuSelect
-		Menu, menuGestureList, Disable, %ME_LngMenu102%
-	}
-	;...........................................................................
-	; Show Menu
+	MenuSelectedTarget := ""
 	if (bShow) {
-		Menu, menuGestureList, Show
+		Menu, menuTargetList, Show
+		Menu, menuTargetList, DeleteAll
 	}
+	return MenuSelectedTarget
+
+OnTargetListMenuSelect:
+	MenuSelectedTarget := A_ThisMenuItem
+	return
 }
-
-OnGestureListMenuSelect:
-	MenuSelectedGesture := RegExReplace(A_ThisMenuItem, "\t.*")
-	ShowGesture(GestureIndexOf(MenuSelectedGesture))
-	SelectAssignedAction()
-	SwitchTab(1)
-return
-
-
 
 ;-------------------------------------------------------------------------------
 ; Check whether the item can be deleted
@@ -3716,7 +4447,7 @@ ItemCanDelete(list, idx)
 }
 
 ;-------------------------------------------------------------------------------
-; Check whether the item can be moved up(mark)
+; Check whether the item can be moved up
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
 ItemCanMoveUp(list, idx)
@@ -3725,15 +4456,13 @@ ItemCanMoveUp(list, idx)
 	if (list="T") {
 		local next := idx - 1
 		return ((idx <= 2) || (Target_%next%_Level < Target_%idx%_Level)) ? "Disable" : "Enable"
-	} Else If (SortLVGesture=1){	;追加
-		return "Disable"
 	} else {
 		return (idx <= 1) ? "Disable" : "Enable"
 	}
 }
 
 ;-------------------------------------------------------------------------------
-; Check whether the item can be moved down(mark)
+; Check whether the item can be moved down
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
 ItemCanMoveDown(list, idx)
@@ -3744,8 +4473,6 @@ ItemCanMoveDown(list, idx)
 		local next2 := next + 1
 		return (((Target_%next%_Level > Target_%next2%_Level) && (Target_%idx%_Parent != Target_%next2%_Parent))
 			 ||	(idx <= 1) || (next >= Target_Count)) ? "Disable" : "Enable"
-	} Else If (SortLVGesture=1){	;追加
-		return "Disable"
 	} else {
 		return (idx >= Gesture_Count) ? "Disable" : "Enable"
 	}
@@ -3755,11 +4482,9 @@ ItemCanMoveDown(list, idx)
 ; Check whether the item can be copied
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-ItemCanCopy(list, idx)
-{
-	global MainTabIdx
+ItemCanCopy(list, idx) {
+	global
 	return ((list="G" && idx>=1) || (idx==1 && MainTabIdx==2) || idx>=2)
-			? "Enable" : "Disable"
 }
 
 ;-------------------------------------------------------------------------------
@@ -3811,19 +4536,23 @@ TvIndexToId(idx)
 ;-------------------------------------------------------------------------------
 ShowTarget(idx, bForce=true, bKeepIcon=false)
 {
-	local stat, next, next2
+	local type, rule, stat, next, next2
 	if (Target_Editing==idx && !bForce) {
 		return
 	}
 	Critical
 	Target_Editing := idx
-	GuiControl, MEW_Main:, ETargetName,% Target_%idx%_Name
+	GuiControl, MEW_Main:, ETargetName, % (Target_Editing>1) ? Target_%idx%_Name : ME_LngOthers002
 	Gui, MEW_Main:Default
 	Gui, MEW_Main:ListView, LVRule
 	GuiControl, MEW_Main:-Redraw, LVRule
 	LV_Delete()
 	Loop, % Target_%idx%_Count {
-		LV_Add("", Target_%idx%_%A_Index%_Type, Target_%idx%_%A_Index%_Value)
+		type := Target_%idx%_%A_Index%_Type
+		rule := GetMatchRuleStr(type)
+		type := RegExReplace(type, "_.+$")
+		rule := rule ? RuleDisp_%type% " (" rule ")" : RuleDisp_%type%
+		LV_Add("", rule, Target_%idx%_%A_Index%_Value)
 	}
 	GuiControl, MEW_Main:+Redraw, LVRule
 	stat := ItemCanDelete("T", idx)
@@ -3833,19 +4562,22 @@ ShowTarget(idx, bForce=true, bKeepIcon=false)
 	stat := ItemCanMoveDown("T", idx)
 	GuiControl, MEW_Main:%stat%, BTargetDown
 	stat := (idx < 1) ? "Disable" : "Enable"
-	GuiControl, MEW_Main:%stat%, BCopyTarget
+	GuiControl, MEW_Main:%stat%, BTargetDup
 	GuiControl, MEW_Main:Choose, DDLLogic, % Target_%idx%_IsAnd + 1
 	stat := (Target_%idx%_Level <= 1) ? "Disable" : "Enable"
 	GuiControl, MEW_Main:%stat%, ChkNotInhRules
 	GuiControl, MEW_Main:, ChkNotInhRules, % (Target_%idx%_NotInh ? 1 : 0)
-	if (!bKeepIcon)
-	{
-		if (RegExMatch(Target_%idx%_IconFile, "^(.+?)\s*,\s*(.*?)$", $)) {
+	stat := (Target_Editing <= 1) ? "Disable" : "Enable"
+	GuiControl, MEW_Main:%stat%, ETargetName
+	GuiControl, MEW_Main:%stat%, EIconFile
+	GuiControl, MEW_Main:%stat%, BBrowseIcon
+	if (!bKeepIcon) {
+		if (Target_Editing>1 && RegExMatch(Target_%idx%_IconFile, "^(.+?)\s*,\s*(.*?)$", $)) {
 			GuiControl, MEW_Main:, EIconFile, %$1%
 			GuiControl, MEW_Main:, EIconIndex, %$2%
 		} else {
-			GuiControl, MEW_Main:, EIconFile,
-			GuiControl, MEW_Main:, EIconIndex, 1
+			GuiControl, MEW_Main:, EIconFile
+			GuiControl, MEW_Main:, EIconIndex
 		}
 	}
 	Gui, MEW_Main:TreeView, TVTarget1
@@ -3861,35 +4593,38 @@ ShowTarget(idx, bForce=true, bKeepIcon=false)
 ; Move Up Rule
 ;														Implemented by lukewarm
 ;-------------------------------------------------------------------------------
-RuleUp:
-	if(Rule_Editing>1){
-		RuleSwap(Target_Editing,Rule_Editing-1,Rule_Editing)
+RuleUp() {
+	global
+	if (Rule_Editing > 1) {
+		RuleSwap(Target_Editing, Rule_Editing-1, Rule_Editing)
 		ShowTarget(Target_Editing)
-		ShowRule(Target_Editing,Rule_Editing-1)
+		ShowRule(Target_Editing, Rule_Editing-1)
 	}
-return
+}
 
 ;-------------------------------------------------------------------------------
 ; Move Down Rule
 ;														Implemented by lukewarm
 ;-------------------------------------------------------------------------------
-RuleDown:
-	if(Rule_Editing<Target_%Target_Editing%_Count){
-		RuleSwap(Target_Editing,Rule_Editing,Rule_Editing+1)
+RuleDown() {
+	global
+	if (Rule_Editing < Target_%Target_Editing%_Count) {
+		RuleSwap(Target_Editing, Rule_Editing, Rule_Editing+1)
 		ShowTarget(Target_Editing)
-		ShowRule(Target_Editing,Rule_Editing+1)
+		ShowRule(Target_Editing, Rule_Editing+1)
 	}
-return
+}
 
 ;-------------------------------------------------------------------------------
 ; Delete Rule
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-RuleDelete:
-	RuleDelete(Target_Editing, Rule_Editing)
-return
-RuleDelete(target, idx, bUpdateGUI=true)
+RuleDelete() {
+	global
+	DeleteRule(Target_Editing, Rule_Editing)
+}
+DeleteRule(target, idx, bUpdateGUI=true)
 {
 	global
 	Loop
@@ -3913,8 +4648,7 @@ RuleDelete(target, idx, bUpdateGUI=true)
 ; Move Rule
 ;														Implemented by lukewarm
 ;-------------------------------------------------------------------------------
-RuleMove(target,from,to)
-{
+RuleMove(target, from, to) {
 	global
 	Target_%target%_%to%_Type  := Target_%target%_%from%_Type
 	Target_%target%_%to%_Value := Target_%target%_%from%_Value
@@ -3924,20 +4658,17 @@ RuleMove(target,from,to)
 ; Move Swap
 ;														Implemented by lukewarm
 ;-------------------------------------------------------------------------------
-RuleSwap(target,a,b){
-	RuleMove(target,a,"tmp")
-	RuleMove(target,b,a)
-	RuleMove(target,"tmp",b)
+RuleSwap(target, a, b) {
+	RuleMove(target, a, "tmp")
+	RuleMove(target, b, a)
+	RuleMove(target, "tmp", b)
 }
 
 ;-------------------------------------------------------------------------------
 ; Check whether the Rule is Changed
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-LVRuleSelect:
-	IsRuleChanged()
-return
-IsRuleChanged()
+LVRuleSelect()
 {
 	global
 	if (A_GuiEvent!="Normal" && A_GuiEvent!="K") {
@@ -3996,10 +4727,10 @@ ShowRule(target, idx)
 ; Get Matching Rule
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-GetMatchRule(szType, ByRef invert, ByRef method)
+GetMatchRule(szRuleType, ByRef invert, ByRef method)
 {
 	local $, $1, $2
-	RegExMatch(szType, "^.+_(.)(.?)", $)
+	RegExMatch(szRuleType, "^.+_(.)(.?)", $)
 
 	invert := 0, method := 1
 	Loop, 2
@@ -4020,6 +4751,43 @@ GetMatchRule(szType, ByRef invert, ByRef method)
 			method := 5
 		}
 	}
+}
+
+;-------------------------------------------------------------------------------
+; Get Matching Rule String
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+GetMatchRuleStr(szRuleType)
+{
+	local invert, method, szRet
+
+	GetMatchRule(szRuleType, invert, method)
+	if (!invert) {
+		if (method == 1) {
+			szRet := ME_LngOthers005
+		} else if (method == 2) {
+			szRet := ME_LngOthers006
+		} else if (method == 3) {
+			szRet := ME_LngOthers007
+		} else if (method == 4) {
+			szRet := ME_LngOthers008
+		} else if (method == 5) {
+			szRet := ME_LngOthers009
+		}
+	} else {
+		if (method == 1) {
+			szRet := ME_LngOthers010
+		} else if (method == 2) {
+			szRet := ME_LngOthers011
+		} else if (method == 3) {
+			szRet := ME_LngOthers012
+		} else if (method == 4) {
+			szRet := ME_LngOthers013
+		} else if (method == 5) {
+			szRet := ME_LngOthers014
+		}
+	}
+	return szRet
 }
 
 ;-------------------------------------------------------------------------------
@@ -4046,16 +4814,13 @@ ClearRule()
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-BAddRulePress:
-	Gui, MEW_Main:Submit, NoHide
-	AddRule(Target_Editing, DDLRuleType, ERuleValue)
-	SaveModification("Reset")
-return
-AddRule(tgt, type, val)
+BAddRulePress() {
+	AddRule()
+}
+AddRule(bShow=true)
 {
-	local idx
-	idx := ++Target_%tgt%_Count
-	UpdateRule(tgt, idx, type, val)
+	local idx := ++Target_%Target_Editing%_Count
+	UpdateRule(bShow, idx)
 }
 
 ;-------------------------------------------------------------------------------
@@ -4063,56 +4828,59 @@ AddRule(tgt, type, val)
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-BUpdateRulePress:
-	Gui, MEW_Main:Submit, NoHide
-	UpdateRule(Target_Editing, Rule_Editing, DDLRuleType, ERuleValue)
-	SaveModification("Reset")
-return
-UpdateRule(tgt, idx, type, val)
+BUpdateRulePress() {
+	UpdateRule()
+}
+UpdateRule(bShow=true, idx=0)
 {
 	local szRuleType
-	MakeRuleTypeStr(szRuleType, type)
-	Target_%tgt%_%idx%_Type  := szRuleType
-	Target_%tgt%_%idx%_Value := val
-	if (Target_Editing == tgt) {
-		ShowTarget(tgt, true, true)
-		ShowRule(tgt, idx)
+	Gui, MEW_Main:Submit, NoHide
+	idx := idx ? idx : Rule_Editing
+	MakeRuleTypeStr(szRuleType, DDLRuleType)
+	Target_%Target_Editing%_%idx%_Type  := szRuleType
+	Target_%Target_Editing%_%idx%_Value := ERuleValue
+	if (bShow) {
+		ShowTarget(Target_Editing, true, true)
+		ShowRule(Target_Editing, idx)
 	}
+	SaveModification("Reset")
 }
 
 ;-------------------------------------------------------------------------------
 ; On Clear Rule Button Press
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-ClearRulePress:
+ClearRulePress() {
 	GuiControl, MEW_Main:, ERuleValue
-return
+}
 
 ;-------------------------------------------------------------------------------
 ; On And/Or Mode Change
 ;														Implemented by lukewarm
 ;-------------------------------------------------------------------------------
-DDLLogicChoose:
+DDLLogicChoose() {
+	global
 	Gui, MEW_Main:Submit, NoHide
 	Target_%Target_Editing%_IsAnd := DDLLogic - 1
-return
+}
 
 ;-------------------------------------------------------------------------------
 ; On Not Inherit Rules Change
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnNotInhRulesChange:
+OnNotInhRulesChange() {
+	global
 	Gui, MEW_Main:Submit, NoHide
 	Target_%Target_Editing%_NotInh := ChkNotInhRules
-return
+}
 
 ;-------------------------------------------------------------------------------
 ; On Rule Type Change
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnRuleTypeChange:
+OnRuleTypeChange() {
 	UpdateRuleCtrlStat(true)
-return
+}
 UpdateRuleCtrlStat(fModify=false)
 {
 	local szRuleType, stat
@@ -4130,7 +4898,7 @@ UpdateRuleCtrlStat(fModify=false)
 	EnblUpdateRule := stat
 
 	stat := (DDLRuleType < 5) ? "Enable" : "Disable"
-	GuiControl, MEW_Main:%stat%, Label9
+	GuiControl, MEW_Main:%stat%, Label14
 	GuiControl, MEW_Main:%stat%, DDLMatchRule
 	if (fModify) {
 		SaveModification("Modified", "ERuleValue")
@@ -4169,26 +4937,23 @@ MakeRuleTypeStr(ByRef szRuleType, type)
 ; On Rule Edit Modify
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnRuleEditModify:
+OnRuleEditModify() {
+	global
 	Gui, MEW_Main:Submit, Nohide
 	SaveModification("Modified", "ERuleValue")
 	UpdateRuleCtrlStat()
-return
+}
 
 ;-------------------------------------------------------------------------------
 ; On Target Picker Button Press
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-BRulePickerPressed:
-	TargetPicked()
-return
 TargetPicked()
 {
 	local sel
 	Gui, MEW_Main:Submit, NoHide
-	if (DDLRuleType < 5)
-	{
+	if (DDLRuleType < 5) {
 		SetTimer, RulePickerTimer, 10
 		Hotkey, RButton up, RulePickerHotkey, On
 	}
@@ -4205,58 +4970,61 @@ TargetPicked()
 ; Target Picker Tooltip Display Timer
 ;														Implemented by lukewarm
 ;-------------------------------------------------------------------------------
-RulePickerTimer:
-	Tooltip, %ME_LngTooltip003%
-return
+RulePickerTimer() {
+	global
+	Tooltip, %ME_LngTooltip103%
+}
 
 ;-------------------------------------------------------------------------------
 ; On Target Click
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-RulePickerHotkey:
-	CoordMode,Mouse,Screen
-	MouseGetPos, MG_X, MG_Y, MG_HWND, MG_HCTL, 3
-	SendMessage, 0x84, 0, % MG_Y<<16|MG_X,, ahk_id %MG_HCTL%
+RulePickerHotkey()
+{
+	local x, y, hWnd, hCtrl, szValue
+
+	CoordMode, Mouse, Screen
+	MouseGetPos, x, y, hWnd, hCtrl, 3
+	SendMessage, 0x84, 0, % y<<16|x,, ahk_id %hCtrl%
 	if (ErrorLevel == 4294967295) {
-		MouseGetPos,,,,MG_HCTL, 2
+		MouseGetPos,,,,hCtrl, 2
 	}
 	if (DDLRuleType == 1) {
-		WinGetClass, ERuleValue, ahk_id %MG_HWND%
+		WinGetClass, szValue, ahk_id %hWnd%
 	}
 	else if(DDLRuleType == 2) {
-		WinGetClass, ERuleValue, ahk_id %MG_HCTL%
+		WinGetClass, szValue, ahk_id %hCtrl%
 	}
 	else if(DDLRuleType == 3) {
-		WinGet, ERuleValue, ProcessName, ahk_id %MG_HWND%
+		szValue := MG_GetExeName(hWnd, false)
 	}
 	else {
-		WinGetTitle, ERuleValue, ahk_id %MG_HWND%
+		WinGetTitle, szValue, ahk_id %hWnd%
 	}
-	GuiControl, MEW_Main:, ERuleValue, %ERuleValue%
+	GuiControl, MEW_Main:, ERuleValue, %szValue%
 
-	WinGet, EIconFile, ProcessPath, ahk_id %MG_HWND%
-	GuiControl, MEW_Main:, EIconFile, %EIconFile%
+	szValue := MG_GetExeName(hWnd, true)
+	GuiControl, MEW_Main:, EIconFile, %szValue%
 	GuiControl, MEW_Main:, EIconIndex, 1
 
-	SetTimer,RulePickerTimer,Off
-	Hotkey,RButton up,Off
+	SetTimer, RulePickerTimer, Off
+	Hotkey, RButton up, Off
 	Tooltip
-return
+}
 
 ;-------------------------------------------------------------------------------
 ; Get Rectangle Coordinates
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-GetRectRelative:
-	GetRectByDrag(RX, RY, RW, RH, TW, TH, 0)
-	DlgRectSettings(RX, RY, RW, RH, TW, TH, 0)
-return
-
-GetRectAbsolute:
-	GetRectByDrag(RX, RY, RW, RH, TW, TH, 1)
-	DlgRectSettings(RX, RY, RW, RH, TW, TH, 1)
-return
+GetRectRelative() {
+	GetRectByDrag(rx, ry, rw, rh, tw, th, 0)
+	DlgRectSettings(rx, ry, rw, rh, tw, th, 0)
+}
+GetRectAbsolute() {
+	GetRectByDrag(rx, ry, rw, rh, tw, th, 1)
+	DlgRectSettings(rx, ry, rw, rh, tw, th, 1)
+}
 
 ;-------------------------------------------------------------------------------
 ; Get Rectangle Coordinates by Mouse Dragging
@@ -4269,23 +5037,19 @@ return
 ;-------------------------------------------------------------------------------
 GetRectByDrag(ByRef rcX, ByRef rcY, ByRef rcW, ByRef rcH, ByRef tgW, ByRef tgH, target) 
 {
-	global ME_LngTooltip005
+	global ME_LngTooltip105
 	Hotkey, LButton, Dummy, On
-	While (!GetKeyState("LButton", "P"))
-	{
-		Tooltip, %ME_LngTooltip005%
+	While (!GetKeyState("LButton", "P")) {
+		Tooltip, %ME_LngTooltip105%
 		Sleep, 10
 	}
-	if (target==0)
-	{
+	if (target==0) {
 		MouseGetPos, , , hwnd
 		WinGetPos, , , tgW, tgH, ahk_id %hwnd%
 		WinActivate, ahk_id %hwnd%
 		CoordMode, Mouse, Relative
 		MouseGetPos, rx1, ry1
-	}
-	else
-	{
+	} else {
 		tgW := A_ScreenWidth
 		tgH := A_ScreenHeight
 	}
@@ -4297,33 +5061,29 @@ GetRectByDrag(ByRef rcX, ByRef rcY, ByRef rcW, ByRef rcH, ByRef tgW, ByRef tgH, 
 	WinSet, Transparent, 127
 	Gui, MEW_CaptRect:Color, 0x0000ff
 
-	While (GetKeyState("LButton", "P"))
-	{
+	While (GetKeyState("LButton", "P")) {
 		MouseGetPos, x2, y2
 		winX := (x1 < x2) ? x1 : x2
 		winY := (y1 < y2) ? y1 : y2
 		winW := abs(x1 - x2)
 		winH := abs(y1 - y2)
 		Gui, MEW_CaptRect:Show, x%winX% y%winY% w%winW% h%winH% NA
-		Tooltip, %ME_LngTooltip005%
+		Tooltip, %ME_LngTooltip105%
 		Sleep, 10
 	}
 	Tooltip
 	Hotkey, LButton, Dummy, Off
 
-	if (target==0)
-	{
+	if (target==0) {
 		x1:=rx1, y1:=ry1
 		CoordMode, Mouse, Relative
 	}
 	MouseGetPos, x2, y2
 
-	if (x1 > x2) 
-	{
+	if (x1 > x2) {
 		temp:=x1, x1:=x2, x2:=temp
 	}
-	if (y1 > y2)
-	{
+	if (y1 > y2) {
 		temp:=y1, y1:=y2, y2:=temp
 	}
 	rcX:=x1, rcY:=y1, rcW:=x2-x1+1, rcH:=y2-y1+1
@@ -4343,8 +5103,7 @@ Dummy:
 ;-------------------------------------------------------------------------------
 DlgRectSettings(rcX, rcY, rcW, rcH, tgW, tgH, target)
 {
-	global
-	local prevOrg:=1
+	local x, y, w, h, prevOrg:=1
 
 	Gui, MEW_Rect:New
 	Gui, MEW_Rect:-MaximizeBox -MinimizeBox +HwndME_hWndRect +AlwaysOnTop +OwnerMEW_CaptRect +Delimiter`n
@@ -4391,7 +5150,7 @@ DlgRectSettings(rcX, rcY, rcW, rcH, tgW, tgH, target)
 
 	Gui, MEW_Rect:Add, Button, gOnAcceptRect xs-105 y+12 w80, %ME_LngButton001%
 	Gui, MEW_Rect:Add, Button, gOnCancelRect x+8 yp+0 w80, %ME_LngButton002%
-	Gui, MEW_Rect:Show, ,%ME_LngCapt007%
+	Gui, MEW_Rect:Show, ,%ME_LngCapt008%
 
 	WinWaitClose,  ahk_id %ME_hWndRect%
 	return
@@ -4399,44 +5158,41 @@ DlgRectSettings(rcX, rcY, rcW, rcH, tgW, tgH, target)
 	;---------------------------------------------------------------------------
 	; Origin corner is changed
 OnOrgChange:
-	Gui, MEW_Rect:Submit,NoHide
-	if (prevOrg==1 || prevOrg==3)
-	{
+	Gui, MEW_Rect:Submit ,NoHide
+	if (prevOrg==1 || prevOrg==3) {
 		if (RectOrg==2 || RectOrg==4) {
-			RectX := -(tgW - RectX - 1)
+			rcX:=RectX:= -(tgW - RectX - 1)
 		}
-	}
-	else
-	{
+	} else {
 		if (RectOrg==1 || RectOrg==3) {
-			RectX := tgW + RectX - 1
+			rcX:=RectX:= tgW + RectX - 1
 		}
 	}
+	GuiControl, MEW_Rect: -gOnRectChange, RectX
 	GuiControl, MEW_Rect:, RectX, %RectX%
+	GuiControl, MEW_Rect: +gOnRectChange, RectX
 
-	if (prevOrg==1 || prevOrg==2)
-	{
+	if (prevOrg==1 || prevOrg==2) {
 		if (RectOrg==3 || RectOrg==4) {
-			RectY := -(tgH - RectY - 1)
+			rcY:=RectY:= -(tgH - RectY - 1)
 		}
-	}
-	else
-	{
+	} else {
 		if (RectOrg==1 || RectOrg==2) {
-			RectY := tgH + RectY - 1
+			rcY:=RectY:= tgH + RectY - 1
 		}
 	}
+	GuiControl, MEW_Rect: -gOnRectChange, RectY
 	GuiControl, MEW_Rect:, RectY, %RectY%
-
+	GuiControl, MEW_Rect: +gOnRectChange, RectY
 	prevOrg := RectOrg
 	return
 
 	;---------------------------------------------------------------------------
 OnRectChange:
-	Gui, MEW_Rect:Submit,NoHide
-	local x, y, w, h
+	Gui, MEW_Rect:Submit ,NoHide
 	WinGetPos, x, y, w, h, ahk_id %ME_hWndCaptRect%
-	x+=(RectX-rcX), y+=(RectY-rcY), w+=(RectW-rcW), h+=(RectH-rcH)
+	x += (RectX-rcX), y += (RectY-rcY)
+	w += (RectW-rcW), h += (RectH-rcH)
 	WinMove, ahk_id %ME_hWndCaptRect%,, %x%, %y%, %w%, %h%
 	rcX:=RectX, rcY:=RectY, rcW:=RectW, rcH:=RectH
 	return
@@ -4445,9 +5201,10 @@ OnRectChange:
 	; Accepted
 OnAcceptRect:
 	Gui, MEW_Rect:Submit
-	MG_SetRuleValue("MG_CursorInRect(" . RectX . "," . RectY . "," . RectW . "," . RectH . "," . RectTarget-1 . "," . RectOrg-1 . "," . RectMode-1 . ")")
+	MG_SetRuleValue("MG_CursorInRect(" RectX "," RectY "," RectW "," RectH "," RectTarget-1 "," RectOrg-1 "," RectMode-1 ")")
 	Gui, MEW_Rect:Destroy
 	Gui, MEW_CaptRect:Destroy
+	WinActivate, ahk_id %ME_hWndMain%
 	return
 
 	;---------------------------------------------------------------------------
@@ -4457,6 +5214,7 @@ MEW_RectGuiClose:
 MEW_RectGuiEscape:
 	Gui, MEW_Rect:Destroy
 	Gui, MEW_CaptRect:Destroy
+	WinActivate, ahk_id %ME_hWndMain%
 	return
 }
 
@@ -4466,34 +5224,236 @@ MEW_RectGuiEscape:
 ;	Gesture Routines : ジェスチャー関連
 ;
 ;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+;-------------------------------------------------------------------------------
+; Show Assigned Gestures
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+ShowAssignedGestures(idx=0, bSel=true)
+{
+	local name, ges
+	Critical
+	idx := (idx > 0) ? idx : Target_Editing
+	name := GetTargetFullName(idx, true)
+	Gui, MEW_Main:Default
+	Gui, MEW_Main:ListView, LVGesture
+	GuiControl, MEW_Main:-Redraw, LVGesture
+	LV_Delete()
+	Loop, %Gesture_Count% {
+		ges := A_Index
+		Loop, % Gesture_%ges%_Count {
+			if (Gesture_%ges%_%A_Index%_Target == name) {
+				LV_Add("", Gesture_%ges%_Name, MakeActionSummaryStr(Gesture_%ges%_%A_Index%_Action), ges)
+				break
+			}
+		}
+	}
+	GuiControl, MEW_Main:+Redraw, LVGesture
+	if (bSel) {
+		SelectGestureInMainLV()
+	}
+	Critical, Off
+}
+
+;-------------------------------------------------------------------------------
+; Select Assigned Gesture in Gesture ListView
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+SelectGestureInMainLV()
+{
+	local idx, hit
+	Gui, MEW_Main:Default
+	Gui, MEW_Main:ListView, LVGesture
+	hit := false
+	Loop, % LV_GetCount() {
+		LV_GetText(idx, A_Index, 3)
+		if (idx == Gesture_Editing) {
+			LV_Modify(A_Index, "Select")
+			LV_Modify(A_Index, "Focus Vis")
+			hit := true
+			break
+		}
+	}
+	if (!hit) {
+		LV_Modify(0, "-Select")
+		LV_Modify(0, "-Focus")
+	}
+	ChangeActionButtonStat()
+}
+
+;-------------------------------------------------------------------------------
+; Release Assigned Gesture
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+ReleaseGesture(ges, idx)
+{
+	local sel
+	Gui, MEW_Main:Default
+	Gui, MEW_Main:ListView, LVGesture
+	sel := LV_GetNext()
+	ActionDelete(ges, idx, false, false)
+	TargetSelect(true)
+	sel := sel>LV_GetCount() ? LV_GetCount() : sel
+	LV_Modify(sel, "Select")
+	LV_Modify(sel, "Focus")
+	OperateLVGesture(true)
+}
+
+;-------------------------------------------------------------------------------
+; Gesture List View Events
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+LVGestureEvents() {
+	OperateLVGesture()
+}
+OperateLVGesture(bSel=false)
+{
+	local idx, bMod
+	static sel
+
+	Gui, MEW_Main:Default
+	Gui, MEW_Main:ListView, LVGesture
+	;---------------------------------------------------------------------------
+	; On Selection Change
+	if (A_GuiEvent="Normal" || A_GuiEvent=="K"
+	||	A_GuiEvent=="RightClick" || A_GuiEvent=="d"
+	||	bSel)
+	{
+		sel := LV_GetNext()
+		LV_GetText(idx, sel, 3)
+		idx := idx>0 ? idx : 0
+		if (idx != Gesture_Editing) {
+			bMod := SaveModification()
+		}
+		GuiControl, MEW_Main:Choose, LBGesture, % "`n" (idx>0 ? idx : Gesture_Editing)
+		if (bMod) {
+			ShowAssignedGestures(0, false)
+		}
+		ChangeActionButtonStat()
+		;-----------------------------------------------------------------------
+		; On Right Click
+		if (A_GuiEvent=="RightClick" || A_GuiEvent=="d") {
+			SetTimer, ShowGesLVMenu, -1
+		}
+	}
+	return
+
+ShowGesLVMenu:
+	ShowGestureListViewContextMenu(sel)
+	return
+}
+
+;-------------------------------------------------------------------------------
+; Show Context Menu of Gesture List View
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+ShowGestureListViewContextMenu(idx)
+{
+	local itemName
+
+	;...........................................................................
+	; Menu for blank line
+	if (idx <= 0) {
+		ShowUnassignedGestureMenu(0, false)
+		Menu, menuContext, Add
+		Menu, menuContext, DeleteAll
+		Menu, menuContext, Add, %ME_LngMenu104%, :menuGestureAdd
+		Menu, menuContext, Show
+		return
+	}
+	;...........................................................................
+	; Menu for assigned gesture line
+	ShowUnassignedGestureMenu(0, false, false)
+	ShowTargetListMenu(1, false)
+	Menu, menuContext, Add
+	Menu, menuContext, DeleteAll
+	Menu, menuContext, Add, %ME_LngMenu122%, OnGesListContextSelect
+	Menu, menuContext, Default, %ME_LngMenu122%
+	Menu, menuContext, Add, %ME_LngMenu123%, :menuGestureChange
+	Menu, menuContext, Add, %ME_LngMenu124%, :menuTargetList
+	Menu, menuContext, Add
+	Menu, menuContext, Add, %ME_LngMenu105%, OnGesListContextSelect
+	;...........................................................................
+	; Show menu
+	itemName := ""
+	Menu, menuContext, Show
+	if (itemName = ME_LngMenu122) {
+		SwitchTab(3)
+	}
+	else if (itemName = ME_LngMenu105) {
+		ReleaseGesture(Gesture_Editing, Action_Editing)
+	}
+	else if (MenuSelectedTarget) {
+		CopyAction(MenuSelectedTarget)
+	}
+	return
+
+OnGesListContextSelect:
+	itemName := A_ThisMenuItem
+	return
+}
+
+;-------------------------------------------------------------------------------
+; Copy action to another target
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+CopyAction(szTgtD)
+{
+	local ges, tgt_d, szMsg
+
+	Gui, MEW_Main:Submit, NoHide
+	ges := Gesture_Editing
+	tgt_d := 0
+	Loop, % Gesture_%ges%_Count {
+		if (Gesture_%ges%_%A_Index%_Target == szTgtD) {
+			szMsg := RegExReplace(ME_LngMessage007, MG_ReplaceStr, Gesture_%ges%_Name)
+			MsgBox, 0x21, %ME_LngCapt004%, %szMsg%
+			IfMsgBox, Cancel
+			{
+				return
+			}
+			tgt_d := A_Index
+			break
+		}
+	}
+	if (!tgt_d) {
+		tgt_d := ++Gesture_%ges%_Count
+		Gesture_%ges%_%tgt_d%_Target := szTgtD
+	}
+    Gesture_%ges%_%tgt_d%_Action := Gesture_%ges%_%Action_Editing%_Action
+    ;tgt_d := TargetIndexOf(szTgtD)
+	;ShowTarget(tgt_d, false)
+	;ShowAssignedGestures(0, false)
+	;ShowAction(ges_d, tgt_d)
+	SaveModification("Reset")
+}
+
 
 ;-------------------------------------------------------------------------------
 ; Add New Gesture Entry
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-GestureNew:
-	GestureNew()
-return
-GestureNew(bMove=false)
+GestureNew()
 {
 	local idx
 	SaveModification()
 	EnableGestureControls()
-	ClearAction(true, true, false)
+	ClearGesturePatterns()
+	ClearAction(true, "B")
 	Gesture_Count++
 	idx := Gesture_Count
-	Gesture_%idx%_Name	 := "Gesture_" . Gesture_Count
+	Gesture_%idx%_Name := "Gesture_" Gesture_Count
 	Gesture_%idx%_Patterns := ""
-	Gesture_%idx%_Count	 := 0
-	if (bMove) {
-		while (idx > Gesture_Editing+1) {
-			GestureSwap(idx, idx-1)
-			idx--
-		}
-	}
+	Gesture_%idx%_Count := 0
+	;if (bMove) {
+	;	while (idx > Gesture_Editing+1) {
+	;		GestureSwap(idx, idx-1)
+	;		idx--
+	;	}
+	;}
 	ShowGestures()
 	ShowGesture(idx)
+	SelectGestureInMainLV()
 	AdjustDialogHeight()
 	SaveModification("Reset")
 	SetFocusEGestureName()
@@ -4520,17 +5480,14 @@ EnableGestureControls()
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-GestureUp:
-	GestureUp()
-return
 GestureUp()
 {
 	global Gesture_Editing
 	if (Gesture_Editing > 1) {
 		GestureSwap(Gesture_Editing-1, Gesture_Editing)
-		Gui, MEW_Main:ListView, LVGesture
 		ShowGestures()
 		ShowGesture(Gesture_Editing-1)
+		ShowAssignedGestures()
 	}
 }
 
@@ -4539,9 +5496,6 @@ GestureUp()
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-GestureDown:
-	GestureDown()
-return
 GestureDown()
 {
 	global Gesture_Editing, Gesture_Count
@@ -4549,6 +5503,7 @@ GestureDown()
 		GestureSwap(Gesture_Editing, Gesture_Editing+1)
 		ShowGestures()
 		ShowGesture(Gesture_Editing+1)
+		ShowAssignedGestures()
 	}
 }
 
@@ -4556,15 +5511,13 @@ GestureDown()
 ; Sort Gesture List
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-GestureSort:
-	GestureSort()
-return
 GestureSort()
 {
 	global Gesture_Editing
 	SaveModification()
 	SortList("Gesture")
 	ShowGesture(Gesture_Editing)
+	ShowAssignedGestures()
 }
 SortList(list)
 {
@@ -4615,15 +5568,12 @@ SortList(list)
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-GestureDelete:
-	GestureDelete()
-return
 GestureDelete()
 {
 	local idx := Gesture_Editing
 	if (Gesture_%idx%_Count > 0)
 	{
-		MsgBox, 33, %ME_LngCapt003%, %ME_LngMessage006%
+		MsgBox, 0x21, %ME_LngCapt003%, %ME_LngMessage006%
 		IfMsgBox, Cancel
 		{
 			return false
@@ -4638,10 +5588,13 @@ GestureDelete()
 		}
 	}
 	Gesture_Count--
-	ClearAction()
+	ClearGesturePatterns()
+	ClearAction(true, "BE")
 	ShowGestures()
 	ShowGesture(Gesture_Editing>Gesture_Count ? Gesture_Count : Gesture_Editing)
 	ShowGesturePattern(Gesture_Editing>Gesture_Count ? Gesture_Count : Gesture_Editing, 1)
+	SelectAssignedAction()
+	ShowAssignedGestures()
 	AdjustDialogHeight()
 	SaveModification("Reset")
 }
@@ -4689,13 +5642,10 @@ SetFocusEGestureName()
 }
 
 ;-------------------------------------------------------------------------------
-; Rename Target
+; Rename Gesture
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-GestureRename:
-	GestureRename()
-return
 GestureRename()
 {
 	local szGes
@@ -4703,6 +5653,7 @@ GestureRename()
 	Gesture_%Gesture_Editing%_Name = %szGes%
 	ShowGestures()
 	ShowGesture(Gesture_Editing)
+	ShowAssignedGestures()
 }
 
 ;-------------------------------------------------------------------------------
@@ -4710,9 +5661,6 @@ GestureRename()
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-EGestureNameChange:
-	EGestureNameChange()
-return
 EGestureNameChange()
 {
 	local szGes
@@ -4730,33 +5678,21 @@ EGestureNameChange()
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-ShowGestures()	;mark
+ShowGestures()
 {
 	global
 	local str
-	Gui, MEW_Main:Default
-	Gui,MEW_Main:ListView,LVGesture
-	LV_Delete()
-	Loop, %Gesture_Count%
-	{
+	Loop, %Gesture_Count% {
 		Join(str,Gesture_%A_Index%_Name)
-		If (SortLVGesture = 0)
-			LV_Add("Col3", Gesture_%A_Index%_Name)		;ジェスチャー一覧を生成
 	}
-	;GuiControl, MEW_Main:, LBGesture1,`n%str%
-	UpdateLVGesture()	;代替処理
-	GuiControl, MEW_Main:, LBGesture2,`n%str%
+	GuiControl, MEW_Main:, LBGesture,`n%str%
 }
-
 
 ;-------------------------------------------------------------------------------
 ; Gesture List Box Events
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-LBGestureSelect:
-	LBGestureEvents()
-return
 LBGestureEvents()
 {
 	global
@@ -4766,7 +5702,8 @@ LBGestureEvents()
 	{
 		Gui, MEW_Main:Submit, NoHide
 		SaveModification()
-		ClearAction(true, false)
+		ClearGesturePatterns(true, false)
+		ClearAction(true, "B")
 		EnableGestureControls()
 		ShowGesture(%A_GuiControl%)
 		;_______________________________________________________________________
@@ -4777,12 +5714,7 @@ LBGestureEvents()
 		GuiControl, MEW_Main:+gEGestureChange, EGesture
 		;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		SelectAssignedAction()
-	}
-	;---------------------------------------------------------------------------
-	; On Double Click
-	else if (A_GuiEvent="DoubleClick")
-	{
-		SwitchTab(MainTabIdx==1 ? 3 : 1)
+		SelectGestureInMainLV()
 	}
 }
 
@@ -4793,105 +5725,76 @@ LBGestureEvents()
 SelectAssignedAction()
 {
 	local szTarget, idx
-	szTarget := MakeTargetFullName(Target_Editing, true)
+	szTarget := GetTargetFullName(Target_Editing, true)
 	idx := MG_ActionExists(Gesture_Editing, szTarget)
 	if (idx) {
-		ShowAction(Gesture_Editing, idx, false)
+		ShowAction(Gesture_Editing, idx)
 	}
 	else {
 		Gui, MEW_Main:Default
 		Gui, MEW_Main:ListView, LVAction
 		LV_Modify(0, "-Select")
 		LV_Modify(0, "-Focus")
-		ChangeActionButtonStat()
+		ClearAction(false, "BE")
 	}
 }
 
 ;-------------------------------------------------------------------------------
-; Show Specified Gesture(mark)
+; Show Specified Gesture
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
 ShowGesture(idx)
 {
-	local stat, target, icon
+	local stat, tgt, act, def
 	Critical
 	Gesture_Editing:=idx
-	;GuiControl, MEW_Main:Choose, LBGesture1, %idx%
-	GuiControl, MEW_Main:Choose, LBGesture2, %idx%
-	SelectGesture(idx)			;追加。LVGestureの項目選択をGesture_Editingに合わせる
+	GuiControl, MEW_Main:Choose, LBGesture, %idx%
 	GuiControl, MEW_Main:, EGestureName, % Gesture_%idx%_Name
 	stat := (!idx) ? "Disable" : "Enable"
-	GuiControl, MEW_Main:%stat%, BCopyGesture1
-	GuiControl, MEW_Main:%stat%, BCopyGesture2
-	GuiControl, MEW_Main:%stat%, BGestureDelete1
-	GuiControl, MEW_Main:%stat%, BGestureDelete2
+	GuiControl, MEW_Main:%stat%, BGestureDup
+	GuiControl, MEW_Main:%stat%, BGestureDel
 	stat := (idx<=1) ? "Disable" : "Enable"
-	GuiControl, MEW_Main:%stat%, BGestureUp1
-	GuiControl, MEW_Main:%stat%, BGestureUp2
+	GuiControl, MEW_Main:%stat%, BGestureUp
 	stat := (idx>=Gesture_Count) ? "Disable" : "Enable"
-	GuiControl, MEW_Main:%stat%, BGestureDown1
-	GuiControl, MEW_Main:%stat%, BGestureDown2
-	GuiControl, MEW_Main:, LBGesturePattern, % "`n" . Gesture_%idx%_Patterns
+	GuiControl, MEW_Main:%stat%, BGestureDown
+	GuiControl, MEW_Main:, LBGesturePattern, % "`n" Gesture_%idx%_Patterns
 	Gui, MEW_Main:Default
 	Gui, MEW_Main:ListView, LVAction
 	GuiControl, MEW_Main:-Redraw, LVAction
 	LV_Delete()
+	def := ME_LngOthers004
+	stat := "Disable"
 	Loop, % Gesture_%idx%_Count {
-		target := TargetIndexOf(Gesture_%idx%_%A_Index%_Target)
-		icon := (target==1) ? Target_Default_Icon : Target_%target%_Icon
-		LV_Add("Icon"icon, Gesture_%idx%_%A_Index%_Target, MakeActionSummaryStr(Gesture_%idx%_%A_Index%_Action))
+		tgt := TargetIndexOf(Gesture_%idx%_%A_Index%_Target)
+		act := MakeActionSummaryStr(Gesture_%idx%_%A_Index%_Action)
+		if (tgt == 1) {
+			def := act
+			stat := "Enable"
+		} else {
+			LV_Add("Icon"Target_%tgt%_Icon, Gesture_%idx%_%A_Index%_Target, act, A_Index)
+		}
 	}
+	GuiControl, MEW_Main:, LBDefAction, `n%def%
+	GuiControl, MEW_Main:%stat%, LBDefAction
 	GuiControl, MEW_Main:+Redraw, LVAction
-	GuiControl, MEW_Main:Enable, BAddAction
-	EnblAddAction := "Enable"
 	GuiControl, MEW_Main:Choose, LBGesturePattern, %GesturePattern_Editing%
 	if (!Gesture_%idx%_Patterns)
 	{
 		GuiControl, MEW_Main:-g, EGesture
 		GuiControl, MEW_Main:, EGesture,
 		GuiControl, MEW_Main:+gEGestureChange, EGesture
-		EGestureChange(false)
+		OnGesturePatChange(false)
 	}
 	Critical, Off
-}
-
-;-------------------------------------------------------------------------------
-; Show Specified Gesture
-;														Implemented by Pyonkichi
-;-------------------------------------------------------------------------------
-ShowNextGesture(bForward=true)
-{
-	local name, ges
-	if (MainTabIdx>2 || Target_Editing<1) {
-		return
-	}
-	SwitchTab(1)
-	GuiControl, MEW_Main:Focus, TVTarget1
-	name := MakeTargetFullName(Target_Editing, true)
-	ges := Gesture_Editing
-	Loop, %Gesture_Count%
-	{
-		bForward ? ges++ : ges--
-		ges := (ges > Gesture_Count) ? 1 : (ges<1 ? Gesture_Count : ges)
-		Loop, % Gesture_%ges%_Count
-		{
-			if (Gesture_%ges%_%A_Index%_Target = name) {
-				ShowGesture(ges)
-				SelectAssignedAction()
-				return
-			}
-		}
-	}
 }
 
 ;-------------------------------------------------------------------------------
 ; Make Action Summary String
 ;														Implemented by lukewarm
 ;-------------------------------------------------------------------------------
-MakeActionSummaryStr(szAction)
-{
-	return RegExReplace(szAction, "(^;|<MG_CR>.+$)")
+MakeActionSummaryStr(szAction) {
+	return RegExReplace(szAction, "(^;|<MG_CR>.*$)")
 }
 
 ;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -4899,40 +5802,42 @@ MakeActionSummaryStr(szAction)
 ;	Gesture Pattern : ジェスチャーパターン
 ;
 ;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
 ;-------------------------------------------------------------------------------
 ; Move Up Gesture Pattern
 ;														Implemented by lukewarm
 ;-------------------------------------------------------------------------------
-GesturePatternUp:
-if (GesturePatternSwap(Gesture_Editing, GesturePattern_Editing-1, GesturePattern_Editing)){
-	ShowGesture(Gesture_Editing)
-	ShowGesturePattern(Gesture_Editing, GesturePattern_Editing-1)
+GesturePatternUp() {
+	global
+	if (GesturePatternSwap(Gesture_Editing, GesturePattern_Editing-1, GesturePattern_Editing)){
+		ShowGesture(Gesture_Editing)
+		ShowGesturePattern(Gesture_Editing, GesturePattern_Editing-1)
+	}
 }
-return
 
 ;-------------------------------------------------------------------------------
 ; Move Down Gesture Pattern
 ;														Implemented by lukewarm
 ;-------------------------------------------------------------------------------
-GesturePatternDown:
-if (GesturePatternSwap(Gesture_Editing, GesturePattern_Editing, GesturePattern_Editing+1)){
-	ShowGesture(Gesture_Editing)
-	ShowGesturePattern(Gesture_Editing, GesturePattern_Editing+1)
+GesturePatternDown() {
+	global
+	if (GesturePatternSwap(Gesture_Editing, GesturePattern_Editing, GesturePattern_Editing+1)){
+		ShowGesture(Gesture_Editing)
+		ShowGesturePattern(Gesture_Editing, GesturePattern_Editing+1)
+	}
 }
-return
 
 ;-------------------------------------------------------------------------------
 ; Delete Gesture Pattern
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-GesturePatternDelete:
-	GesturePatternDelete(Gesture_Editing, GesturePattern_Editing)
+GesturePatternDelete() {
+	global
+	DeleteGesturePattern(Gesture_Editing, GesturePattern_Editing)
 	ShowGesture(Gesture_Editing)
 	ShowGesturePattern(Gesture_Editing, GesturePattern_Editing)
-return
-GesturePatternDelete(idxGes, idxPat)
+}
+DeleteGesturePattern(idxGes, idxPat)
 {
 	local szGes := ""
 	Loop, Parse, Gesture_%idxGes%_Patterns,`n
@@ -4971,11 +5876,12 @@ GesturePatternSwap(g, a, b)
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-LBGesturePatternSelect:
+LBGesturePatternSelect() {
+	global
 	Gui, MEW_Main:Submit, NoHide
 	SaveModification()
 	ShowGesturePattern(Gesture_Editing, LBGesturePattern)
-return
+}
 
 ;-------------------------------------------------------------------------------
 ; Show Gesture Pattern
@@ -5007,7 +5913,7 @@ ShowGesturePattern(g, idx)
 		idx:=cnt
 		GuiControl, MEW_Main:, EGesture, %szLast%
 	}
-	EGestureChange(false)
+	OnGesturePatChange(false)
 	GuiControl, MEW_Main:+gEGestureChange, EGesture
 	GesturePattern_Editing:=idx
 	GuiControl, MEW_Main:Choose, LBGesturePattern, %idx%
@@ -5018,15 +5924,15 @@ ShowGesturePattern(g, idx)
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-EGestureChange:
-	EGestureChange()
-return
-EGestureChange(fSetModify=true)
+EGestureChange() {
+	OnGesturePatChange()
+}
+OnGesturePatChange(fSetModify=true)
 {
-	global
+	local stat
+
 	Gui, MEW_Main:Submit, NoHide
-	local stat := EGesture ? "Enable" : "Disable"
-	GuiControl, MEW_Main:%stat%, GPBoxBS
+	stat := EGesture ? "Enable" : "Disable"
 	GuiControl, MEW_Main:%stat%, BStrokeU
 	GuiControl, MEW_Main:%stat%, BStrokeR
 	GuiControl, MEW_Main:%stat%, BStrokeL
@@ -5040,6 +5946,11 @@ EGestureChange(fSetModify=true)
 		GuiControl, MEW_Main:%stat%, BStrokeDL
 		GuiControl, MEW_Main:%stat%, BStrokeUL
 	}
+	RegExMatch(EGesture, "((" ButtonRegEx "))_$", $)
+	SendMessage, 0x018B,,,, % "ahk_id " ControlGetHandle("LBButtons")
+	stat := ((LBButtons>0) && (LBButtons<ErrorLevel) && ($1!=MG_BtnNames[LBButtons])) ? "Enable" : "Disable"
+	GuiControl, MEW_Main:%stat%, BButtonDown
+
 	DllCall("RedrawWindow", "Ptr",ME_hGesPatBox, "Ptr",0, "Ptr",0, "Ptr",0x0107)
 	if (EGesture && fSetModify) {
 		SaveModification("Modified", "EGesture")
@@ -5068,29 +5979,32 @@ EGestureChange(fSetModify=true)
 ; On Gesture Backspace Button Press
 ;														Implemented by lukewarm
 ;-------------------------------------------------------------------------------
-GesturePatternBS:
+GesturePatternBS() {
+	global
 	Gui, MEW_Main:Submit, NoHide
 	GuiControl, MEW_Main:, EGesture, % RegExReplace(EGesture, "((" ButtonRegEx ")_|[DLRU_12346789])$")
-return
+}
 
 ;-------------------------------------------------------------------------------
 ; Add Gesture Pattern Button Press
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-AddGesturePattern:
+BAddGesPatPress() {
+	AddGesturePattern()
+}
+AddGesturePattern(bShow=true)
+{
+	global
 	Gui, MEW_Main:Submit, NoHide
 	SaveModification("Reset")
-	AddGesturePattern(Gesture_Editing,EGesture)
-return
-AddGesturePattern(g,p){
-	global
-	Join(Gesture_%Gesture_Editing%_Patterns,p)
-	if(Gesture_Editing=g){
-		ShowGesture(g)
+	Join(Gesture_%Gesture_Editing%_Patterns, EGesture)
+	if (bShow) {
+		ShowGesture(Gesture_Editing)
+		SendMessage, 0x018B, 0, 0,, % "ahk_id" ControlGetHandle("LBGesturePattern")
+		GuiControl, MEW_Main:Choose, LBGesturePattern, `n%ErrorLevel%
 	}
-	SendMessage, 0x018B, 0, 0,, % "ahk_id" ControlGetHandle("LBGesturePattern")
-	GuiControl, MEW_Main:Choose, LBGesturePattern, `n%ErrorLevel%
+	DlgWarnGesturePattern(EGesture)
 }
 
 ;-------------------------------------------------------------------------------
@@ -5098,37 +6012,77 @@ AddGesturePattern(g,p){
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-UpdateGesturePattern:
+BUpdateGesPatPress() {
+	UpdateGesturePattern()
+}
+UpdateGesturePattern(bShow=true)
+{
+	local patterns := ""
 	Gui, MEW_Main:Submit, NoHide
-	UpdateGesturePattern(Gesture_Editing,GesturePattern_Editing,EGesture)
-	SaveModification("Reset")
-return
-UpdateGesturePattern(g,idx,p){
-	local tmp
-	Loop, Parse,Gesture_%g%_Patterns,`n
+	Loop, Parse, Gesture_%Gesture_Editing%_Patterns, `n
 	{
-		if(A_Index=idx){
-			Join(tmp,p)
+		if (A_Index == GesturePattern_Editing) {
+			Join(patterns, EGesture)
 		}else{
-			Join(tmp,A_LoopField)
+			Join(patterns, A_LoopField)
 		}
 	}
-	Gesture_%g%_Patterns:=tmp
-	if(Gesture_Editing=g){
-		ShowGesture(g)
+	Gesture_%Gesture_Editing%_Patterns := patterns
+	if (bShow) {
+		ShowGesture(Gesture_Editing)
+		GuiControl, MEW_Main:Disable, BAddGesturePattern
+		GuiControl, MEW_Main:Disable, BUpdateGesturePattern
+		EnblAddGesturePattern := EnblUpdateGesturePattern := "Disable"
 	}
-	GuiControl, MEW_Main:Disable, BAddGesturePattern
-	GuiControl, MEW_Main:Disable, BUpdateGesturePattern
-	EnblAddGesturePattern := EnblUpdateGesturePattern := "Disable"
+	SaveModification("Reset")
+	DlgWarnGesturePattern(EGesture)
 }
 
 ;-------------------------------------------------------------------------------
 ; Clear Gesture Pattern Button Press
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-ClearGesturePress:
+ClearGesturePress() {
 	GuiControl, MEW_Main:, EGesture
-return
+}
+
+;-------------------------------------------------------------------------------
+; Gesture pattern warning message dialog box
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+DlgWarnGesturePattern(szGes)
+{
+	local szMsg, Bx, Bw
+
+	if (Config_DisableWarning || SubStr(szGes, 0, 1)=="_") {
+		return
+	}
+	Gui, MEW_GesWarn:New
+	Gui, MEW_GesWarn:-MaximizeBox -MinimizeBox +HwndME_hWndGesWarn +OwnerMEW_Main +Delimiter`n +LastFound
+	Gui, MEW_GesWarn:Margin , 20, 20
+	Gui, MEW_GesWarn:Font, S11
+
+	szMsg := RegExReplace(ME_LngText029, MG_ReplaceStr, szGes)
+	Gui, MEW_GesWarn:Add, Text, vTxtGesWarnMsg Section, %szMsg%
+	Gui, MEW_GesWarn:Add, CheckBox, xs+20 y+20 h14 vConfig_DisableWarning, %ME_LngCheckBox019%
+
+	GuiControlGet, rcCtrl, MEW_GesWarn:Pos, TxtGesWarnMsg
+	Bw:=90
+	Bx := rcCtrlX + rcCtrlW - Bw
+	Gui, MEW_GesWarn:Add, Button, gOnOkGesWarn x%Bx% y+14 w%Bw% Default, %ME_LngButton001%
+
+	Gui, MEW_GesWarn:Show, AutoSize, %ME_LngCapt001%
+
+	WinWaitClose,  ahk_id %ME_hWndGesWarn%
+	return
+
+OnOkGesWarn:
+	Gui, MEW_GesWarn:Submit
+MEW_GesWarnGuiClose:
+MEW_GesWarnGuiEscape:
+	Gui, MEW_GesWarn:Destroy
+	return
+}
 
 
 ;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -5140,38 +6094,60 @@ return
 ;-------------------------------------------------------------------------------
 ; Move Up Action
 ;														Implemented by lukewarm
+;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-ActionUp:
-	if(Action_Editing>1){
-		ActionSwap(Gesture_Editing, Action_Editing-1, Action_Editing)
-		ShowGesture(Gesture_Editing)
-		ShowAction(Gesture_Editing, Action_Editing-1)
+ActionUp()
+{
+	local prev
+	if ((Action_Editing <= 1)
+	||	((Action_Editing == 2) && (Gesture_%Gesture_Editing%_1_Target == MG_DefTargetName))) {
+		return
 	}
-return
+	prev := Action_Editing - 1
+	if (Gesture_%Gesture_Editing%_%prev%_Target == MG_DefTargetName) {
+		prev--
+	}
+	ActionSwap(Gesture_Editing, prev, Action_Editing)
+	ShowGesture(Gesture_Editing)
+	ShowAction(Gesture_Editing, prev)
+}
 
 ;-------------------------------------------------------------------------------
 ; Move Down Action
 ;														Implemented by lukewarm
+;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-ActionDown:
-	if(Action_Editing<Gesture_%Gesture_Editing%_Count){
-		ActionSwap(Gesture_Editing, Action_Editing, Action_Editing+1)
-		ShowGesture(Gesture_Editing)
-		ShowAction(Gesture_Editing, Action_Editing+1)
+ActionDown()
+{
+	local end, next
+	end := Gesture_%Gesture_Editing%_Count
+	if ((Action_Editing >= end)
+	||	((Action_Editing == end-1) && (Gesture_%Gesture_Editing%_%end%_Target == MG_DefTargetName))) {
+		return
 	}
-return
-
+	next := Action_Editing + 1
+	if (Gesture_%Gesture_Editing%_%next%_Target == MG_DefTargetName) {
+		next++
+	}
+	ActionSwap(Gesture_Editing, Action_Editing, next)
+	ShowGesture(Gesture_Editing)
+	ShowAction(Gesture_Editing, next)
+}
 ;-------------------------------------------------------------------------------
-; Delete Action(mark)
+; Delete Action
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-ActionDelete:
-	ActionDelete(Gesture_Editing, Action_Editing)
-return
-ActionDelete(ges, idx, bUpdateGUI=true)
-{
+BActionDeletePress() {
 	global
+	ActionDelete(Gesture_Editing, Action_Editing)
+}
+ActionDelete(ges, idx, bUpdateGUI=true, bExcludeDef=true)
+{
+	local pos
+	if (bExcludeDef && (Gesture_%ges%_%idx%_Target == MG_DefTargetName)) {
+		return
+	}
 	Loop
 	{
 		idx++
@@ -5182,14 +6158,19 @@ ActionDelete(ges, idx, bUpdateGUI=true)
 	}
 	Gesture_%ges%_Count--
 	if (bUpdateGUI) {
-		;ClearAction(false)
+		ClearAction(false, "BE")
 		ShowGesture(Gesture_Editing)
-		;ShowAction(Gesture_Editing,(Action_Editing>Gesture_%Gesture_Editing%_Count) ? Gesture_%Gesture_Editing%_Count : Action_Editing)	;削除時に別のターゲットに移らないようにする
+		ShowAssignedGestures(0, false)
+		pos := (Action_Editing > Gesture_%Gesture_Editing%_Count)
+			? Gesture_%Gesture_Editing%_Count : Action_Editing
+		if ((Gesture_%Gesture_Editing%_Count > 1)
+		&&	(Gesture_%Gesture_Editing%_%pos%_Target == MG_DefTargetName)) {
+			pos += (pos == Gesture_%Gesture_Editing%_Count) ? -1 : 1
+		}
+		ShowAction(Gesture_Editing, pos)
+		SelectTarget(TargetIndexOf(Gesture_%Gesture_Editing%_%pos%_Target), false)
 	}
-	UpdateLVGesture()	;追加
-	ChangeActionButtonStat()	;追加。無いと削除ボタンと更新ボタンが有効なままになる
 }
-
 
 ;-------------------------------------------------------------------------------
 ; Move Action
@@ -5214,16 +6195,41 @@ ActionSwap(g,a,b)
 }
 
 ;-------------------------------------------------------------------------------
-; Action List View Events(mark)
+; Default Action List Box Events
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+LBDefActionEvents()
+{
+	global
+	;---------------------------------------------------------------------------
+	; On Selection Change
+	if (A_GuiEvent="Normal")
+	{
+		Gui, MEW_Main:Submit, NoHide
+		SaveModification()
+		Gui, MEW_Main:Default
+		Gui, MEW_Main:ListView, LVAction
+		LV_Modify(0, "-Select")
+		LV_Modify(0, "-Focus")
+		ClearAction(true, "BE")
+		SelectTarget(1)
+	}
+	;---------------------------------------------------------------------------
+	; On Double Click
+	else if (A_GuiEvent="DoubleClick")
+	{
+		SwitchTab(1)
+	}
+}
+
+;-------------------------------------------------------------------------------
+; Action List View Events
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-LVActionSelect:
-	LVActionEvents()
-return
 LVActionEvents()
 {
-	local sel
+	local sel, ges, tgt
 	static idx
 	Gui, MEW_Main:Default
 	Gui, MEW_Main:ListView, LVAction
@@ -5232,21 +6238,21 @@ LVActionEvents()
 	if (A_GuiEvent="Normal" || A_GuiEvent=="K"
 	||	A_GuiEvent=="RightClick" || A_GuiEvent=="d")
 	{
-		idx := LV_GetNext()
+		sel := LV_GetNext()
+		sel := sel>0 ? sel : 1
+		LV_GetText(idx, sel, 3)
 		if (idx != Action_Editing) {
 			SaveModification()
 		}
-		if (idx == 0) {
-			ClearAction()
-		}
-		else {
-			LVActionSelectFlag := 1			;追加
-			ShowAction(Gesture_Editing, idx)
-			;-------------------------------------------------------------------
-			; On Right Click
-			if (A_GuiEvent=="RightClick" || A_GuiEvent=="d"){
-				SetTimer, ShowActionListContextMenu, -1
-			}
+		ges := Gesture_Editing
+		ShowAction(ges, idx)
+		tgt := (Gesture_%ges%_Count < 1) ? 1 : TargetIndexOf(Gesture_%ges%_%idx%_Target)
+		SelectTarget(tgt)
+		GuiControl, MEW_Main:Choose, LBDefAction, 0
+		;-----------------------------------------------------------------------
+		; On Right Click
+		if (A_GuiEvent=="RightClick" || A_GuiEvent=="d") {
+			SetTimer, ShowActionListContextMenu, -1
 		}
 	}
 	return
@@ -5257,87 +6263,60 @@ ShowActionListContextMenu:
 }
 
 ;-------------------------------------------------------------------------------
-; Show Target List Menu
-;														Implemented by Pyonkichi
-;-------------------------------------------------------------------------------
-ShowTargetListMenu(bAction=false, bShow=true)
-{
-	local name, icon, hit
-	Menu, menuTargetList, Add
-	Menu, menuTargetList, DeleteAll
-	Loop, %Target_Count%
-	{
-		name := MakeTargetFullName(A_Index, bAction)
-		if (bAction) {
-			hit := false
-			Loop, % Gesture_%Gesture_Editing%_Count {
-				if (name = Gesture_%Gesture_Editing%_%A_Index%_Target) {
-					hit := true
-					break
-				}
-			}
-			if (hit) {
-				continue
-			}
-		}
-		else if (name = MakeTargetFullName(Target_Editing)) {
-			continue
-		}
-		Menu, menuTargetList, Add, %name%, OnTargetListMenuSelect
-		icon := (bAction && A_Index==1) ? Target_Default_IconFile : Target_%A_Index%_IconFile
-		RegExMatch(icon, "^(.+?)\s*,\s*(.*?)$", $)
-		icon := MG_VarInStr($1)
-		if (FileExist(icon)) {
-			Menu, menuTargetList, Icon, %name%, %icon%, %$2%
-		}
-	}
-	MenuSelectedTarget := ""
-	if (bShow) {
-		Menu, menuTargetList, Show
-		Menu, menuTargetList, DeleteAll
-	}
-	return MenuSelectedTarget
-
-OnTargetListMenuSelect:
-	MenuSelectedTarget := A_ThisMenuItem
-	return
-}
-
-;-------------------------------------------------------------------------------
-; Show Action(mark)
+; Show Action
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-ShowAction(g, idx, bSelTv=true)
+ShowAction(g, idx)
 {
-	global
+	local sel, stat
 	Action_Editing := idx
 	Gui, MEW_Main:Default
-	if (bSelTv)
-	{
-		local idxTgt := (Gesture_%g%_Count < 1) ? 1 : TargetIndexOf(Gesture_%g%_%idx%_Target)
-		Gui, MEW_Main:TreeView, TVTarget1
-		TV_Modify(TvIndexToId(idxTgt))
-		Gui, MEW_Main:TreeView, TVTarget2
-		GuiControl, MEW_Main:-g, TVTarget2
-		TV_Modify(TvIndexToId(idxTgt))
-		GuiControl, MEW_Main:+gTVTargetSelect, TVTarget2
-	}
 	GuiControl, MEW_Main:-g, EAction
 	GuiControl, MEW_Main:, EAction, % ReplaceCR(Gesture_%g%_%idx%_Action, 0)
 	GuiControl, MEW_Main:+gOnActionEditModify, EAction
-	if (g == Gesture_Editing)
+	stat := "Disable"
+	if (Gesture_%g%_%idx%_Target == MG_DefTargetName) {
+		GuiControl, MEW_Main:Choose, LBDefAction, 1
+	}
+	else if (g == Gesture_Editing)
 	{
 		Gui, MEW_Main:ListView, LVAction
-		LV_Modify(idx, "Select")
-		LV_Modify(idx, "Focus")
+		Loop, % LV_GetCount() {
+			LV_GetText(sel, A_Index, 3)
+			if (sel == idx) {
+				LV_Modify(A_Index, "Select")
+				LV_Modify(A_Index, "Focus")
+				stat := "Enable"
+				break
+			}
+		}
 	}
-	local szStat := idx ? "Enable" : "Disable"
-	GuiControl, MEW_Main:%szStat%, BActionUp
-	GuiControl, MEW_Main:%szStat%, BActionDelete
-	GuiControl, MEW_Main:%szStat%, BActionDelete2		;追加
-	GuiControl, MEW_Main:%szStat%, BActionDown
+	GuiControl, MEW_Main:%stat%, BActionUp
+	GuiControl, MEW_Main:%stat%, BActionDelete
+	GuiControl, MEW_Main:%stat%, BActionDown
+	SelectGestureInMainLV()
 	ChangeActionButtonStat()
+}
+
+;-------------------------------------------------------------------------------
+; Clear Gesture Patterns
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+ClearGesturePatterns(bClearIdx=true, bClearGUI=true)
+{
+	global
+	if (bClearIdx) {
+		GesturePattern_Editing := 0
+	}
+	if (bClearGUI) {
+		GuiControl, MEW_Main:Disable, BUpdateGesturePattern
+		EnblUpdateGesturePattern := "Disable"
+		GuiControl, MEW_Main:Disable, BGesturePatternUp
+		GuiControl, MEW_Main:Disable, BGesturePatternDelete
+		GuiControl, MEW_Main:Disable, BGesturePatternDown
+		GuiControl, MEW_Main:, EGesture,
+	}
 }
 
 ;-------------------------------------------------------------------------------
@@ -5345,37 +6324,20 @@ ShowAction(g, idx, bSelTv=true)
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-ClearAction(fClearIdx=true, bClearGUI=true, bSelTV=true)
+ClearAction(bClearIdx=true, fOperateGUI="")
 {
 	global
-	if (fClearIdx)
-	{
-		GesturePattern_Editing := 0
+	if (bClearIdx) {
 		Action_Editing := 0
 	}
-	if (bClearGUI)
-	{
-		GuiControl, MEW_Main:Disable, BUpdateGesturePattern
-		EnblUpdateGesturePattern := "Disable"
-		GuiControl, MEW_Main:Disable, BGesturePatternUp
-		GuiControl, MEW_Main:Disable, BGesturePatternDelete
-		GuiControl, MEW_Main:Disable, BGesturePatternDown
-		GuiControl, MEW_Main:, EGesture,
+	if (InStr(fOperateGUI, "B")) {
 		GuiControl, MEW_Main:Disable, BUpdateAction
 		EnblUpdateAction := "Disable"
 		GuiControl, MEW_Main:Disable, BActionUp
 		GuiControl, MEW_Main:Disable, BActionDelete
-		GuiControl, MEW_Main:Disable, BActionDelete2
 		GuiControl, MEW_Main:Disable, BActionDown
-		if (bSelTV) {
-			Gui, MEW_Main:Default
-			Gui, MEW_Main:TreeView, TVTarget1
-			TV_Modify(TvIndexToId(1))
-			Gui, MEW_Main:TreeView, TVTarget2
-			GuiControl, MEW_Main:-g, TVTarget2
-			TV_Modify(TvIndexToId(1))
-			GuiControl, MEW_Main:+gTVTargetSelect, TVTarget2
-		}
+	}
+	if (InStr(fOperateGUI, "E")) {
 		GuiControl, MEW_Main:-g, EAction
 		GuiControl, MEW_Main:, EAction,
 		GuiControl, MEW_Main:+gOnActionEditModify, EAction
@@ -5395,34 +6357,22 @@ ReplaceCR(szAction, mode=-1)
 		Loop, %mode% {
 			szTab .= "	"
 		}
-		return RegExReplace(szAction, "<MG_CR>", "`n" . szTab)
+		return RegExReplace(szAction, "<MG_CR>", "`n" szTab)
 	}
 }
 
 ;-------------------------------------------------------------------------------
-; On Action Target Change(mark)
+; Change Action Button State
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnTargetChange:
-	ChangeActionButtonStat()
-return
 ChangeActionButtonStat()
 {
-	local add, update
-	Gui, MEW_Main:Submit, NoHide
-	if (MG_ActionExists(Gesture_Editing, MakeTargetFullName(Target_Editing,1))) {
-		add:="Disable",	update:="Enable"
-	} else {
-		add:="Enable",	update:="Disable"
-	}
-	GuiControl, MEW_Main:%add%, BAddAction
-	EnblAddAction := add
-	GuiControl, MEW_Main:%update%, BUpdateAction
-	GuiControl, MEW_Main:%update%, BActionUp		;ボタンの無効化のタイミング変更
-	GuiControl, MEW_Main:%update%, BActionDelete	;リストビューで選択されていなくても押せてしまうのを
-	GuiControl, MEW_Main:%update%, BActionDelete2	
-	GuiControl, MEW_Main:%update%, BActionDown		;解消
-	EnblUpdateAction := update
+	global
+	Gui, MEW_Main:Default
+	Gui, MEW_Main:ListView, LVGesture
+	EnblUpdateAction := (LV_GetNext() > 0) ? "Enable" : "Disable"
+	GuiControl, MEW_Main:%EnblUpdateAction%, BUpdateAction
+	GuiControl, MEW_Main:%EnblUpdateAction%, BReleaseGesture
 }
 
 ;-------------------------------------------------------------------------------
@@ -5430,48 +6380,43 @@ ChangeActionButtonStat()
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-BAddActionPress:
-	Gui, MEW_Main:Submit, NoHide
-	AddAction(Gesture_Editing, MakeTargetFullName(Target_Editing,1), EAction)
-return
-AddAction(g, t, s)
-{
-	local idx
-	idx := ++Gesture_%g%_Count
-	UpdateAction(g, idx, t, s)
-	SaveModification("Reset")
+BAddActionPress() {
+	ShowUnassignedGestureMenu()
 }
 
 ;-------------------------------------------------------------------------------
-; On Update Action Press(mark)
+; On Update Action Press
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-BUpdateActionPress:
-	Gui, MEW_Main:Submit, NoHide
-	UpdateAction(Gesture_Editing, Action_Editing, MakeTargetFullName(Target_Editing,1), EAction)
-return
-UpdateAction(g, a, t, s)
+BUpdateActionPress() {
+	UpdateAction()
+}
+UpdateAction(bShow=true, idx=0, tname="", script="")
 {
 	global
-	Gesture_%g%_%a%_Target := t
-	Gesture_%g%_%a%_Action := ReplaceCR(s)
-	if(Gesture_Editing=g){
-		ShowGesture(g)
-		ShowAction(g, a)
+	Gui, MEW_Main:Submit, NoHide
+	idx	   := idx	 ? idx	  : Action_Editing
+	tname  := tname	 ? tname  : GetTargetFullName(Target_Editing, 1)
+	script := script ? script : EAction
+	Gesture_%Gesture_Editing%_%idx%_Target := tname
+	Gesture_%Gesture_Editing%_%idx%_Action := ReplaceCR(script)
+	if (bShow) {
+		ShowGesture(Gesture_Editing)
+		ShowAssignedGestures(0, false)
+		ShowAction(Gesture_Editing, idx)
 	}
 	SaveModification("Reset")
-	UpdateLVGesture()		;追加
 }
 
 ;-------------------------------------------------------------------------------
 ; On Action Edit Modify
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnActionEditModify:
+OnActionEditModify() {
 	Gui, MEW_Main:Submit, Nohide
 	SaveModification("Modified", "EAction")
-return
+}
 
 
 ;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -5480,7 +6425,87 @@ return
 ;
 ;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;-------------------------------------------------------------------------------
-; Close Action Template Registration(mark)
+; Initialize Action Templates
+;														Implemented by lukewarm
+;														Modified by Pyonkichi
+;-------------------------------------------------------------------------------
+InitActionTemplates()
+{
+	global
+	ActionCategory_Count=0
+	MG_AddActionCategory("All", ActionType001)
+	MG_AddActionCategory("Input", ActionType002)
+	MG_AddActionTemplate("Input", ActionName001, "ActKeyStroke")
+	MG_AddActionTemplate("Input", ActionName002, "ActMouseClick")
+	MG_AddActionTemplate("Input", ActionName003, "ActSendWheel")
+	MG_AddActionTemplate("Input", ActionName004, "ActMoveCursor")
+
+	MG_AddActionCategory("Scroll", ActionType003)
+	MG_AddActionTemplate("Scroll", ActionName011, "ActScroll")
+	MG_AddActionTemplate("Scroll", ActionName012, "ActDragScroll")
+
+	MG_AddActionCategory("Window", ActionType004)
+	MG_AddActionTemplate("Window", ActionName021, "MG_WinActivate()")
+	MG_AddActionTemplate("Window", ActionName022, "WinMinimize")
+	MG_AddActionTemplate("Window", ActionName023, "WinMaximize")
+	MG_AddActionTemplate("Window", ActionName024, "WinRestore")
+	MG_AddActionTemplate("Window", ActionName025, "WinClose")
+	MG_AddActionTemplate("Window", ActionName026, "WinSet, Bottom")
+	MG_AddActionTemplate("Window", ActionName027, "WinSet, Topmost, On")
+	MG_AddActionTemplate("Window", ActionName028, "WinSet, Topmost, Off")
+	MG_AddActionTemplate("Window", ActionName029, "WinSet, Topmost, Toggle")
+	MG_AddActionTemplate("Window", ActionName030, "ActMoveWindow")
+	MG_AddActionTemplate("Window", ActionName031, "WinSet, Trans, %[" ME_LngMessage104 "]%")
+	MG_AddActionTemplate("Window", ActionName032, "WinSet, Trans, Off")
+	MG_AddActionTemplate("Window", ActionName033, "MG_ActivatePrevWin(%[" ME_LngMessage105 "%<1000>%]%)")
+
+	MG_AddActionCategory("SameClass", ActionType010)
+	MG_AddActionTemplate("SameClass", ActionName041, "ActMinimizeSameClass")
+	MG_AddActionTemplate("SameClass", ActionName042, "ActCloseSameClass")
+	MG_AddActionTemplate("SameClass", ActionName043, "ActTileSameClass")
+
+	MG_AddActionCategory("Process", ActionType005)
+	MG_AddActionTemplate("Process", ActionName051, "ActFileLaunch")
+	MG_AddActionTemplate("Process", ActionName052, "Process, Close, % MG_Win(""pid"")")
+
+	MG_AddActionCategory("Application", ActionType006)
+	MG_AddActionTemplate("Application", ActionName061, "ButtonIDPicker")
+	MG_AddActionTemplate("Application", ActionName062, "WinMenuSelectItem,,, %[" ME_LngMessage101 "]%")
+
+	MG_AddActionCategory("Sound", ActionType007)
+	MG_AddActionTemplate("Sound", ActionName071, "SoundSet, %[" ME_LngMessage106 "]%, MASTER, VOLUME")
+	MG_AddActionTemplate("Sound", ActionName072, "SoundSet, %[" ME_LngMessage107 "]%, MASTER, MUTE")
+	MG_AddActionTemplate("Sound", ActionName073, "ActSoundPlay")
+
+	MG_AddActionCategory("Script", ActionType008)
+	MG_AddActionTemplate("Script", ActionName081, "MG_Abort()")
+	MG_AddActionTemplate("Script", ActionName082, "MG_Wait(%[" ME_LngMessage109 "%<500>%]%)")
+	MG_AddActionTemplate("Script", ActionName083, "Sleep, %[" ME_LngMessage110 "%<500>%]%")
+	MG_AddActionTemplate("Script", ActionName084, "if (MG_Timer(-%[" ME_LngMessage111 "%<200>%]%)) {`n`t`;" ActionComment001 "`n`n}`nelse {`n`t`;" ActionComment002 "`n`n}")
+	MG_AddActionTemplate("Script", ActionName085, "if (!MG_Hold()) {`n`t`;" ActionComment001 "`n`n}`nelse if (MG_Hold() > %[" ME_LngMessage112 "%<500>%]%) {`n`t`;" ActionComment005 "`n`n}")
+	MG_AddActionTemplate("Script", ActionName086, "if (MG_While(%[" ME_LngMessage113 "%<500>%]%)) {`n`t`;" ActionComment003 "`n`n}`nelse {`n`t`;" ActionComment004 "`n`n}")
+	MG_AddActionTemplate("Script", ActionName087, "if (MG_Defer()) {`n`t`;" ActionComment006 "`n`n}%[" ME_LngMessage114 "%<#NoInput#>%]%")
+	MG_AddActionTemplate("Script", ActionName088, "if (MG_IsFirstAction()) {`n`t`;" ActionComment007 "`n`n}")
+	MG_AddActionTemplate("Script", ActionName089, "MG_PerformDefBehavior()%[" ME_LngMessage115 "%<#NoInput#>%]%")
+	MG_AddActionTemplate("Script", ActionName090, "MG_CancelDefBehavior()%[" ME_LngMessage116 "%<#NoInput#>%]%")
+	MG_AddActionTemplate("Script", ActionName091, "MG_DisableTimeout()")
+	MG_AddActionTemplate("Script", ActionName092, "MG_SaveGesture()")
+	MG_AddActionTemplate("Script", ActionName093, "MG_SetActiveAsTarget()")
+
+	MG_AddActionCategory("Hints", ActionType009)
+	MG_AddActionTemplate("Hints", ActionName101, "MG_StopNavi()")
+	MG_AddActionTemplate("Hints", ActionName102, "MG_StartNavi()")
+	MG_AddActionTemplate("Hints", ActionName103, "MG_StopTrail()")
+	MG_AddActionTemplate("Hints", ActionName104, "MG_StartTrail()")
+	MG_AddActionTemplate("Hints", ActionName105, "MG_Tooltip=`n(`n%[" ME_LngMessage117 "]%`n)")
+
+	MG_AddActionTemplate("Others", ActionName901, "Clipboard:=""`n(% LTrim RTrim0`n%[" ME_LngMessage118 "]%`n)""")
+	MG_AddActionTemplate("Others", ActionName902, "ActPostMessage")
+	MG_AddActionTemplate("Others", ActionName903, "ActSendMessage")
+}
+
+;-------------------------------------------------------------------------------
+; Close Action Template Registration
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
 CloseActionTemplateReg()
@@ -5498,15 +6523,16 @@ CloseActionTemplateReg()
 	Loop, %ActionCategory_Count%
 	{
 		GuiControl, MEW_Main:, DDLActionCategory, % ActionCategory%A_Index%_Name
-		GuiControl, MEW_Main:, LBActionCategory, % ActionCategory%A_Index%_Name		;追加
 	}
 }
 
 ;-------------------------------------------------------------------------------
-; On Action Category Change(mark)
+; On Action Category Change
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-OnActionCategoryChange:
+OnActionCategoryChange()
+{
+	local idx
 	GuiControlGet, idx, MEW_Main:, DDLActionCategory
 	GuiControl, MEW_Main:, DDLActionTemplate, `n
 	Loop, % ActionCategory%idx%_Count
@@ -5514,46 +6540,30 @@ OnActionCategoryChange:
 		GuiControl, MEW_Main:, DDLActionTemplate, % ActionTitle%idx%_%A_Index%
 	}
 	GuiControl, MEW_Main:Choose, DDLActionTemplate, 1
-return
-
-OnActionCategoryChange2:		;追加
-	GuiControlGet, idx, MEW_Main:, LBActionCategory
-	GuiControl, MEW_Main:, LBActionTemplate, `n
-	Loop, % ActionCategory%idx%_Count
-	{
-		GuiControl, MEW_Main:, LBActionTemplate, % ActionTitle%idx%_%A_Index%
-	}
-	GuiControl, MEW_Main:Choose, LBActionTemplate, 1
-return
+}
 
 ;-------------------------------------------------------------------------------
-; On Action Helper Button Press(mark)
+; On Action Helper Button Press
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-BAddActionLinePress:
+BAddActionLinePress()
+{
+	local template
 	Gui, MEW_Main:Submit, NoHide
-	GuiControlGet, IsDDLVisible, Visible, DDLActionCategory	;以下6行追加
-	If (!IsDDLVisible)
-	{
-		DDLActionCategory := LBActionCategory
-		DDLActionTemplate := LBActionTemplate
+	template := ActionTemplate%DDLActionCategory%_%DDLActionTemplate%
+	if (IsFunc(template)) {
+		Func(template).()
 	}
-	template = ActionTemplate%DDLActionCategory%_%DDLActionTemplate%
-	if (IsLabel(%template%))
-	{
-		Gosub, % %template%
+	else if (IsLabel(template)) {
+		Gosub, %template%
 	}
-	else
-	{
-		ActionLine := %template%
-		loop
-		{
-			if (RegExMatch(ActionLine, "%\[(.+?)\]%", $))
-			{
+	else {
+		ActionLine := template
+		loop {
+			if (RegExMatch(ActionLine, "%\[(.+?)\]%", $)) {
 				ActionComment:=$1, DefaultValue:=""
-				if (RegExMatch(ActionComment, "%\<(.+?)\>%", $))
-				{
+				if (RegExMatch(ActionComment, "%\<(.+?)\>%", $)) {
 					ActionComment := RegExReplace(ActionComment, "%\<(.+?)\>%")
 					DefaultValue := $1
 				}
@@ -5562,25 +6572,25 @@ BAddActionLinePress:
 				}
 				ActionLine := RegExReplace(ActionLine,"%\[(.+?)\]%",ActionLineOption)
 			}
-			else
-			{
+			else {
 				break
 			}
 		}
 		MG_AddActionScript(ActionLine)
 	}
-return
+}
 
 ;-------------------------------------------------------------------------------
 ; Add "Key Stroke" to Action Script
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-ActKeyStroke:
-	DlgKeyInput(KeyStroke, 1)
+ActKeyStroke() {
+	local szDesc
+	szDesc := DlgKeyInput(KeyStroke, 1)
 	if (KeyStroke != "") {
-		MG_AddActionScript("Send, " . KeyStroke)
+		MG_AddActionScript("Send, " KeyStroke, szDesc)
 	}
-return
+}
 
 ;-------------------------------------------------------------------------------
 ; Retrieve a Key Stroke
@@ -5588,23 +6598,22 @@ return
 ;-------------------------------------------------------------------------------
 DlgKeyInput(ByRef key, mode=0)
 {
+	local width, tblText, szDesc:=""
 	static tblKey := [ "Enter", "Tab", "Esc", "Space", "Backspace", "Delete" ]
 
-	global
 	key := ""
 	Gui, MEW_Key:-MaximizeBox -MinimizeBox +HwndME_hWndKey +OwnerMEW_Main +Delimiter`n +LastFound
 	Gui, MEW_Key:Add, Text, x10 y10, %ME_LngText521%
-	Gui, MEW_Key:Add, Hotkey, y+10 w200 VszKeyStroke gOnKeyPress
-	Gui, MEW_Key:Add, Button, x+4 yp-1 w80 vSpecitalKey gOnSpecitalKey Section, %ME_LngButton026%
-	Gui, MEW_Key:Add, CheckBox, x20 y+4	vKeyShift gOnChkModifier, %ME_LngCheckBox101%
-	Gui, MEW_Key:Add, CheckBox, x+10	vKeyCtrl  gOnChkModifier, %ME_LngCheckBox102%
-	Gui, MEW_Key:Add, CheckBox, x+10	vKeyAlt   gOnChkModifier, %ME_LngCheckBox103%
-	if (mode!=0)
-	{
-		Gui, MEW_Key:Add, Button, xs yp-3 w80 vEditKey gOnEditKey, %ME_LngButton025%
+	Gui, MEW_Key:Add, Hotkey, y+10 w200 h20 VszKeyStroke gOnKeyPress
+	Gui, MEW_Key:Add, Button, x+4 yp-1 w80 h20 vBSpecitalKey gOnSpecitalKey Section, %ME_LngButton019%
+	Gui, MEW_Key:Add, CheckBox, x20 y+8	h14 vKeyShift gOnChkModifier, %ME_LngCheckBox101%
+	Gui, MEW_Key:Add, CheckBox, x+10	h14 vKeyCtrl  gOnChkModifier, %ME_LngCheckBox102%
+	Gui, MEW_Key:Add, CheckBox, x+10	h14 vKeyAlt   gOnChkModifier, %ME_LngCheckBox103%
+	if (mode!=0) {
+		Gui, MEW_Key:Add, Button, xs yp-3 w80 h20 vEditKey gOnEditKey, %ME_LngButton018%
 
-		local tblText := Array(ME_LngText523, ME_LngText524)
-		local width := GetMaxTextLength(tblText)+8
+		tblText := Array(ME_LngText523, ME_LngText524)
+		width := GetMaxTextLength(tblText)+8
 		Gui, MEW_Key:Add, Text, x12 y+10 w%width%, %ME_LngText523%
 		Gui, MEW_Key:Add, DropDownList, x+0 yp-4 w120 vKeyOpe gOnKeyOpe Choose1 AltSubmit, %ME_LngDropDown202%
 
@@ -5612,23 +6621,20 @@ DlgKeyInput(ByRef key, mode=0)
 		Gui, MEW_Key:Add, Edit, x+0 yp-4 w60 vKeyCount Section
 		Gui, MEW_Key:Add, UpDown, Range1-2147483647 +128
 		GuiControl, MEW_Key:, KeyCount, 1
-	}
-	else
-	{
+	} else {
 		KeyOpe := 1
 		KeyCount := 1
 	}
-	Gui, MEW_Key:Show, Hide
-	local width
-	WinGetPos,,,width
-	local left := width - 185
-	Gui, MEW_Key:Add, Button, x%left% y+14 w80 gOnAcceptKey Default, %ME_LngButton001%
-	Gui, MEW_Key:Add, Button, x+8 yp+0 w80 gOnCancelKey, %ME_LngButton002%
+	local Bx, Bw:=80, Bs:=8
+	GuiControlGet, rcCtrl, MEW_Key:Pos, BSpecitalKey
+	Bx := rcCtrlX + rcCtrlW - Bw*2 - Bs
+	Gui, MEW_Key:Add, Button, x%Bx% y+14 w%Bw% gOnAcceptKey Default, %ME_LngButton001%
+	Gui, MEW_Key:Add, Button, x+%Bs% yp+0 w%Bw% gOnCancelKey, %ME_LngButton002%
 	Gui, MEW_Key:Show, AutoSize, %ME_LngCapt012%
 	CloseIME()
 
 	WinWaitClose,  ahk_id %ME_hWndKey%
-	return
+	return szDesc
 
 	;---------------------------------------------------------------------------
 	; Hotkey is pressed
@@ -5652,9 +6658,9 @@ OnChkModifier:
 OnEditKey:
 	Gui, MEW_Key:Submit, NoHide
 	CorrectKeyStr(szKeyStroke, KeyOpe, KeyCount)
-	if (MG_InputBox(szKeyStroke, ME_LngCapt013, ME_LngMessage116, szKeyStroke, "MEW_Key"))
-	{
+	if (MG_InputBox(szKeyStroke, ME_LngCapt013, ME_LngMessage119, szKeyStroke, "MEW_Key")) {
 		key := szKeyStroke
+		szDesc := CorrectKeyStr(szKeyStroke)
 		Gui, MEW_Key:Destroy
 	}
 	return
@@ -5689,7 +6695,7 @@ OnKeyOpe:
 	; Accepted
 OnAcceptKey:
 	Gui, MEW_Key:Submit
-	CorrectKeyStr(szKeyStroke, KeyOpe, KeyCount)
+	szDesc := CorrectKeyStr(szKeyStroke, KeyOpe, KeyCount)
 	key := szKeyStroke
 	Gui, MEW_Key:Destroy
 	return
@@ -5711,55 +6717,74 @@ MEW_KeyGuiEscape:
 AddModifierKeyStr(ByRef szKey, fShift, fCtrl, fAlt)
 {
 	szKey := RegExReplace(szKey, "[+^!]|Alt||Ctrl|Control|Shift")
-	if (fAlt)
-	{
-		if (szKey != "")
-			szKey := "!" + szKey
-		else
+	if (fAlt) {
+		if (szKey != "") {
+			szKey := "!" szKey
+		} else {
 			szKey := "Alt"
+		}
 	}
-	if (fCtrl)
-	{
-		if (szKey != "")
-			szKey := "^" + szKey
-		else
+	if (fCtrl) {
+		if (szKey != "") {
+			szKey := "^" szKey
+		} else {
 			szKey := "Ctrl"
+		}
 	}
-	if (fShift)
-	{
-		if (szKey != "")
-			szKey := "+" + szKey
-		else
+	if (fShift) {
+		if (szKey != "") {
+			szKey := "+" szKey
+		} else {
 			szKey := "Shift"
+		}
 	}
 }
 
 ;-------------------------------------------------------------------------------
 ; Correct Key Stroke String
-;	szKey : Key Stroke string to correct
+;	szKey : Key stroke string to be corrected
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
 CorrectKeyStr(ByRef szKey, ope=1, cnt=1)
 {
-	local key, keyOrg, ex
+	local key, keyOrg, ex, desc, desc2
 
 	if (ope == 2) {
 		ex := " Down"
 	} else if (ope == 3) {
 		ex := " Up"
 	} else if (cnt > 1) {
-		ex := " " . cnt
+		ex := " " cnt
 	} else {
 		ex := ""
+	}
+	desc := ""
+	if (StrLen(szKey) > 1) {
+		key := SubStr(szKey, 1, StrLen(szKey)-1)
+		key := RegExReplace(key, "[^+^!#]")
+		desc .= InStr(key, "+") ? "Shift+" : ""
+		desc .= InStr(key, "^") ? "Ctrl+" : ""
+		desc .= InStr(key, "!") ? "Alt+" : ""
+		desc .= InStr(key, "#") ? "Win+" : ""
 	}
 	key := keyOrg := RegExReplace(szKey, "[+^!#]")
 	if (StrLen(key)==1) {
 		StringLower, key, key
 	}
 	if (StrLen(key)>1 || ex!="") {
-		key := "{" . key . ex . "}"
+		key := "{" key ex "}"
 	}
 	szKey := RegExReplace(szKey, keyOrg, key)
+	keyOrg := RegExReplace(keyOrg, " |Down}|Up}|[0-9]+}|{|}")
+	if (StrLen(keyOrg)==1) {
+		StringUpper, keyOrg, keyOrg
+	}
+	desc .= keyOrg
+	desc := RegExReplace(InStr(szKey," Down}") ? ActionComment012 : InStr(szKey," Up}") ? ActionComment013 : ActionComment011, MG_ReplaceStr, desc)
+	if (RegExMatch(szKey, " ([0-9]+)}", $)) {
+		desc .= RegExReplace(ActionComment014, MG_ReplaceStr, $1)
+	}
+	return desc
 }
 
 ;-------------------------------------------------------------------------------
@@ -5775,15 +6800,11 @@ CloseIME()
 	DetectHiddenWindows, Off
 }
 
-
 ;-------------------------------------------------------------------------------
 ; Add "Mouse Click" to Action Script
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-ActMouseClick:
-	DlgMouseClick()
-return
-DlgMouseClick()
+ActMouseClick()
 {
 	global
 	Gui, MEW_Click:-MaximizeBox -MinimizeBox +HwndME_hWndClick +OwnerMEW_Main +Delimiter`n +LastFound
@@ -5801,12 +6822,11 @@ DlgMouseClick()
 	Gui, MEW_Click:Add, UpDown, Range1-2147483647 +128
 	GuiControl, MEW_Click:, ClickCount, 1
 
-	Gui, MEW_Click:Show, Hide
-	local width
-	WinGetPos,,,width
-	local left := width - 185
-	Gui, MEW_Click:Add, Button, gOnAcceptClick x%left% y+14 w80 Default, %ME_LngButton001%
-	Gui, MEW_Click:Add, Button, gOnCancelClick x+8 yp+0 w80, %ME_LngButton002%
+	local Bx, Bw:=80, Bs:=8
+	GuiControlGet, rcCtrl, MEW_Click:Pos, ClkButton
+	Bx := rcCtrlX + rcCtrlW - Bw*2 - Bs
+	Gui, MEW_Click:Add, Button, gOnAcceptClick x%Bx% y+14 w%Bw% Default, %ME_LngButton001%
+	Gui, MEW_Click:Add, Button, gOnCancelClick x+8 yp+0 w%Bw%, %ME_LngButton002%
 	Gui, MEW_Click:Show, AutoSize, %ME_LngCapt014%
 
 	WinWaitClose,  ahk_id %ME_hWndClick%
@@ -5824,7 +6844,7 @@ OnClkOpe:
 	; Accepted
 OnAcceptClick:
 	Gui, MEW_Click:Submit
-	local szButton:=""
+	local szButton:="", szAction, szDesc
 	if (ClkButton==1) {
 		szButton := "LB"
 	} else if (ClkButton==2) {
@@ -5836,14 +6856,23 @@ OnAcceptClick:
 	} else if (ClkButton==5) {
 		szButton := "X2B"
 	}
-	local szAction
 	if (ClkOpe==1) {
-		szAction := "MG_Click(""" . szButton . """"
-		szAction .= (ClickCount>1) ? ",," . ClickCount . ")" : ")"
+		szAction := "MG_Click(""" szButton """"
+		szAction .= (ClickCount>1) ? ",," ClickCount ")" : ")"
 	} else {
-		szAction := "MG_Click(""" . szButton . """, """ . (ClkOpe==2 ? "D" : "U") . """)"
+		szAction := "MG_Click(""" szButton """, """ (ClkOpe==2 ? "D" : "U") """)"
+		ClickCount := 1
 	}
-	MG_AddActionScript(szAction)
+	Loop, Parse, ME_LngDropDown201, `n
+	{
+		if (A_Index==ClkButton) {
+			szDesc := A_LoopField
+			break
+		}
+	}
+	szDesc := RegExReplace(ClkOpe==1 ? ActionComment021 : ClkOpe==2 ? ActionComment022 :ActionComment023, MG_ReplaceStr, szDesc)
+	szDesc .= (ClickCount>1) ? RegExReplace(ActionComment014, MG_ReplaceStr, ClickCount) : ""
+	MG_AddActionScript(szAction, szDesc)
 	Gui, MEW_Click:Destroy
 	return
 
@@ -5861,10 +6890,7 @@ MEW_ClickGuiEscape:
 ; Add "Wheel Rotation" to Action Script
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-ActSendWheel:
-	DlgSendWheel()
-return
-DlgSendWheel()
+ActSendWheel()
 {
 	global
 	Gui, MEW_SW:-MaximizeBox -MinimizeBox +HwndME_hWndSW +OwnerMEW_Main +Delimiter`n +LastFound
@@ -5878,12 +6904,11 @@ DlgSendWheel()
 	Gui, MEW_SW:Add, UpDown, Range1-2147483647 +128
 	GuiControl, MEW_SW:, SwDst, 1
 
-	Gui, MEW_SW:Show, Hide
-	local width
-	WinGetPos,,,width
-	local left := width - 185
-	Gui, MEW_SW:Add, Button, gOnAcceptSW x%left% y+14 w80 Default, %ME_LngButton001%
-	Gui, MEW_SW:Add, Button, gOnCancelSW x+8 yp+0 w80, %ME_LngButton002%
+	local Bx, Bw:=80, Bs:=8
+	GuiControlGet, rcCtrl, MEW_SW:Pos, SwGB
+	Bx := rcCtrlX + rcCtrlW - Bw*2 - Bs
+	Gui, MEW_SW:Add, Button, gOnAcceptSW x%Bx% y+14 w%Bw% Default, %ME_LngButton001%
+	Gui, MEW_SW:Add, Button, gOnCancelSW x+8 yp+0 w%Bw%, %ME_LngButton002%
 	Gui, MEW_SW:Show, AutoSize, %ME_LngCapt015%
 
 	WinWaitClose,  ahk_id %ME_hWndSW%
@@ -5892,10 +6917,13 @@ DlgSendWheel()
 	;---------------------------------------------------------------------------
 	; Accepted
 OnAcceptSW:
+	local szDir, szAction, szDesc
 	Gui, MEW_SW:Submit
-	local szDir := SwUp ? "U" : "D"
-	local szAction := "MG_SendWheel(""" . szDir . """, " . SwDst . ")"
-	MG_AddActionScript(szAction)
+	szDir := SwUp ? "U" : "D"
+	szAction := "MG_SendWheel(""" szDir """, " SwDst ")"
+	szDesc := SwUp ? ActionComment031 : ActionComment032
+	szDesc .= (SwDst>1) ? RegExReplace(ActionComment033, MG_ReplaceStr, SwDst) : ""
+	MG_AddActionScript(szAction, szDesc)
 	Gui, MEW_SW:Destroy
 	return
 
@@ -5913,15 +6941,9 @@ MEW_SWGuiEscape:
 ; Add "Cursor Movement" to Action Script
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-ActMoveCursor:
-	DlgMoveCursor()
-return
-DlgMoveCursor()
+ActMoveCursor()
 {
 	global
-	local prevOrg
-	prevOrg := 1
-
 	Gui, MEW_MC:New
 	Gui, MEW_MC:-MaximizeBox -MinimizeBox +HwndME_hWndMC +OwnerMEW_Main +Delimiter`n +LastFound
 
@@ -5937,17 +6959,16 @@ DlgMoveCursor()
 	Gui, MEW_MC:Add, UpDown, Range-2147483648-2147483647 +128
 	GuiControl, MEW_MC:, McY, 0
 
-	Gui, MEW_MC:Add, CheckBox, xs y+10 vMcAbs gOnMcAbs, %ME_LngCheckBox110%
+	Gui, MEW_MC:Add, CheckBox, xs y+10 h14 vMcAbs gOnMcAbs, %ME_LngCheckBox110%
 
 	Gui, MEW_MC:Add, Text, x12 y+16 w%width% Right, %ME_LngText528%
 	Gui, MEW_MC:Add, DropDownList, x+8 yp-4 w200 vMcOrg Choose1 AltSubmit, %ME_LngDropDown204%
 
-	Gui, MEW_MC:Show, Hide
-	local width
-	WinGetPos,,,width
-	local left := width - 185
-	Gui, MEW_MC:Add, Button, gOnAcceptMC x%left% y+14 w80 Default, %ME_LngButton001%
-	Gui, MEW_MC:Add, Button, gOnCancelMC x+8 yp+0 w80, %ME_LngButton002%
+	local Bx, Bw:=80, Bs:=8
+	GuiControlGet, rcCtrl, MEW_MC:Pos, McOrg
+	Bx := rcCtrlX + rcCtrlW - Bw*2 - Bs
+	Gui, MEW_MC:Add, Button, gOnAcceptMC x%Bx% y+14 w%Bw% Default, %ME_LngButton001%
+	Gui, MEW_MC:Add, Button, gOnCancelMC x+8 yp+0 w%Bw%, %ME_LngButton002%
 	Gui, MEW_MC:Show, AutoSize, %ME_LngCapt016%
 
 	WinWaitClose,  ahk_id %ME_hWndMC%
@@ -5964,13 +6985,20 @@ OnMcAbs:
 	;---------------------------------------------------------------------------
 	; Accepted
 OnAcceptMC:
+	local szDesc
 	Gui, MEW_MC:Submit
 	McOrg--
-	if (McX+McY+McOrg+McAbs == 0) {
-		MG_AddActionScript("MG_Move()")
-	}
-	else {
-		MG_AddActionScript("MG_Move(" . McX . ", " . McY . ", " . McOrg . ", " . McAbs . ")")
+	if (McX==0 && McY==0 && McOrg==0 && McAbs==0) {
+		szDesc := ActionComment041
+		MG_AddActionScript("MG_Move()", szDesc)
+	} else {
+		if (McAbs) { 
+			szDesc := RegExReplace(ActionComment045, MG_ReplaceStr, "X=" McX ", Y=" McY)
+		} else {
+			szDesc := "X" (McX>=0 ? "+" : "") McX ", Y" (McY>=0 ? "+" : "") McY
+			szDesc := RegExReplace(McOrg==0 ? ActionComment042 : McOrg==1 ? ActionComment043 : ActionComment044, MG_ReplaceStr, szDesc)
+		}
+		MG_AddActionScript("MG_Move(" McX ", " McY ", " McOrg ", " McAbs ")", szDesc)
 	}
 	Gui, MEW_MC:Destroy
 	return
@@ -5989,10 +7017,7 @@ MEW_MCGuiEscape:
 ; Add "Scroll" to Action Script
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-ActScroll:
-	DlgScroll()
-return
-DlgScroll()
+ActScroll()
 {
 	global
 	Gui, MEW_SR:-MaximizeBox -MinimizeBox +HwndME_hWndSR +OwnerMEW_Main +Delimiter`n +LastFound
@@ -6007,14 +7032,13 @@ DlgScroll()
 	Gui, MEW_SR:Add, UpDown, Range1-2147483647 +128
 	GuiControl, MEW_SR:, SrLines, 1
 
-	Gui, MEW_SR:Add, CheckBox, xs y+12 vSrPage, %ME_LngCheckBox111%
+	Gui, MEW_SR:Add, CheckBox, xs y+12 h14 vSrPage, %ME_LngCheckBox111%
 
-	Gui, MEW_SR:Show, Hide
-	local width
-	WinGetPos,,,width
-	local left := width - 185
-	Gui, MEW_SR:Add, Button, gOnAcceptSR x%left% y+14 w80 Default, %ME_LngButton001%
-	Gui, MEW_SR:Add, Button, gOnCancelSR x+8 yp+0 w80, %ME_LngButton002%
+	local Bx, Bw:=80, Bs:=8
+	GuiControlGet, rcCtrl, MEW_SR:Pos, SrDir
+	Bx := rcCtrlX + rcCtrlW - Bw*2 - Bs
+	Gui, MEW_SR:Add, Button, gOnAcceptSR x%Bx% y+14 w%Bw% Default, %ME_LngButton001%
+	Gui, MEW_SR:Add, Button, gOnCancelSR x+8 yp+0 w%Bw%, %ME_LngButton002%
 	Gui, MEW_SR:Show, AutoSize, %ME_LngCapt017%
 
 	WinWaitClose,  ahk_id %ME_hWndSR%
@@ -6023,11 +7047,24 @@ DlgScroll()
 	;---------------------------------------------------------------------------
 	; Accepted
 OnAcceptSR:
+	local szDir, nLines, szAction, szDesc
 	Gui, MEW_SR:Submit
-	local szDir	 := (SrDir==1 || SrDir==2) ? "V" : "H"
-	local nLines := (SrDir==2 || SrDir==4) ? SrLines : -SrLines
-	local szAction := "MG_Scroll2(""" . szDir . """, " . nLines . ", " . SrPage . ")"
-	MG_AddActionScript(szAction)
+	szDir	 := (SrDir==1 || SrDir==2) ? "V" : "H"
+	nLines	 := (SrDir==2 || SrDir==4) ? SrLines : -SrLines
+	szAction := "MG_Scroll2(""" szDir """, " nLines ", " SrPage ")"
+	if (SrPage) {
+		szDesc := SrDir==1 ? ActionComment051 : SrDir==2 ? ActionComment052 : SrDir==3 ? ActionComment053 : ActionComment054
+	} else {
+		Loop, Parse, ME_LngDropDown205, `n
+		{
+			if (A_Index==SrDir) {
+				szDesc := A_LoopField
+				break
+			}
+		}
+	}
+	szDesc .= (SrLines>1) ? RegExReplace(SrPage ? ActionComment056 : ActionComment055, MG_ReplaceStr, SrLines) : ""
+	MG_AddActionScript(szAction, szDesc)
 	Gui, MEW_SR:Destroy
 	return
 
@@ -6045,10 +7082,7 @@ MEW_SRGuiEscape:
 ; Add "Drag-Scroll" to Action Script
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-ActDragScroll:
-	DlgDragScroll()
-return
-DlgDragScroll()
+ActDragScroll()
 {
 	global
 	Gui, MEW_DS:-MaximizeBox -MinimizeBox +HwndME_hWndDS +OwnerMEW_Main +Delimiter`n +LastFound
@@ -6078,12 +7112,11 @@ DlgDragScroll()
 	Gui, MEW_DS:Add, Text, x12 y+12 w%width%, %ME_LngText537%
 	Gui, MEW_DS:Add, DropDownList, x+0 yp-4 w280 vDsAuto Choose1 AltSubmit, %ME_LngDropDown207%
 
-	Gui, MEW_DS:Show, Hide
-	local width
-	WinGetPos,,,width
-	local left := width - 185
-	Gui, MEW_DS:Add, Button, gOnAcceptDS x%left% y+14 w80 Default, %ME_LngButton001%
-	Gui, MEW_DS:Add, Button, gOnCancelDS x+8 yp+0 w80, %ME_LngButton002%
+	local Bx, Bw:=80, Bs:=8
+	GuiControlGet, rcCtrl, MEW_DS:Pos, DsAuto
+	Bx := rcCtrlX + rcCtrlW - Bw*2 - Bs
+	Gui, MEW_DS:Add, Button, gOnAcceptDS x%Bx% y+14 w%Bw% Default, %ME_LngButton001%
+	Gui, MEW_DS:Add, Button, gOnCancelDS x+8 yp+0 w%Bw%, %ME_LngButton002%
 	Gui, MEW_DS:Show, AutoSize, %ME_LngCapt018%
 
 	WinWaitClose,  ahk_id %ME_hWndDS%
@@ -6094,7 +7127,7 @@ DlgDragScroll()
 OnAcceptDS:
 	Gui, MEW_DS:Submit
 	local szAction := "if (MG_While()) {`n"
-	szAction .= "    MG_DragScroll2(" . DsInvert-1 . ", " . DsAuto-1 . ", " . DsResV . ", " . DsResH . ")`n"
+	szAction .= "    MG_DragScroll2(" DsInvert-1 ", " DsAuto-1 ", " DsResV ", " DsResH ")`n"
 	szAction .= "}"
 	MG_AddActionScript(szAction)
 	Gui, MEW_DS:Destroy
@@ -6114,15 +7147,9 @@ MEW_DSGuiEscape:
 ; Add "Move and Resize Window" to Action Script
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-ActMoveWindow:
-	DlgMoveWindow()
-return
-DlgMoveWindow()
+ActMoveWindow()
 {
 	global
-	local prevOrg
-	prevOrg := 1
-
 	Gui, MEW_MW:New
 	Gui, MEW_MW:-MaximizeBox -MinimizeBox +HwndME_hWndMW +OwnerMEW_Main +Delimiter`n +LastFound
 
@@ -6130,7 +7157,7 @@ DlgMoveWindow()
 	Gui, MEW_MW:Add, Text, x16 y+6 cBlue, %ME_LngText542%
 	Gui, MEW_MW:Add, Text, x16 y+6 cBlue, %ME_LngText543%
 	Gui, MEW_MW:Add, Text, x16 y+6 cBlue, %ME_LngText544%
-	Gui, MEW_MW:Add, Text, x16 y+6 cBlue, %ME_LngText545%
+	Gui, MEW_MW:Add, Text, x16 y+6 cBlue vTDescMvWin, %ME_LngText545%
 
 	local tblText := Array(ME_LngText546, ME_LngText547, ME_LngText548, ME_LngText549)
 	local width := GetMaxTextLength(tblText)
@@ -6154,14 +7181,14 @@ DlgMoveWindow()
 	Gui, MEW_MW:Add, UpDown, Range-2147483648-2147483647 +128 vMwUD
 	GuiControl, MEW_MW:, MwH,
 
-	Gui, MEW_MW:Add, CheckBox, xs y+14 vMwRelH, %ME_LngCheckBox112%
+	Gui, MEW_MW:Add, CheckBox, xs y+14 h14 vMwRel, %ME_LngCheckBox112%
+	Gui, MEW_MW:Add, CheckBox, xs y+8 h14 vMwAdj, %ME_LngCheckBox113%
 
-	Gui, MEW_MW:Show, Hide
-	local width
-	WinGetPos,,,width
-	local left := width - 185
-	Gui, MEW_MW:Add, Button, gOnAcceptMW x%left% y+14 w80 Default, %ME_LngButton001%
-	Gui, MEW_MW:Add, Button, gOnCancelMW x+8 yp+0 w80, %ME_LngButton002%
+	local Bx, Bw:=80, Bs:=8
+	GuiControlGet, rcCtrl, MEW_MW:Pos, TDescMvWin
+	Bx := rcCtrlX + rcCtrlW - Bw*2 - Bs
+	Gui, MEW_MW:Add, Button, gOnAcceptMW x%Bx% y+14 w%Bw% Default, %ME_LngButton001%
+	Gui, MEW_MW:Add, Button, gOnCancelMW x+8 yp+0 w%Bw%, %ME_LngButton002%
 	Gui, MEW_MW:Show, AutoSize, %ME_LngCapt019%
 
 	WinWaitClose,  ahk_id %ME_hWndMW%
@@ -6175,7 +7202,12 @@ OnAcceptMW:
 		Gui, MEW_MW:Destroy
 		return
 	}
-	MG_AddActionScript("MG_WinMove(" . MwX . ", " . MwY . ", " . MwW . ", " . MwH . ", " . MwRelH . ")")
+	local szDesc := MwX ? (MwRel && !InStr(MwX,"/") ? "X" (MwX>=0 ? "+" : "") : "X=") MwX : ""
+	MwY ? Join(szDesc, (MwRel && !InStr(MwY,"/") ? "Y" (MwY>=0 ? "+" : "") : "Y=") MwY, ", ") :
+	MwW ? Join(szDesc, (MwRel && !InStr(MwW,"/") ? "W" (MwW>=0 ? "+" : "") : "W=") MwW, ", ") :
+	MwH ? Join(szDesc, (MwRel && !InStr(MwH,"/") ? "H" (MwH>=0 ? "+" : "") : "H=") MwH, ", ") :
+	szDesc := RegExReplace(ActionComment061, MG_ReplaceStr, szDesc)
+	MG_AddActionScript("MG_WinMove(""" MwX """, """ MwY """, """ MwW """, """ MwH """, " MwRel ",,," MwAdj ")", szDesc)
 	Gui, MEW_MW:Destroy
 	return
 
@@ -6190,15 +7222,132 @@ MEW_MWGuiEscape:
 
 
 ;-------------------------------------------------------------------------------
+; Add "Minimize / Close all windows of the same class" to Action Script
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+ActMinimizeSameClass() {
+	DlgOperateSameClass("Minimize")
+}
+ActCloseSameClass() {
+	DlgOperateSameClass("Close")
+}
+DlgOperateSameClass(szOpe)
+{
+	global
+	Gui, MEW_OSC:-MaximizeBox -MinimizeBox +HwndME_hWndOSC +OwnerMEW_Main +Delimiter`n +LastFound
+
+	Gui, MEW_OSC:Add, Text, x12 y12 Section, %ME_LngText571%
+
+	local tblText := Array(ME_LngText572, ME_LngText573)
+	local width := GetMaxTextLength(tblText)+8
+	Gui, MEW_OSC:Add, Text, xs+6 y+16 w%width%, %ME_LngText572%
+	Gui, MEW_OSC:Add, Edit, x+0 yp-4 w350 vEIncludeTitle
+
+	Gui, MEW_OSC:Add, Text, xs+6 y+14 w%width%, %ME_LngText573%
+	Gui, MEW_OSC:Add, Edit, x+0 yp-4 w350 vEExcludeTitle
+
+	local Bx, Bw:=80, Bs:=8
+	GuiControlGet, rcCtrl, MEW_OSC:Pos, EExcludeTitle
+	Bx := rcCtrlX + rcCtrlW - Bw*2 - Bs
+	Gui, MEW_OSC:Add, Button, gOnAcceptOSC x%Bx% y+14 w%Bw% Default, %ME_LngButton001%
+	Gui, MEW_OSC:Add, Button, gOnCancelOSC x+8 yp+0 w%Bw%, %ME_LngButton002%
+	Gui, MEW_OSC:Show, AutoSize, % (szOpe=="Minimize" ? ME_LngCapt026 : ME_LngCapt027)
+
+	WinWaitClose,  ahk_id %ME_hWndOSC%
+	return
+
+	;---------------------------------------------------------------------------
+	; Accepted
+OnAcceptOSC:
+	Gui, MEW_OSC:Submit
+	MG_AddActionScript("MG_OperateSameClass(""" szOpe """, """ EIncludeTitle """, """ EExcludeTitle """)")
+	Gui, MEW_OSC:Destroy
+	return
+
+	;---------------------------------------------------------------------------
+	; Canceled
+OnCancelOSC:
+MEW_OSCGuiClose:
+MEW_OSCGuiEscape:
+	Gui, MEW_OSC:Destroy
+	return
+}
+
+
+;-------------------------------------------------------------------------------
+; Add "Tile all windows of the same class" to Action Script
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+ActTileSameClass()
+{
+	global
+	Gui, MEW_TSC:New
+	Gui, MEW_TSC:-MaximizeBox -MinimizeBox +HwndME_hWndTSC +OwnerMEW_Main +Delimiter`n +LastFound
+
+	Gui, MEW_TSC:Add, Text, x20 y+20, %ME_LngText581%
+	Gui, MEW_TSC:Add, DropDownList, x+8 yp-4 w100 vDirTSC Choose1 AltSubmit, %ME_LngDropDown210%
+
+	Gui, MEW_TSC:Add, GroupBox, x12 y+12 w300 h80 vGBExAreaTSC Section, %ME_LngGroupBox102%
+
+	local tblText := Array(ME_LngText582, ME_LngText583, ME_LngText584, ME_LngText585)
+	local width := GetMaxTextLength(tblText)
+	Gui, MEW_TSC:Add, Text, xs+14 ys+24 w%width%, %ME_LngText582%
+	Gui, MEW_TSC:Add, Edit, x+4 yp-4 w62 vExL
+	Gui, MEW_TSC:Add, UpDown, Range-2147483648-2147483647 +128
+
+	Gui, MEW_TSC:Add, Text, x+20 ys+24 w%width%, %ME_LngText583%
+	Gui, MEW_TSC:Add, Edit, x+4 yp-4 w62 vExR
+	Gui, MEW_TSC:Add, UpDown, Range-2147483648-2147483647 +128
+
+	Gui, MEW_TSC:Add, Text, xs+14 y+14 w%width%, %ME_LngText584%
+	Gui, MEW_TSC:Add, Edit, x+4 yp-4 w62 vExT Section
+	Gui, MEW_TSC:Add, UpDown, Range-2147483648-2147483647 +128
+
+	Gui, MEW_TSC:Add, Text, x+20 ys+4 w%width%, %ME_LngText585%
+	Gui, MEW_TSC:Add, Edit, x+4 yp-4 w62 vExB
+	Gui, MEW_TSC:Add, UpDown, Range-2147483648-2147483647 +128 vMwUD
+
+	local Bx, Bw:=80, Bs:=8
+	GuiControlGet, rcCtrl, MEW_TSC:Pos, GBExAreaTSC
+	Bx := rcCtrlX + rcCtrlW - Bw*2 - Bs
+	Gui, MEW_TSC:Add, Button, gOnAcceptTCS x%Bx% y+20 w%Bw% Default, %ME_LngButton001%
+	Gui, MEW_TSC:Add, Button, gOnCancelTCS x+8 yp+0 w%Bw%, %ME_LngButton002%
+	Gui, MEW_TSC:Show, AutoSize, %ME_LngCapt028%
+
+	WinWaitClose,  ahk_id %ME_hWndTSC%
+	return
+
+	;---------------------------------------------------------------------------
+	; Accepted
+OnAcceptTCS:
+	local dir, szDesc
+	Gui, MEW_TSC:Submit
+	dir := DirTSC==1 ? "H" : DirTSC==2 ? "V" : ""
+	szDesc := DirTSC==1 ? ActionComment071 : DirTSC==2 ? ActionComment072 : ActionComment073
+	MG_AddActionScript("MG_TileSameClass(""" dir """, " ExL ", " ExT ", " ExR ", " ExB ")", szDesc)
+	Gui, MEW_TSC:Destroy
+	return
+
+	;---------------------------------------------------------------------------
+	; Canceled
+OnCancelTCS:
+MEW_TSCGuiClose:
+MEW_TSCGuiEscape:
+	Gui, MEW_TSC:Destroy
+	return
+}
+
+
+;-------------------------------------------------------------------------------
 ; Add "Launch File" to Action Script
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-ActFileLaunch:
+ActFileLaunch() {
 	DlgLaunchFile(0)
-return
-ActSoundPlay:
+}
+ActSoundPlay() {
 	DlgLaunchFile(1)
-return
+}
 DlgLaunchFile(mode)
 {
 	global
@@ -6215,7 +7364,7 @@ DlgLaunchFile(mode)
 		local width := GetMaxTextLength(tblText)+8
 		Gui, MEW_LF:Add, Text, x12 y+20 w%width%, %ME_LngText551%
 		Gui, MEW_LF:Add, Edit, x+0 yp-4 w341 vLfTarget
-		Gui, MEW_LF:Add, Button, x+2 yp-1 w58 gOnBrowseLF vLfBrowse, %ME_LngButton027%
+		Gui, MEW_LF:Add, Button, x+2 yp-1 w58 gOnBrowseLF vLfBrowse, %ME_LngButton020%
 
 		Gui, MEW_LF:Add, Text, x12 y+12 w%width%, %ME_LngText552%
 		Gui, MEW_LF:Add, Edit, x+0 yp-4 w400 vLfFolder
@@ -6225,25 +7374,23 @@ DlgLaunchFile(mode)
 
 		if (MG_IsNewOS()) {
 			Gui, MEW_LF:Add, Text, x12 y+14 w%width%, %ME_LngText554%
-			Gui, MEW_LF:Add, DropDownList, x+0 yp-4 w400 vLfLevel gOnLevelLF Choose1 AltSubmit Section, %ME_LngDropDown209%
-			Gui, MEW_LF:Add, Text, xs y+5 vLfLevelCmt cBlue, %ME_LngText555%
+			Gui, MEW_LF:Add, DropDownList, x+0 yp-4 w400 vLfLevel Choose1 AltSubmit Section, %ME_LngDropDown209%
 		}
 	}
 	else
 	{
 		szCaption := ME_LngCapt023
 		szFilter  := ME_LngText557
-		Gui, MEW_LF:Add, Text, x12 y20, %ME_LngMessage107%
+		Gui, MEW_LF:Add, Text, x12 y20, %ME_LngMessage108%
 
 		Gui, MEW_LF:Add, Edit, x12 y+12 w400 vLfTarget
-		Gui, MEW_LF:Add, Button, x+2 yp-1 gOnBrowseLF vLfBrowse, %ME_LngButton027%
+		Gui, MEW_LF:Add, Button, x+2 yp-1 gOnBrowseLF vLfBrowse, %ME_LngButton020%
 	}
-	Gui, MEW_LF:Show, Hide
-	local width
-	WinGetPos,,,width
-	local left := width - 185
-	Gui, MEW_LF:Add, Button, gOnAcceptLF x%left% y+14 w80 Default, %ME_LngButton001%
-	Gui, MEW_LF:Add, Button, gOnCancelLF x+8 yp+0 w80, %ME_LngButton002%
+	local Bx, Bw:=80, Bs:=8
+	GuiControlGet, rcCtrl, MEW_LF:Pos, LfBrowse
+	Bx := rcCtrlX + rcCtrlW - Bw*2 - Bs
+	Gui, MEW_LF:Add, Button, gOnAcceptLF x%Bx% y+14 w%Bw% Default, %ME_LngButton001%
+	Gui, MEW_LF:Add, Button, gOnCancelLF x+8 yp+0 w%Bw%, %ME_LngButton002%
 	Gui, MEW_LF:Show, AutoSize, %szCaption%
 
 	WinWaitClose,  ahk_id %ME_hWndLF%
@@ -6257,14 +7404,6 @@ OnBrowseLF:
 	if (szPath) {
 		GuiControl, MEW_LF:, LfTarget, %szPath%
 	}
-	return
-
-	;---------------------------------------------------------------------------
-	; Level Change
-OnLevelLF:
-	GuiControlGet, LfLevel, MEW_Main:, LfLevel
-	szComment := (LfLevel==1) ? ME_LngText555 : ""
-	GuiControl, MEW_LF:, LfLevelCmt, %szComment%
 	return
 
 	;---------------------------------------------------------------------------
@@ -6285,18 +7424,18 @@ OnAcceptLF:
 			szWindow := ""
 		}
 		if (LfLevel==1) {
-			szAction  := "MG_RunAsUser(""" . LfTarget . """, """ . LfFolder . """, """ . szWindow . """)"
+			szAction  := "MG_RunAsUser(""" LfTarget """, """ LfFolder """, """ szWindow """)"
 		}
 		else
 		{
 			if (MG_IsNewOS()) {
-				LfTarget := "*runas " . LfTarget
+				LfTarget := "*runas " LfTarget
 			}
-			szAction  := "Run, " . LfTarget . ", " . LfFolder . ", " . szWindow . " UseErrorLevel"
+			szAction  := "Run, " LfTarget ", " LfFolder ", " szWindow " UseErrorLevel"
 		}
 	}
 	else {
-		szAction  := "SoundPlay, " . LfTarget
+		szAction  := "SoundPlay, " LfTarget
 	}
 	MG_AddActionScript(szAction)
 	Gui, MEW_LF:Destroy
@@ -6316,12 +7455,12 @@ MEW_LFGuiEscape:
 ; Add "PostMessage/SendMessage" to Action Script
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-ActPostMessage:
+ActPostMessage() {
 	DlgPostMessage(0)
-return
-ActSendMessage:
+}
+ActSendMessage() {
 	DlgPostMessage(1)
-return
+}
 DlgPostMessage(mode)
 {
 	global
@@ -6338,12 +7477,11 @@ DlgPostMessage(mode)
 	Gui, MEW_PM:Add, Text, x12 y+12 w%width%, %ME_LngText563%
 	Gui, MEW_PM:Add, Edit, x+0 yp-4 w120 vPmLParam
 
-	Gui, MEW_PM:Show, Hide
-	local width
-	WinGetPos,,,width
-	local left := width - 185
-	Gui, MEW_PM:Add, Button, gOnAcceptPM x%left% y+14 w80 Default, %ME_LngButton001%
-	Gui, MEW_PM:Add, Button, gOnCancelPM x+8 yp+0 w80, %ME_LngButton002%
+	local Bx, Bw:=80, Bs:=8
+	GuiControlGet, rcCtrl, MEW_PM:Pos, PmMsg
+	Bx := rcCtrlX + rcCtrlW - Bw*2 - Bs
+	Gui, MEW_PM:Add, Button, gOnAcceptPM x%Bx% y+14 w%Bw% Default, %ME_LngButton001%
+	Gui, MEW_PM:Add, Button, gOnCancelPM x+8 yp+0 w%Bw%, %ME_LngButton002%
 	Gui, MEW_PM:Show, AutoSize, %ME_LngCapt024%
 
 	WinWaitClose,  ahk_id %ME_hWndPM%
@@ -6360,7 +7498,7 @@ OnAcceptPM:
 	else {
 		szAction := "SendMessage, "
 	}
-	szAction .= PmMsg . ", " . PmWParam . ", " . PmLParam
+	szAction .= PmMsg ", " PmWParam ", " PmLParam
 	MG_AddActionScript(szAction)
 	Gui, MEW_PM:Destroy
 	return
@@ -6377,60 +7515,54 @@ MEW_PMGuiEscape:
 ;-------------------------------------------------------------------------------
 ; Get Toolbar Button ID
 ;														Implemented by lukewarm
+;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-ButtonIDPicker:
-	Hotkey,RButton up,ButtonIDPickerHotkey,On
-	SetTimer,ButtonIDPickerTimer,10
-return
-
-ButtonIDPickerTimer:
-	Tooltip, %ME_LngTooltip004%
-return
-
-ButtonIDPickerHotkey:
-	Hotkey,RButton up,Off
-	SetTimer,ButtonIDPickerTimer,Off
+ButtonIDPicker() {
+	Hotkey, RButton up, ButtonIDPickerHotkey, On
+	SetTimer, ButtonIDPickerTimer, 10
+}
+ButtonIDPickerTimer() {
+	global
+	Tooltip, %ME_LngTooltip104%
+}
+ButtonIDPickerHotkey() {
+	Hotkey, RButton up, Off
+	SetTimer, ButtonIDPickerTimer, Off
 	Tooltip
-	if(ButtonIDPicker_ID:=GetButtonCID()){
-		MG_AddActionScript("SendMessage,0x111," ButtonIDPicker_ID ",0")
+	if (id := GetButtonCID()) {
+		MG_AddActionScript("SendMessage, 0x0111, " id ", 0")
 	}
-return
-
+}
 GetButtonCID()
 {
 	CoordMode,Mouse,Screen
-	MouseGetPos,MG_X,MG_Y,MG_HWND,MG_HCTL,3
-	SendMessage,0x84,0,% MG_Y<<16|MG_X,,ahk_id %MG_HCTL%
-	If ErrorLevel=4294967295
-		MouseGetPos,,,,MG_HCTL,2
-	;mouse position on control
-	WinGetPos,wx,wy,,,ahk_id %MG_HWND%
-	ControlGetPos,cx,cy,,,,ahk_id %MG_HCTL%
-	cmx:=MG_X-cx-wx
-	cmy:=MG_Y-cy-wy
-	;count
-	SendMessage,0x0418,0,0,,ahk_id %MG_HCTL%
-	c=%ErrorLevel%
-	if(c>0){
-		WinGet,pid,pid,ahk_id %MG_HWND%
+	MouseGetPos, x, y, hWnd, hCtrl, 3
+	SendMessage, 0x0084, 0, % y<<16|x,, ahk_id %hCtrl%
+	if (ErrorLevel = 4294967295) {
+		MouseGetPos,,,,hCtrl, 2
+	}
+	WinGetPos, wx, wy,,,ahk_id %hWnd%
+	ControlGetPos, cx, cy,,,,ahk_id %hCtrl%
+	cmx := x - cx - wx
+	cmy := y - cy - wy
+	SendMessage, 0x0418, 0, 0,,ahk_id %hCtrl%
+	nButtons = %ErrorLevel%
+	if (nButtons > 0) {
+		WinGet, pid, pid, ahk_id %hWnd%
 		hProc := DllCall("OpenProcess", "UInt",0x1F0FFF, "UInt",0, "UInt",pid, "Ptr")
 		size  := 10 + (A_PtrSize==4 ? 2 : 6) + A_PtrSize*2
 		lpTB  := DllCall("VirtualAllocEx", "Ptr",hProc, "Ptr",0, "UInt",size, "UInt",0x1000, "UInt",0x4, "Ptr")
-		Loop, %c%
-		{
-			;button struct
-			SendMessage,0x417,% A_Index-1,%lpTB%,,ahk_id %MG_HCTL%
+		Loop, %nButtons% {
+			SendMessage, 0x0417, % A_Index-1, %lpTB%,,ahk_id %hCtrl%
 			DllCall("ReadProcessMemory", "Ptr",hProc, "Ptr",lpTB+8, "PtrP",stt, "UInt",4, "Ptr",0)
-			if(!(stt&8)){
-				;not hidden
+			if (!(stt & 8)) {
 				DllCall("ReadProcessMemory", "Ptr",hProc, "Ptr",lpTB+4, "PtrP",cid, "UInt",4, "Ptr",0)
-				SendMessage,0x433,cid,%lpTB%,,ahk_id %MG_HCTL%
+				SendMessage, 0x0433, cid, %lpTB%,,ahk_id %hCtrl%
 				DllCall("ReadProcessMemory", "Ptr",hProc, "Ptr",lpTB+0,  "PtrP",x1, "UInt",4, "Ptr",0)
 				DllCall("ReadProcessMemory", "Ptr",hProc, "Ptr",lpTB+4,  "PtrP",y1, "UInt",4, "Ptr",0)
 				DllCall("ReadProcessMemory", "Ptr",hProc, "Ptr",lpTB+8,  "PtrP",x2, "UInt",4, "Ptr",0)
 				DllCall("ReadProcessMemory", "Ptr",hProc, "Ptr",lpTB+12, "PtrP",y2, "UInt",4, "Ptr",0)
-				if((x1<=cmx)&&(x2>=cmx)&&(y1<=cmy)&&(y2>=cmy)){
-					;under the cursor
+				if ((x1<=cmx) && (x2>=cmx) && (y1<=cmy) && (y2>=cmy)) {
 					break
 				}
 			}
@@ -6495,22 +7627,35 @@ ShowConfig()
 }
 
 ;-------------------------------------------------------------------------------
-; Save Configurations(mark)
+; Save Configurations
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-SaveExit:
+SaveExit()
+{
+	local szIni, szPrev, file
+
 	SaveModification()
 	Critical
 	SubmitConfigurations()
-	FileMove, %A_ScriptDir%\Config\MouseGestureL.ini
-			, %A_ScriptDir%\Config\MouseGestureL.ini.bak, 1
-	FileAppend, % ToIni(), %A_ScriptDir%\Config\MouseGestureL.ini, UTF-8
-	FileDelete, %A_ScriptDir%\Config\MG_Config.ahk
-	FileAppend, % ToAhk(), %A_ScriptDir%\Config\MG_Config.ahk, UTF-8
-	Gosub, SaveAdditionalOptions
-ExitApp
-
+	szIni := ToIni()
+	szPrev := ""
+	file := FileOpen(MG_DirConfig "MouseGestureL.ini", "r `n", "UTF-8")
+	if (file) {
+		szPrev := file.Read(file.Length)
+		file.Close
+	}
+	if (szIni != szPrev) {
+		FileMove, %MG_DirConfig%MouseGestureL.ini
+				, %MG_DirConfig%MouseGestureL.ini.bak, 1
+	} else {
+		FileDelete, %MG_DirConfig%MouseGestureL.ini
+	}
+	FileAppend, % szIni, %MG_DirConfig%MouseGestureL.ini, UTF-8
+	FileDelete, %MG_DirConfig%MG_Config.ahk
+	FileAppend, % ToAhk(), %MG_DirConfig%MG_Config.ahk, UTF-8
+	ExitApp
+}
 
 ;-------------------------------------------------------------------------------
 ; Submit Configurations
@@ -6533,7 +7678,7 @@ SubmitConfigurations()
 }
 
 ;-------------------------------------------------------------------------------
-; Make INI Format Strings
+; Make configuration string for .ini file
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
@@ -6541,221 +7686,241 @@ ToIni()
 {
 	local tmp := ConfigToIni()
 	Loop, %Target_Count% {
-		tmp := tmp . "`n" . TargetToIni(A_Index)
+		tmp := tmp "`n" TargetToIni(A_Index)
 	}
 	Loop, %Gesture_Count% {
-		tmp := tmp . "`n" . GestureToIni(A_Index)
+		tmp := tmp "`n" GestureToIni(A_Index)
 	}
 	return tmp
 }
 
 ;-------------------------------------------------------------------------------
-; Make Configuration Strings
+; Make general settings string for .ini file
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
 ConfigToIni()
 {
-	local res := "[Settings]`n"
+	local szBuf, szColor
+
+	szBuf := "[Settings]`n"
 	Loop, Parse, ConfRecognition, `n
 	{
-		res := res . "" . A_LoopField . "=" . Config_%A_LoopField% . "`n"
+		szBuf .= "" A_LoopField "=" Config_%A_LoopField% "`n"
 	}
 	Loop, Parse, ConfNavi, `n
 	{
-		res := res . "" . A_LoopField . "=" . Config_%A_LoopField% . "`n"
+		szBuf .= "" A_LoopField "=" Config_%A_LoopField% "`n"
 	}
 	Loop, Parse, ConfAdNavi, `n
 	{
-		res := res . "" . A_LoopField . "=" . Config_%A_LoopField% . "`n"
+		szBuf .= "" A_LoopField "=" Config_%A_LoopField% "`n"
 	}
 	Loop, Parse, ConfTrail, `n
 	{
-		res := res . "" . A_LoopField . "=" . Config_%A_LoopField% . "`n"
+		szBuf .= "" A_LoopField "=" Config_%A_LoopField% "`n"
 	}
 	Loop, Parse, ConfLogs, `n
 	{
-		res := res . "" . A_LoopField . "=" . Config_%A_LoopField% . "`n"
+		szBuf .= "" A_LoopField "=" Config_%A_LoopField% "`n"
 	}
 	Loop, Parse, ConfOthers, `n
 	{
-		if (A_LoopField="UserName" || A_LoopField="Password") {
-			Config_%A_LoopField% := MG_StrEncDec(Config_%A_LoopField%, true)
-		}
-		res := res . "" . A_LoopField . "=" . Config_%A_LoopField% . "`n"
+		szBuf .= "" A_LoopField "=" Config_%A_LoopField% "`n"
 	}
-	Loop, Parse, MG_BtnNames, _
-	{
-		if (Config_ExNaviFG_%A_LoopField% != "") {
-			res := res . "ExNaviFG_" . A_LoopField . "=" . Config_ExNaviFG_%A_LoopField% . "`n"
+	Loop, % MG_BtnNames.MaxIndex() {
+		szColor := "Config_ExNaviFG_" MG_BtnNames[A_Index]
+		szColor := %szColor%
+		if (szColor != "") {
+			szBuf .= "ExNaviFG_" MG_BtnNames[A_Index] "=" szColor "`n"
 		}
 	}
-	return res
+	szBuf .= "`n[ActivationExcluded]`n"
+	Loop, % MG_ActvtExclud.MaxIndex() {
+		szBuf .= A_Index "={" MG_ActvtExclud[A_Index][1] "`t" MG_ActvtExclud[A_Index][2] "`t" MG_ActvtExclud[A_Index][3] "}`n"
+	}
+	return szBuf
 }
 
 ;-------------------------------------------------------------------------------
-; Make Target Section Strings
+; Make target section string
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
 TargetToIni(idx)
 {
-	local res,delim
-	res := "[" . Target_%idx%_Name . "]`n"
+	local szBuf, delim
+	szBuf := "[" Target_%idx%_Name "]`n"
 	if (Target_%idx%_IconFile) {
-		res := res . "Icon=" Target_%idx%_IconFile "`n"
+		szBuf .= "Icon=" Target_%idx%_IconFile "`n"
 	}
 	if (Target_%idx%_Level > 1) {
-		res := res . "Level=" Target_%idx%_Level "`n"
+		szBuf .= "Level=" Target_%idx%_Level "`n"
 	}
 	if (Target_%idx%_IsAnd) {
-		res := res . "And=1`n"
+		szBuf .= "And=1`n"
 	}
 	if (Target_%idx%_NotInh) {
-		res := res . "NotInherit=1`n"
+		szBuf .= "NotInherit=1`n"
 	}
 	Loop, % Target_%idx%_Count {
-		res := res . Target_%idx%_%A_Index%_Type "=" Target_%idx%_%A_Index%_Value "`n"
+		szBuf .= Target_%idx%_%A_Index%_Type "=" Target_%idx%_%A_Index%_Value "`n"
 	}
-	return res
+	return szBuf
 }
 
 ;-------------------------------------------------------------------------------
-; Make Gesture Section Strings
+; Make gesture section string
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
 GestureToIni(idx)
 {
-	local gr,res,def
-	res:="[" . Gesture_%idx%_Name . "]`n" . RegExReplace(Gesture_%idx%_Patterns,"(^|\n)","$1G=") . "`n"
+	local szBuf, gr, def
+	szBuf := "[" Gesture_%idx%_Name "]`n" RegExReplace(Gesture_%idx%_Patterns,"(^|\n)","$1G=") "`n"
 	Loop, % Gesture_%idx%_Count {
-		res:=res . Gesture_%idx%_%A_Index%_Target . "=" Gesture_%idx%_%A_Index%_Action . "`n"
+		szBuf .= Gesture_%idx%_%A_Index%_Target "=" Gesture_%idx%_%A_Index%_Action "`n"
 	}
-	return res
+	return szBuf
 }
 
 ;-------------------------------------------------------------------------------
-; Make Configuration Script Strings
+; Make configuration script strings
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
 ToAhk()
 {
-	local MaxLen, AG, Triggers, SubTriggers, ahk, BT2
-	local tmp := ConfigToAhk()
+	local szBuf, MaxLen, szTriggers, szSubTriggers, szAllGes, szSubBtns, szInc
+
+	szBuf := ConfigToAhk()
 	Loop, %Gesture_Count%
 	{
 		Loop, Parse, Gesture_%A_Index%_Patterns,`n
 		{
-			Join(AG,A_LoopField)
-			MaxLen:=(MaxLen<StrLen(A_LoopField)) ? StrLen(A_LoopField) : MaxLen
+			MaxLen := (MaxLen<StrLen(A_LoopField)) ? StrLen(A_LoopField) : MaxLen
+			Join(szAllGes, A_LoopField)
 		}
 	}
-	AG = `n%AG%`n
-	tmp := tmp . "MG_MaxLength=" . MaxLen . "`n"
+	szBuf .= "MG_MaxLength=" MaxLen "`n"
 
-	Loop, Parse, MG_BtnNames, _
-	{
-		if(RegExMatch(AG, "`n" . A_LoopField . "_")){
-			Join(Triggers, A_LoopField, "_")
-			Use_%A_LoopField%=1
-		}else{
-			Join(BT2, A_LoopField)
+	szAllGes = `n%szAllGes%`n
+	Loop, % MG_BtnNames.MaxIndex() {
+		if(RegExMatch(szAllGes, "`n" MG_BtnNames[A_Index] "_")) {
+			Join(szTriggers, MG_BtnNames[A_Index], "_")
+		} else {
+			Join(szSubBtns, MG_BtnNames[A_Index])
 		}
 	}
-	tmp := tmp . "MG_Triggers=" . Triggers . "`n"
+	szBuf .= "MG_Triggers=" szTriggers "`n"
 
-	AG := RegExReplace(AG,"_","`n")
-	Loop, Parse, BT2,`n
+	szAllGes := RegExReplace(szAllGes, "_", "`n")
+	Loop, Parse, szSubBtns,`n
 	{
-		if(RegExMatch(AG,"`n" . A_LoopField . "`n")){
-			Join(SubTriggers,A_LoopField,"_")
-			Use_%A_LoopField% = 1
+		if (RegExMatch(szAllGes, "`n" A_LoopField "`n")) {
+			Join(szSubTriggers, A_LoopField, "_")
 		}
 	}
-	tmp := tmp . "MG_SubTriggers=" . SubTriggers . "`n"
+	szBuf .= "MG_SubTriggers=" szSubTriggers "`n"
 
-	Triggers = %Triggers%_%SubTriggers%
-	Loop, Parse, Triggers, _
+	MG_TargetFuncs := []
+	MG_Triggers := szTriggers "_" szSubTriggers
+	Loop, Parse, MG_Triggers, _
 	{
-		FileRead, ahk, %A_ScriptDir%\Components\Buttons\%A_LoopField%.ahk
-		tmp := tmp . "`n`n" . ahk
+		MG_TargetFuncs[A_LoopField] := ""
+		szInc := ""
+		if (FileExist(MG_DirUserBtn . A_LoopField ".ahk")) {
+			FileRead, szInc, % MG_DirUserBtn . A_LoopField ".ahk"
+		} else if (FileExist(MG_DirButtons . A_LoopField ".ahk")) {
+			FileRead, szInc, % MG_DirButtons . A_LoopField ".ahk"
+		}
+		szBuf .= szInc ? "`n`n" szInc : ""
 	}
-	tmp := tmp . "`n`nGoto,MG_Config_End`n`n"
+	szBuf .= "`n`nGoto, MG_Config_End`n`n"
 
 	Loop, %Target_Count%
 	{
-		tmp := tmp . "`n" . TargetToAhk(A_Index)
+		szBuf .= "`n" TargetToAhk(A_Index)
 	}
 	Loop, %Gesture_Count%
 	{
-		tmp := tmp . "`n" . GestureToAhk(A_Index)
+		szBuf .= "`n" GestureToAhk(A_Index)
 	}
-
+	szBuf .= "`n`n" GetGesEnablingFuncStr()
 	if (Config_HotkeyEnable) {
-		tmp .= "`n" . Config_HotkeyEnable . "::Gosub, MG_ToggleEnable`n"
+		szBuf .= "`n" Config_HotkeyEnable "::MG_ToggleEnable()`nHotkey, " Config_HotkeyEnable ",, P8`n"
 	}
-
 	if (Config_HotkeyNavi) {
-		tmp .= "`n" . Config_HotkeyNavi . "::Gosub, MG_NaviToggleEnable`n"
+		szBuf .= "`n" Config_HotkeyNavi "::MG_NaviToggleEnable()`n"
 	}
-
-	tmp := tmp . "`n`nMG_Config_end:"
-	return tmp
+	if (Config_HotkeyReload) {
+		szBuf .= "`n" Config_HotkeyReload "::MG_Reload()`nHotkey, " Config_HotkeyReload ",, P10`n"
+	}
+	szBuf .= "`n`nMG_Config_end:"
+	return szBuf
 }
 
 ;-------------------------------------------------------------------------------
-; Make Configuration Strings
+; Make general setting string of configuration script
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
 ConfigToAhk()
 {
-	local res := ""
+	local szBuf, szColor
+
+	szBuf := ""
 	Loop, Parse, ConfRecognition,`n
 	{
-		res := res . "MG_" . A_LoopField . "=" . Config_%A_LoopField% . "`n"
+		szBuf .= "MG_" A_LoopField "=" Config_%A_LoopField% "`n"
 	}
 	Loop, Parse, ConfNavi,`n
 	{
-		res := res . "MG_" . A_LoopField . "=" . Config_%A_LoopField% . "`n"
+		szBuf .= "MG_" A_LoopField "=" Config_%A_LoopField% "`n"
 	}
 	Loop, Parse, ConfAdNavi,`n
 	{
-		res := res . "MG_" . A_LoopField . "=" . Config_%A_LoopField% . "`n"
+		szBuf .= "MG_" A_LoopField "=" Config_%A_LoopField% "`n"
 	}
 	Loop, Parse, ConfTrail,`n
 	{
-		res := res . "MG_" . A_LoopField . "=" . Config_%A_LoopField% . "`n"
+		szBuf .= "MG_" A_LoopField "=" Config_%A_LoopField% "`n"
 	}
 	Loop, Parse, ConfLogs,`n
 	{
-		res := res . "MG_" . A_LoopField . "=" . Config_%A_LoopField% . "`n"
+		szBuf .= "MG_" A_LoopField "=" Config_%A_LoopField% "`n"
 	}
 	Loop, Parse, ConfOthers,`n
 	{
-		res := res . "MG_" . A_LoopField . "=" . Config_%A_LoopField% . "`n"
+		szBuf .= "MG_" A_LoopField "=" Config_%A_LoopField% "`n"
 	}
-	Loop, Parse, MG_BtnNames, _
-	{
-		if (Config_ExNaviFG_%A_LoopField% != "") {
-			res := res . "MG_ExNaviFG_" . A_LoopField . "=" . Config_ExNaviFG_%A_LoopField% . "`n"
+	Loop, % MG_BtnNames.MaxIndex() {
+		szColor := "Config_ExNaviFG_" MG_BtnNames[A_Index]
+		szColor := %szColor%
+		if (szColor != "") {
+			szBuf .= "MG_ExNaviFG_" MG_BtnNames[A_Index] "=" szColor "`n"
 		}
 	}
-	return res
+	szBuf .= "MG_ActvtExclud := ["
+	Loop, % MG_ActvtExclud.MaxIndex() {
+		szBuf .= (A_Index>1) ? "`n`t`t`t`t,  " : ""
+		szBuf .= "[""" MG_ActvtExclud[A_Index][1] """, """ MG_ActvtExclud[A_Index][2] """, """ MG_ActvtExclud[A_Index][3] """]"
+	}
+	szBuf .= "]`n"
+	return szBuf
 }
 
-
 ;-------------------------------------------------------------------------------
-; Make Target Judgment Strings
+; Make target judgment string
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
 TargetToAhk(idx)
 {
-	local res:=0, invert, method, szType, szNot, idxInc
-		, delim := Target_%idx%_IsAnd ? " && " : " || "
+	local szBuf, invert, method, szType, szNot, idxInc, delim
+
+	szBuf:=""
+	delim := Target_%idx%_IsAnd ? " && " : " || "
 	Loop, % Target_%idx%_Count
 	{
 		szType := Target_%idx%_%A_Index%_Type
@@ -6763,29 +7928,29 @@ TargetToAhk(idx)
 		szNot := invert ? "!" : ""
 		szType := RegExReplace(szType, "_.+$")
 		if (szType = "Custom") {
-			Join(res, szNot . "(" . Target_%idx%_%A_Index%_Value . ")", delim)
+			Join(szBuf, szNot "(" Target_%idx%_%A_Index%_Value ")", delim)
 		}
 		else if (szType = "Include") {
 			idxInc := TargetIndexOf(Target_%idx%_%A_Index%_Value)
 			if (Target_%idxInc%_Parent!=idx || Target_%idxInc%_NotInh) {
-				Join(res, szNot . "(" . GetTargetFuncName(idxInc) . ")", delim)
+				Join(szBuf, szNot "(" GetTargetFuncName(idxInc) ")", delim)
 			}
 		}
 		else if (method == 1) {
-			Join(res, szNot . "(MG_" . szType . "=""" . Target_%idx%_%A_Index%_Value . """)", delim)
+			Join(szBuf, szNot "(MG_" szType "=""" Target_%idx%_%A_Index%_Value """)", delim)
 		}
 		else {
-			Join(res, szNot . "(MG_StrComp(MG_" . szType . ", """ . Target_%idx%_%A_Index%_Value . """, " . method . "))", delim)
+			Join(szBuf, szNot "(MG_StrComp(MG_" szType ", """ Target_%idx%_%A_Index%_Value """, " method "))", delim)
 		}
 	}
-	if(!res){
-		res := GetChildTargetNum(idx) ? 1 : 0
+	if (!szBuf) {
+		szBuf := GetChildTargetNum(idx) ? 1 : 0
 	}
 	if (Target_%idx%_Parent && !Target_%idx%_NotInh) {
-		res := GetTargetFuncName(Target_%idx%_Parent) " && (" res ")"
+		szBuf := GetTargetFuncName(Target_%idx%_Parent) " && (" szBuf ")"
 	}
-	res := GetTargetFuncName(idx) . "{`n	global`n	return (" . res . ")`n}`n"
-	return res
+	szBuf := GetTargetFuncName(idx) " {`n	global`n	return (" szBuf ")`n}`n"
+	return szBuf
 }
 
 ;-------------------------------------------------------------------------------
@@ -6795,16 +7960,21 @@ TargetToAhk(idx)
 ;-------------------------------------------------------------------------------
 GestureToAhk(idx)
 {
-	global
+	local szSubG:="", szSubA:="", szDefG:="", szDefA:="", szAct:="", szLabelG:="", szLabelA:="", szFunc, nTriggers, ary
+
 	if (!Gesture_%idx%_Patterns) {
 		return ""
 	}
-	local szSubG:="", szSubA:="", szContG:="", szContA:="", szAct:="", szLabelG:="", szLabelA:=""
+	nTriggers := 0
+	ary := []
 	Loop, Parse, Gesture_%idx%_Patterns, `n
 	{
 		if (MG_FindGesture(A_LoopField)==idx) {
-			szLabelG .= "MG_Gesture_" . A_LoopField . ":`n"
-			szLabelA .= "MG_GetAction_" . A_LoopField . ":`n"
+			szLabelG .= "MG_Gesture_" A_LoopField ":`n"
+			szLabelA .= "MG_GetAction_" A_LoopField ":`n"
+			if (RegExMatch(A_LoopField, "^(.+?)_.*", $)) {
+				ary.InsertAt(++nTriggers, $1)
+			}
 		}
 	}
 	if (!szLabelG) {
@@ -6816,38 +7986,41 @@ GestureToAhk(idx)
 		szAct := RegExReplace(szAct, """", """""")
 		local szTarget := Gesture_%idx%_%A_Index%_Target
 		local idxTgt := TargetIndexOf(szTarget)
-		if (szTarget == MC_DefTargetName)
-		{
-			szContG := ReplaceCR(Gesture_%idx%_%A_Index%_Action, 2)
-			szContA := "MG_ActionStr := """ . szAct . """"
+		if (szTarget == MG_DefTargetName) {
+			szDefG := ReplaceCR(Gesture_%idx%_%A_Index%_Action, 2)
+			szDefA := "MG_ActionStr := """ szAct """"
+			Loop, %nTriggers% {
+				MG_TargetFuncs[ary[A_Index]] := MG_DefTargetName
+			}
 		}
-		else if (szSubG)
-		{
-			szSubG := szSubG  . "else if(" . GetTargetFuncName(idxTgt) . "){`n		" . ReplaceCR(Gesture_%idx%_%A_Index%_Action, 2) . "`n	}"
-			szSubA := szSubA . "else if(" . GetTargetFuncName(idxTgt) . "){`n		MG_ActionStr := """ . szAct . """`n	}"
-		}
-		else
-		{
-			szSubG := "if(" . GetTargetFuncName(idxTgt) . "){`n		" . ReplaceCR(Gesture_%idx%_%A_Index%_Action, 2) . "`n	}"
-			szSubA := "if(" . GetTargetFuncName(idxTgt) . "){`n		MG_ActionStr := """ . szAct . """`n	}"
+		else {
+			if (szSubG) {
+				szSubG .= " else "
+				szSubA .= " else "
+			}
+			szFunc := GetTargetFuncName(idxTgt)
+			szSubG .= "if (" szFunc ") {`n		" ReplaceCR(Gesture_%idx%_%A_Index%_Action, 2) "`n	}"
+			szSubA .= "if (" szFunc ") {`n		MG_ActionStr := """ szAct """`n	}"
+			Loop, %nTriggers% {
+				if (!InStr(MG_TargetFuncs[ary[A_Index]], szFunc)) {
+					MG_TargetFuncs[ary[A_Index]] := Join(MG_TargetFuncs[ary[A_Index]], szFunc, " || ")
+				}
+			}
 		}
 	}
-	if (szSubG)
-	{
-		if (!szContG) {
-			szContG := "MG_Cancel()"
-			szContA := "MG_ActionStr := """""
+	if (szSubG) {
+		if (!szDefG) {
+			szDefG := "MG_Cancel()"
+			szDefA := "MG_ActionStr := """""
 		}
-		szSubG = %szLabelG%	%szSubG%else{`n		%szContG%`n	}`n
-		szSubA = %szLabelA%	%szSubA%else{`n		%szContA%`n	}`n
+		szSubG := szLabelG "	" szSubG "else{`n		" szDefG " `n	}`n"
+		szSubA := szLabelA "	" szSubA "else{`n		" szDefA " `n	}`n"
+	} else {
+		szDefG := RegExReplace(szDefG, "\n\t", "`n")
+		szSubG := szLabelG "	" szDefG "`n"
+		szSubA := szLabelA "	" szDefA "`n"
 	}
-	else
-	{
-		szContG := RegExReplace(szContG, "\n\t", "`n")
-		szSubG = %szLabelG%	%szContG%`n
-		szSubA = %szLabelA%	%szContA%`n
-	}
-	szSubG = %szSubG%return`n`n%szSubA%return`n
+	szSubG := szSubG "return`n`n" szSubA "return`n"
 	return szSubG
 }
 
@@ -6855,9 +8028,40 @@ GestureToAhk(idx)
 ; Get name of the target discriminant function
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-GetTargetFuncName(idx)
+GetTargetFuncName(idx) {
+	return "MG_Is" ((idx==1) ? "Disable" : "Target" idx-1) "()"
+}
+
+;-------------------------------------------------------------------------------
+; Make gesture enabling function strings
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+GetGesEnablingFuncStr()
 {
-	return "MG_Is" . ((idx==1) ? "Disable" : "Target" . idx-1) . "()"
+	local szFuncs, szBuf:=""
+
+	Loop, Parse, MG_Triggers, _
+	{
+		if (!A_LoopField) {
+			continue
+		}
+		szFuncs := MG_TargetFuncs[A_LoopField]
+		szBuf .= "MG_IsHookEnabled_" A_LoopField "() {`n`tglobal`n"
+		if (!szFuncs) {
+			szBuf .= "`treturn (MG_" A_LoopField "_Enabled && MG_TriggerCount)"
+		}
+		else {
+			szBuf .= "`tMG_TriggerCount ? : MG_GetMousePosInfo()`n"
+			szBuf .= "`treturn (MG_" A_LoopField "_Enabled && (MG_TriggerCount || (!MG_IsDisable()"
+			if (InStr(szFuncs, MG_DefTargetName)) {
+				szBuf .= ")))"
+			} else {
+				szBuf .= " && (" szFuncs "))))"
+			}
+		}
+		szBuf .= "`n}`n`n"
+	}
+	return szBuf
 }
 
 ;-------------------------------------------------------------------------------
@@ -6865,36 +8069,113 @@ GetTargetFuncName(idx)
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-ImportFromClipboard:
+ImportBtnPress() {
 	ImportFromClipboard()
-return
-ImportFromClipboard(szConfig="")
+}
+ImportFromClipboard(szConfig="", bDupTgt=false)
 {
-	local bTip := false
+	local bTip:=false, szIniData, tstart, gstart, tpos, gpos, tsave, idx, shift, nCh, name, full, alt, cnt, pat
 	if (!szConfig) {
 		szConfig := Clipboard
 		bTip := true
 	}
-	local szIniData := RegExReplace(szConfig, "(<MG_TAB>|【TAB】)", "`t")
+	szIniData := RegExReplace(szConfig, "(<MG_TAB>|【TAB】)", "`t")
 	if (InStr(szConfig, "【TAB】")) {
 		szIniData := RegExReplace(szIniData, "(?<!\t)\t", "<MG_CR>")
 	}
-	MG_LoadIni(szIniData, Target_Editing, Gesture_Editing)
-	if (MG_ImportedT || MG_ImportedG)
-	{
-		ShowTargets()
-		ShowTarget(MG_ImportedT ? MG_ImportedT : Target_Editing)
-		ShowGestures()
-		ShowGesture(MG_ImportedG ? MG_ImportedG : Gesture_Editing)
-		ShowGesturePattern(MG_ImportedG ? MG_ImportedG : Gesture_Editing
-						 , MG_ImportedG ? 1 : GesturePattern_Editing)
+	tstart := Target_Count + 1
+	gstart := Gesture_Count + 1
+	tpos := Target_Editing
+	gpos := Gesture_Editing
+	if (bDupTgt) {
+		tsave := tpos
+		if (Target_%tpos%_Level > 1) {
+			tpos := Target_%tpos%_Parent
+		}
+	}
+	MG_LoadIni(szIniData, tpos, gpos)
+	if (tpos || gpos) {
+		if (tpos) {
+			if (bDupTgt) {
+				tpos := tsave
+			}
+			;-------------------------------------------------------------------
+			; Check duplicate target name
+			name := Target_%Target_Count%_Name
+			full := alt := GetTargetFullName(Target_Count)
+			cnt := 1
+			while (TargetIndexOf(alt) != Target_Count) {
+				cnt++
+				alt := full " (" cnt ")"
+				Target_%Target_Count%_Name := name " (" cnt ")"
+			}
+			;-------------------------------------------------------------------
+			; Move imported targets to current position
+			if (tpos==1 && Target_%tstart%_Level>1) {
+				tpos := tstart
+			}
+			else {
+				nCh := GetChildTargetNum(tpos)
+				if (nCh > 0) {
+					tpos += nCh
+				}
+				shift := tstart - tpos - 1
+				if (shift > 0) {
+					Loop, % Target_Count - tstart + 1
+					{
+						idx := tstart + A_Index - 1
+						if (Target_%idx%_Parent >= tstart) {
+							Target_%idx%_Parent -= shift
+						}
+						Loop, %shift%
+						{
+							TargetSwap(idx, idx-1)
+							if (Target_%idx%_Level>1 && Target_%idx%_Parent>tpos) {
+								Target_%idx%_Parent++
+							}
+							idx--
+						}
+					}
+				}
+				tpos++
+			}
+			ShowTargets()
+			ShowTarget(tpos)
+		}
+		if (gpos) {
+			;-------------------------------------------------------------------
+			; Move imported gestures to current position
+			GuiControlGet, Config_8Dir, MEW_Main:, Config_8Dir
+			shift := gstart - gpos - 1
+			Loop, % Gesture_Count - gstart + 1
+			{
+				idx := gstart + A_Index - 1
+				pat := ""
+				Loop, Parse, Gesture_%idx%_Patterns, `n
+				{
+					Join(pat, MG_CnvDirMode(A_LoopField, Config_8Dir))
+				}
+				Gesture_%idx%_Patterns := pat
+				Loop, %shift% {
+					GestureSwap(idx, idx-1)
+					idx--
+				}
+			}
+			gpos++
+			ShowGestures()
+			ShowGesture(gpos)
+			ShowGesturePattern(gpos, 1)
+		}
+		;-----------------------------------------------------------------------
 		ShowConfig()
 		if (bTip) {
-			TrayTip, MouseGestureL, %ME_LngTooltip002%, 1
+			TrayTip, MouseGestureL, %ME_LngTooltip102%, 1
 			SetTimer, HideTrayTip, -3000
 		}
 	}
+	ShowAssignedGestures(tpos, false)
 	AdjustDialogHeight()
+	return tpos
 }
 
 ;-------------------------------------------------------------------------------
@@ -6902,17 +8183,11 @@ ImportFromClipboard(szConfig="")
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-CopyTarget:
-	CopyTarget()
-return
 CopyTarget(bClipboard=true)
 {
 	local nCh, szTarget:="", szBuf:="", szMsg
-	if (ItemCanCopy("T", Target_Editing) = "Disable") {
-		return
-	}
-	if (Target_Editing)
-	{
+
+	if (Target_Editing && ItemCanCopy("T", Target_Editing)) {
 		nCh := GetChildTargetNum(Target_Editing)
 		Loop, % nCh+1 {
 			Join(szTarget, TargetToIni(Target_Editing+A_Index-1))
@@ -6921,7 +8196,7 @@ CopyTarget(bClipboard=true)
 		if (bClipboard) {
 			Clipboard := szBuf
 			sBuf := RegExMatch(szBuf, "\[(.+?)\]", $)
-			szMsg := RegExReplace(ME_LngTooltip001, "\[#REPLASE#\]", $1)
+			szMsg := RegExReplace(ME_LngTooltip101, MG_ReplaceStr, $1)
 			TrayTip, MouseGestureL, %szMsg%, 1
 			SetTimer, HideTrayTip, -3000
 		}
@@ -6934,19 +8209,16 @@ CopyTarget(bClipboard=true)
 ;														Implemented by lukewarm
 ;														Modified by Pyonkichi
 ;-------------------------------------------------------------------------------
-CopyGesture:
-	CopyGesture()
-return
 CopyGesture(bClipboard=true)
 {
 	local szBuf:="", szMsg
-	if (Gesture_Editing)
-	{
+
+	if (Gesture_Editing) {
 		szBuf := RegExReplace(RegExReplace(GestureToIni(Gesture_Editing),"\t","<MG_TAB>"),"\n","`r`n")
 		if (bClipboard) {
 			Clipboard := szBuf
 			sBuf := RegExMatch(szBuf, "\[(.+?)\]", $)
-			szMsg := RegExReplace(ME_LngTooltip001, "\[#REPLASE#\]", $1)
+			szMsg := RegExReplace(ME_LngTooltip101, MG_ReplaceStr, $1)
 			TrayTip, MouseGestureL, %szMsg%, 1
 			SetTimer, HideTrayTip, -3000
 		}
@@ -6955,339 +8227,72 @@ CopyGesture(bClipboard=true)
 }
 
 ;-------------------------------------------------------------------------------
+; Duplicate target
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+DuplicateTarget()
+{
+	local tidx_s, tidx_d, bDone
+
+	tidx_s := Target_Editing
+	tidx_d := ImportFromClipboard(CopyTarget(false), true)
+	if (tidx_d > tidx_s) {
+		bDone := false
+		Loop, % (tidx_d - tidx_s)
+		{
+			bDone |= DuplicateAssignedGestures(tidx_s++, tidx_d+A_Index-1)
+		}
+		if (bDone) {
+			ShowAssignedGestures(tidx_d, false)
+		}
+	}
+}
+
+;-------------------------------------------------------------------------------
+; Duplicate assigned gestures
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+DuplicateAssignedGestures(tidx_s, tidx_d)
+{
+	local gidx, gtidx, szSrc, szDst, bDone:=false
+
+	szSrc := GetTargetFullName(tidx_s)
+	szDst := GetTargetFullName(tidx_d)
+	Loop, %Gesture_Count%
+	{
+		gidx := A_Index
+		Loop, % Gesture_%gidx%_Count
+		{
+			if (Gesture_%gidx%_%A_Index%_Target == szSrc) {
+				gtidx := ++Gesture_%gidx%_Count
+				Gesture_%gidx%_%gtidx%_Target := szDst
+				Gesture_%gidx%_%gtidx%_Action := ReplaceCR(Gesture_%gidx%_%A_Index%_Action)
+				bDone := true
+				break
+			}
+		}
+	}
+	return bDone
+}
+
+;-------------------------------------------------------------------------------
+; Duplicate gesture
+;														Implemented by Pyonkichi
+;-------------------------------------------------------------------------------
+DuplicateGesture() {
+	ImportFromClipboard(CopyGesture(false))
+}
+
+;-------------------------------------------------------------------------------
 ; Hide Tray Tip
 ;														Implemented by Pyonkichi
 ;-------------------------------------------------------------------------------
-HideTrayTip:
+HideTrayTip() {
 	TrayTip
-return
-
-
-
-;====================================================
-;追加関数・サブルーチン
-;====================================================
-;◆ターゲットが切り替わったときにジェスチャー一覧のリストビューを更新する
-UpdateLVGesture(initialize=0)
-{
-	global
-	Gui, MEW_Main:ListView, LVGesture
-	If (SortLVGesture)					;ジェスチャー一覧をソートする場合
-	{
-		ReloadLVGesture2()
-		If (initialize)					;TVTarget(ターゲット一覧)でターゲットを切り替えた場合
-		{
-			ClearAction(true, true, false)
-			GuiControl, MEW_Main:Disable, BAddAction
-			GuiControl, MEW_Main:Disable, EAction
-			GuiControl, MEW_Main:Disable, BAddActionLine
-			Gui, MEW_Main:ListView, LVAction
-			LV_Delete()
-		}
-		Else							;ジェスチャー一覧の選択をリセットしない場合(LVActionの選択時など）
-		{
-			SelectGesture(Gesture_Editing)
-		}
-	} 
-	Else								;ソートしない場合
-	{
-		ReloadLVGesture()
-	}
-	LVActionSelectFlag := 0
 }
 
-;◆ソート無効時。ジェスチャー列は変更せずにマーク列、アクション列だけ変更する
-ReloadLVGesture(idx=0)
-{
-	local name, ges, hit, gesName, defAct
-	idx := Target_Editing
-	name := MakeTargetFullName(idx, true)
-	Gui,MEW_Main:ListView,LVGesture
-	GuiControl, MEW_Main:-Redraw, LVGesture
-	Loop, %Gesture_Count%
-	{
-		if (MainTabIdx==2 && idx==1) {
-			break
-		}
-		ges := A_Index
-		hit := false
-		defAct := ""
-		Loop, % Gesture_%ges%_Count
-		{
-			if (Gesture_%ges%_%A_Index%_Target = name) 
-			{
-				LV_Modify(ges, "", ges, LV_AssignedMark, , MakeActionSummaryStr(Gesture_%ges%_%A_Index%_Action))
-				If (ChangeLVColor)		;色分け処理
-					CLV.Row(ges, LV_AssignedBColor, LV_AssignedTColor)
-				hit := true
-				break
-			}
-			Else If (Gesture_%ges%_%A_Index%_Target = "Default") && (ShowDefaultAction)
-			{
-				defAct := MakeActionSummaryStr(Gesture_%ges%_%A_Index%_Action)
-			} 
-		}
-		If (!hit)
-		{
-			LV_Modify(ges, "", ges, LV_UnAssignedMark, , defAct)
-			If (ChangeLVColor)		;色分け処理
-				CLV.Row(ges, LV_UnAssignedBColor, LV_UnAssignedTColor)
-		}
-	}
-	GuiControl, MEW_Main:+Redraw, LVGesture
-}
 
-;◆ソート有効時。リストビューをクリアしてから項目を追加していく
-ReloadLVGesture2()
-{
-	local name, ges, hit, gesName, defAct, row
-	idx := Target_Editing
-	name := MakeTargetFullName(idx, true)
-	Gui,MEW_Main:ListView,LVGesture
-	GuiControl, MEW_Main:-Redraw, LVGesture
-	LV_Delete()
-	row := 1
-	Loop, %Gesture_Count%
-	{
-		if (MainTabIdx==2 && idx==1) {
-			break
-		}
-		ges := A_Index
-		hit := false
-		defAct := ""
-		Loop, % Gesture_%ges%_Count
-		{
-			if (Gesture_%ges%_%A_Index%_Target = name)
-			{
-				LV_Insert(row, "", ges, LV_AssignedMark, Gesture_%ges%_Name, MakeActionSummaryStr(Gesture_%ges%_%A_Index%_Action))
-				row++
-				hit := true
-				break
-			}
-			Else If (Gesture_%ges%_%A_Index%_Target = "Default") && (ShowDefaultAction)
-			{
-				defAct := MakeActionSummaryStr(Gesture_%ges%_%A_Index%_Action)
-			} 
-		}
-		If (!hit)
-		{
-			LV_Add("", ges, LV_UnAssignedMark, Gesture_%ges%_Name, defAct)
-		}
-	}
-	If (ChangeLVColor)		;色分け処理
-	{
-		Loop, %Gesture_Count%
-		{
-			If (A_Index < row)
-				CLV.Row(A_Index, LV_AssignedBColor, LV_AssignedTColor)
-			Else
-				CLV.Row(A_Index, LV_UnAssignedBColor, LV_UnAssignedTColor)
-		}
-	}
-	GuiControl, MEW_Main:+Redraw, LVGesture
-}
-
-;◆他のコントロールからLVGestureの項目を選択。引数は基本的にGesture_Editing
-SelectGesture(idx){
-	local RowIdx
-	idx := idx ? idx : Gesture_Editing
-	Gui, MEW_Main:ListView, LVGesture
-	Loop, %Gesture_Count%
-	{
-		LV_GetText(RowIdx, A_Index, 1)
-		If (RowIdx = idx)
-		{
-			LV_Modify(A_Index, "Select Vis")
-			break
-		}
-	}
-}	
-
-;◆リストビュー上のイベント
-OnLVGestureSelect:
-	Gui, MEW_Main:Default
-	Gui, MEW_Main:ListView, LVGesture
-	if (A_GuiEvent= "Normal") || (A_GuiEvent== "K") || (A_GuiEvent=="D")
-	|| (A_GuiEvent=="RightClick") || (A_GuiEvent=="d")
-	{
-		LV_GetText(gesidx, LV_GetNext(), 1)		;選択したジェスチャーのIndexを取得
-		SaveModification()
-		ClearAction(true, false)
-		EnableGestureControls()
-		ShowGesture(gesidx)
-		SelectAssignedAction()
-	}
-	;---------------------------------------------------------------------------
-	; On Right Click
-	If (A_GuiEvent=="RightClick")
-	{
-		SetTimer,ShowLVGestureContextMenu, -1
-	}
-		;コントロールイベントでコンテキストメニューを表示させると
-		;他の行をクリックしたときにイベントが発生しないので、タイマーで表示させる
-		;この後にGui,Defaultを実行しないとリストビュー操作を受け付けないので注意
-	;---------------------------------------------------------------------------
-	; On Double Click
-	else if (A_GuiEvent="DoubleClick")
-	{
-		SwitchTab(MainTabIdx==1 ? 3 : 1)
-	}
-return
-
-ShowLVGestureContextMenu:
-	ShowListContextMenu("G", gesidx)
-return
-
-;◆その他タブ[Mod]のラジオボタン
-RBChangeLVColor:
-	Gui, MEW_Main:Submit, Nohide
-	ShowGestures()
-	If (!ChangeLVColor)
-		CLV.Clear()		;色分けを解除
-	Gosub, AdjustLVColumn
-	Gosub, SaveAdditionalOptions
-return
-
-;◆LVGestureの列幅調整
-AdjustLVColumn:
-	Gui, MEW_Main:ListView, LVGesture
-	If (ChangeLVColor)					;色分けする場合
-	{
-		width := ME_GListW1 - 21		;スクロールバーの幅の分を引く
-		width2 := width * ME_GListR // 100
-		LV_ModifyCol(1, 0)
-		LV_ModifyCol(2, 0)
-		LV_ModifyCol(3, width2)
-		LV_ModifyCol(4, width - width2)
-	}
-	Else
-	{
-		width := ME_GListW1 - 25 - 21	;マークとスクロールバーの幅の分を引く
-		width2 := width * ME_GListR // 100
-		LV_ModifyCol(1, 0)
-		LV_ModifyCol(2, 25)				;マークの列
-		LV_ModifyCol(3, width2)
-		LV_ModifyCol(4, width - width2)
-	}
-return
-
-;◆その他タブ[Mod]のチェックボックス
-CBShowDefaultAction:
-	Gui, MEW_Main:Submit, Nohide
-	ShowGestures()
-	Gosub, SaveAdditionalOptions
-return
-
-;◆ソート切替
-BSortGesturePress:
-	SortLVGesture := !SortLVGesture
-	Gui, MEW_Main:ListView, LVGesture
-	ShowGestures()
-	UpdateLVGesture()
-	ShowGesture(Gesture_Editing)
-	Gosub, SaveAdditionalOptions
-return
-
-;◆表示切替
-BChangeLayoutPress:
-	ChangeLayout(1)
-	Gosub, SaveAdditionalOptions
-return
-
-ChangeLayout(Toggle=0)	;設定起動時にレイアウトだけ更新する場合Toggle=0
-{
-	global ShowLVAction, ME_AListH, ME_AListH, ME_AEditH, ME_ListH
-	If (Toggle)										;ボタンを押した時
-		ShowLVAction := !ShowLVAction
-	Else If (Toggle = 0) && (ShowLVAction = 1)		;LVAction表示設定の場合、MG_Edit起動時に何もしない
-		return
-	GuiControlGet, BasePos , Pos, Label1			;ラベル「ターゲット」を基準位置にする
-	GuiControlGet, LVActionPos , Pos, LVAction		;LVActionを基準位置にする
-	If (ShowLVAction)
-	;LVActionを表示する
-	{
-		;コントロール表示/非表示の切り替え
-		states := "Show"
-		GuiControl, MEW_Main:%states%, Label3
-		GuiControl, MEW_Main:%states%, LVAction
-		GuiControl, MEW_Main:%states%, BActionUp
-		GuiControl, MEW_Main:%states%, BActionDelete
-		GuiControl, MEW_Main:%states%, BActionDown
-		GuiControl, MEW_Main:%states%, DDLActionCategory
-		GuiControl, MEW_Main:%states%, DDLActionTemplate
-		states := "Hide"
-		GuiControl, MEW_Main:%states%, LBActionCategory
-		GuiControl, MEW_Main:%states%, LBActionTemplate
-		;各コントロールの位置変更
-		Label4Y  := LVActionPosY + LVActionPosH + 12
-		ButtonY  := Label4Y - 6
-		EActionY := LVActionPosY + LVActionPosH + 30
-		EActionH := ME_ListH - ME_AListH - 84
-		BClearActionY := EActionY + 26
-		Label5Y  := EActionY + EActionH + 12
-		BAddActionLineY := Label5Y + 22
-		GuiControl, MEW_Main:Move, Label4, Y%Label4Y%
-		GuiControl, MEW_Main:Move, BAddAction, Y%ButtonY%
-		GuiControl, MEW_Main:Move, BUpdateAction, Y%ButtonY%
-		GuiControl, MEW_Main:Move, EAction, Y%EActionY% h%EActionH%
-		GuiControl, MEW_Main:Move, BEditAction, Y%EActionY%
-		GuiControl, MEW_Main:Move, BClearAction, Y%BClearActionY%
-		GuiControl, MEW_Main:Move, Label5, Y%Label5Y%
-		GuiControl, MEW_Main:Move, BAddActionLine, Label5, Y%BAddActionLineY%
-	}
-	Else
-	;LVActionを非表示にし、アクションスクリプトを上に詰める
-	{
-		;コントロール表示/非表示の切り替え
-		states := "Hide"
-		GuiControl, MEW_Main:%states%, Label3
-		GuiControl, MEW_Main:%states%, LVAction
-		GuiControl, MEW_Main:%states%, BActionUp
-		GuiControl, MEW_Main:%states%, BActionDelete
-		GuiControl, MEW_Main:%states%, BActionDown
-		GuiControl, MEW_Main:%states%, DDLActionCategory
-		GuiControl, MEW_Main:%states%, DDLActionTemplate
-		states := "Show"
-		GuiControl, MEW_Main:%states%, LBActionCategory
-		GuiControl, MEW_Main:%states%, LBActionTemplate
-		;各コントロールの位置変更
-		Label4Y  := BasePosY
-		ButtonY  := Label4Y - 6
-		EActionY := Label4Y + 18
-		EActionH := ME_AEditH
-		BClearActionY := EActionY + 26
-		Label5Y  := EActionY + EActionH + 20
-		BAddActionLineY := Label5Y - 7
-		GuiControl, MEW_Main:Move, Label4, Y%Label4Y%
-		GuiControl, MEW_Main:Move, BAddAction, Y%ButtonY%
-		GuiControl, MEW_Main:Move, BUpdateAction, Y%ButtonY%
-		GuiControl, MEW_Main:Move, EAction, Y%EActionY% h%EActionH%
-		GuiControl, MEW_Main:Move, BEditAction, Y%EActionY%
-		GuiControl, MEW_Main:Move, BClearAction, Y%BClearActionY%
-		GuiControl, MEW_Main:Move, Label5, Y%Label5Y%
-		GuiControl, MEW_Main:Move, BAddActionLine, Label5, Y%BAddActionLineY%
-	}
-}
-
-;◆追加設定の読み込み・保存
-ReadAdditionalOptions:
-	IniRead, ShowLVAction, %A_ScriptDir%\Config\MG_Mod.ini, Mod_Settings, ShowLVAction, 1
-	IniRead, SortLVGesture, %A_ScriptDir%\Config\MG_Mod.ini, Mod_Settings, SortLVGesture, 0
-	IniRead, ChangeLVColor, %A_ScriptDir%\Config\MG_Mod.ini, Mod_Settings, ChangeLVColor, 0
-	IniRead, ShowDefaultAction, %A_ScriptDir%\Config\MG_Mod.ini, Mod_Settings, ShowDefaultAction, 0
-return
-
-SaveAdditionalOptions:
-	FileDelete, %A_ScriptDir%\Config\MG_Mod.ini
-	IniWrite, %ShowLVAction%, %A_ScriptDir%\Config\MG_Mod.ini, Mod_Settings, ShowLVAction
-	IniWrite, %SortLVGesture%, %A_ScriptDir%\Config\MG_Mod.ini, Mod_Settings, SortLVGesture
-	IniWrite, %ChangeLVColor%, %A_ScriptDir%\Config\MG_Mod.ini, Mod_Settings, ChangeLVColor
-	IniWrite, %ShowDefaultAction%, %A_ScriptDir%\Config\MG_Mod.ini, Mod_Settings, ShowDefaultAction
-return
-
-;=======================================================
 
 #NoEnv
 #Singleinstance force
 ;#NoTrayIcon
-

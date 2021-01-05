@@ -114,6 +114,41 @@ vk1C::Send, {vk1C}
 #If, toggle == "f"
 ; GUI
 #If, toggle == "g"
+  ; 4:DeepL
+  d::
+    ; 多重起動防止
+    If (WinExist("ahk_class AutoHotkeyGUI")) {
+      Return
+    }
+    stash := ClipboardAll
+    Clipboard :=
+    Send, ^c
+    ClipWait, 0.05
+    clip := Clipboard
+    Clipboard := stash
+    clip := rm_crlf(clip)
+    Gui, Add, Text, , 日本語→英語
+    Gui, Add, Text, , (Shift)英語→日本語
+    Gui, Add, Edit, v_str_deepl w380, %clip%
+    Gui, Add, Button, Default, Translate
+    Gui, Show, Center w400, DeepL
+    Send, {vkF2}
+    clip := ""
+    Return
+    ButtonTranslate:
+      Gui, Submit
+      ; Shift押下時はja->en
+      If GetKeyState("Shift", "P") {
+        Run, https://www.deepl.com/translator#ja/en/%_str_deepl%
+      ; 直打ちならばen->ja
+      } Else {
+        Run, https://www.deepl.com/translator#en/ja/%_str_deepl%
+      }
+    4GuiEscape:
+    4GuiClose:
+      Gui, Destroy
+  Return
+
   ; 3:新しいブランクファイルを作成
   f::
     ; エクスプローラがアクティブでなければ中断
@@ -142,7 +177,7 @@ vk1C::Send, {vk1C}
     ; (「課題」参照)
     Gosub, toggle_deactivation
     ; 多重起動防止
-    If (WinExist("google.ahk")) {
+    If (WinExist("ahk_class AutoHotkeyGUI")) {
       Return
     }
     stash := ClipboardAll
@@ -154,7 +189,7 @@ vk1C::Send, {vk1C}
     clip := rm_crlf(clip)
     Gui, Add, Edit, v_str_google w380, %clip%
     Gui, Add, Button, Default, Search
-    Gui, Show, Center w400, google.ahk
+    Gui, Show, Center w400, Google
     Send, {vkF2}
     clip := ""
     Return
@@ -169,7 +204,7 @@ vk1C::Send, {vk1C}
   ; def:launcher
   l::
     ; 多重起動防止
-    If (WinExist("Launcher")) {
+    If (WinExist("ahk_class AutoHotkeyGUI")) {
       Return
     }
     launcher_head:

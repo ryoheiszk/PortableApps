@@ -1,14 +1,17 @@
-﻿MG_IniFileVersion=1.30
+﻿MG_IniFileVersion=1.38
 MG_8Dir=0
 MG_ActiveAsTarget=0
 MG_Interval=20
+MG_AlwaysHook=0
+MG_PrvntCtxtMenu=0
 MG_Threshold=20
 MG_LongThresholdX=9999
 MG_LongThresholdY=9999
 MG_LongThreshold=700
 MG_TimeoutThreshold=2
-MG_Timeout=150
+MG_Timeout=180
 MG_DGInterval=0
+MG_TmReleaseTrigger=3
 MG_ORangeDefault=3
 MG_ORangeA=3
 MG_ORangeB=3
@@ -35,14 +38,14 @@ MG_AdNaviFG=FFFFFF
 MG_AdNaviNI=7F7F7F
 MG_AdNaviBG=000000
 MG_AdNaviTranspcy=220
-MG_AdNaviSize=12
-MG_AdNaviFont=Meiryo
+MG_AdNaviSize=11
+MG_AdNaviFont=メイリオ
 MG_AdNaviPosition=0
 MG_AdNaviPaddingL=6
 MG_AdNaviPaddingR=6
 MG_AdNaviPaddingT=3
 MG_AdNaviPaddingB=3
-MG_AdNaviRound=1
+MG_AdNaviRound=2
 MG_AdNaviMargin=14
 MG_AdNaviSpaceX=2
 MG_AdNaviSpaceY=2
@@ -66,31 +69,39 @@ MG_LogBG=000000
 MG_LogTranspcy=100
 MG_LogFontSize=10
 MG_LogFont=MS UI Gothic
+MG_EditCommand=
 MG_HotkeyEnable=
 MG_HotkeyNavi=
+MG_HotkeyReload=
 MG_ScriptEditor=C:\tools\vscode\Code.exe
-MG_UserName=
-MG_Password=
 MG_TraySubmenu=0
 MG_AdjustDlg=0
 MG_DlgHeightLimit=800
-MG_EditCommand=
 MG_FoldTarget=0
+MG_DisableWarning=0
+MG_ActvtExclud := []
 MG_MaxLength=10
 MG_Triggers=RB_MB
 MG_SubTriggers=LB_WU_WD
 
 
-Goto,MG_RB_End
+Goto, MG_RB_End
 
 MG_RB_Enable:
-	Hotkey,*RButton,MG_RB_DownHotkey,On
-	Hotkey,*RButton up,MG_RB_UpHotkey,On
+	if (!MG_AlwaysHook) {
+		MG_RB_HookEnabled := Func("MG_IsHookEnabled_RB")
+		Hotkey, If, % MG_RB_HookEnabled
+	}
+	Hotkey, *RButton, MG_RB_DownHotkey, On
+	Hotkey, *RButton up, MG_RB_UpHotkey, On
+	Hotkey, If
+	MG_RB_Enabled := 1
 return
 
 MG_RB_Disable:
-	Hotkey,*RButton,MG_RB_DownHotkey,Off
-	Hotkey,*RButton up,MG_RB_UpHotkey,Off
+	Hotkey, *RButton, MG_RB_DownHotkey, Off
+	Hotkey, *RButton up, MG_RB_UpHotkey, Off
+	MG_RB_Enabled := 0
 return
 
 MG_RB_DownHotkey:
@@ -102,41 +113,37 @@ MG_RB_UpHotkey:
 return
 
 MG_RB_Down:
-	SetMouseDelay,-1
-	Send,{Blind}{RButton Down}
+	MG_SendButton("RB", "RButton", "Down")
 return
 
 MG_RB_Up:
-	SetMouseDelay,-1
-	Send,{Blind}{RButton Up}
+	MG_SendButton("RB", "RButton", "Up")
 return
 
 MG_RB_Check:
-	if (!GetKeyState("RButton", "P")) {
-		MG_UnpressCntRB++
-		if (MG_UnpressCntRB > 3) {
-			MG_TriggerUp("RB")
-			SetMouseDelay,-1
-			Send,{Blind}{RButton}
-		}
-	} else {
-		MG_UnpressCntRB := 0
-	}
+	MG_CheckButton("RB", "RButton")
 return
 
 MG_RB_End:
 
 
-Goto,MG_MB_End
+Goto, MG_MB_End
 
 MG_MB_Enable:
-	Hotkey,*MButton,MG_MB_DownHotkey,On
-	Hotkey,*MButton up,MG_MB_UpHotkey,On
+	if (!MG_AlwaysHook) {
+		MG_MB_HookEnabled := Func("MG_IsHookEnabled_MB")
+		Hotkey, If, % MG_MB_HookEnabled
+	}
+	Hotkey, *MButton, MG_MB_DownHotkey, On
+	Hotkey, *MButton up, MG_MB_UpHotkey, On
+	Hotkey, If
+	MG_MB_Enabled := 1
 return
 
 MG_MB_Disable:
-	Hotkey,*MButton,MG_MB_DownHotkey,Off
-	Hotkey,*MButton up,MG_MB_UpHotkey,Off
+	Hotkey, *MButton, MG_MB_DownHotkey, Off
+	Hotkey, *MButton up, MG_MB_UpHotkey, Off
+	MG_MB_Enabled := 0
 return
 
 MG_MB_DownHotkey:
@@ -149,44 +156,40 @@ return
 
 MG_MB_Down:
 	if (!MG_DisableDefMB) {
-		SetMouseDelay,-1
-		Send,{Blind}{MButton Down}
+		MG_SendButton("MB", "MButton", "Down")
 	}
 return
 
 MG_MB_Up:
 	if (!MG_DisableDefMB) {
-		SetMouseDelay,-1
-		Send,{Blind}{MButton Up}
+		MG_SendButton("MB", "MButton", "Up")
 	}
 return
 
 MG_MB_Check:
-	if (!GetKeyState("MButton", "P")) {
-		MG_UnpressCntMB++
-		if (MG_UnpressCntMB > 3) {
-			MG_TriggerUp("MB")
-			SetMouseDelay,-1
-			Send,{Blind}{MButton}
-		}
-	} else {
-		MG_UnpressCntMB := 0
-	}
+	MG_CheckButton("MB", "MButton")
 return
 
 MG_MB_End:
 
 
-Goto,MG_LB_End
+Goto, MG_LB_End
 
 MG_LB_Enable:
-	Hotkey,*LButton,MG_LB_DownHotkey,On
-	Hotkey,*LButton up,MG_LB_UpHotkey,On
+	if (!MG_AlwaysHook) {
+		MG_LB_HookEnabled := Func("MG_IsHookEnabled_LB")
+		Hotkey, If, % MG_LB_HookEnabled
+	}
+	Hotkey, *LButton, MG_LB_DownHotkey, On
+	Hotkey, *LButton up, MG_LB_UpHotkey, On
+	Hotkey, If
+	MG_LB_Enabled := 1
 return
 
 MG_LB_Disable:
-	Hotkey,*LButton,MG_LB_DownHotkey,Off
-	Hotkey,*LButton up,MG_LB_UpHotkey,Off
+	Hotkey, *LButton, MG_LB_DownHotkey, Off
+	Hotkey, *LButton up, MG_LB_UpHotkey, Off
+	MG_LB_Enabled := 0
 return
 
 MG_LB_DownHotkey:
@@ -198,39 +201,35 @@ MG_LB_UpHotkey:
 return
 
 MG_LB_Down:
-	SetMouseDelay,-1
-	Send,{Blind}{LButton Down}
+	MG_SendButton("LB", "LButton", "Down")
 return
 
 MG_LB_Up:
-	SetMouseDelay,-1
-	Send,{Blind}{LButton Up}
+	MG_SendButton("LB", "LButton", "Up")
 return
 
 MG_LB_Check:
-	if (!GetKeyState("LButton", "P")) {
-		MG_UnpressCntLB++
-		if (MG_UnpressCntLB > 3) {
-			MG_TriggerUp("LB")
-			SetMouseDelay,-1
-			Send,{Blind}{LButton}
-		}
-	} else {
-		MG_UnpressCntLB := 0
-	}
+	MG_CheckButton("LB", "LButton")
 return
 
 MG_LB_End:
 
 
-Goto,MG_WU_End
+Goto, MG_WU_End
 
 MG_WU_Enable:
-	Hotkey,*WheelUp,MG_WU_Hotkey,On
+	if (!MG_AlwaysHook) {
+		MG_WU_HookEnabled := Func("MG_IsHookEnabled_WU")
+		Hotkey, If, % MG_WU_HookEnabled
+	}
+	Hotkey, *WheelUp, MG_WU_Hotkey, On
+	Hotkey, If
+	MG_WU_Enabled := 1
 return
 
 MG_WU_Disable:
-	Hotkey,*WheelUp,MG_WU_Hotkey,Off
+	Hotkey, *WheelUp, MG_WU_Hotkey, Off
+	MG_WU_Enabled := 0
 return
 
 MG_WU_Hotkey:
@@ -238,21 +237,27 @@ MG_WU_Hotkey:
 return
 
 MG_WU_Press:
-	SetMouseDelay,-1
-	Send,{Blind}{WheelUp}
+	MG_SendButton("WU", "WheelUp")
 return
 
 MG_WU_End:
 
 
-Goto,MG_WD_End
+Goto, MG_WD_End
 
 MG_WD_Enable:
-	Hotkey,*WheelDown,MG_WD_Hotkey,On
+	if (!MG_AlwaysHook) {
+		MG_WD_HookEnabled := Func("MG_IsHookEnabled_WD")
+		Hotkey, If, % MG_WD_HookEnabled
+	}
+	Hotkey, *WheelDown, MG_WD_Hotkey, On
+	Hotkey, If
+	MG_WD_Enabled := 1
 return
 
 MG_WD_Disable:
-	Hotkey,*WheelDown,MG_WD_Hotkey,Off
+	Hotkey, *WheelDown, MG_WD_Hotkey, Off
+	MG_WD_Enabled := 0
 return
 
 MG_WD_Hotkey:
@@ -260,77 +265,76 @@ MG_WD_Hotkey:
 return
 
 MG_WD_Press:
-	SetMouseDelay,-1
-	Send,{Blind}{WheelDown}
+	MG_SendButton("WD", "WheelDown")
 return
 
 MG_WD_End:
 
 
-Goto,MG_Config_End
+Goto, MG_Config_End
 
 
-MG_IsDisable(){
+MG_IsDisable() {
 	global
 	return ((MG_WClass="Chrome_WidgetWin_2") || (MG_WClass="GHOST_WindowClass"))
 }
 
-MG_IsTarget1(){
-	global
-	return ((MG_WClass="CabinetWClass") || (MG_WClass="ExploreWClass") || (MG_WClass="Progman") || (MG_WClass="WorkerW"))
-}
-
-MG_IsTarget2(){
-	global
-	return (MG_IsTarget1() && ((MG_WClass="WorkerW")))
-}
-
-MG_IsTarget3(){
-	global
-	return (MG_IsTarget1() && ((MG_TreeListHitTest())))
-}
-
-MG_IsTarget4(){
+MG_IsTarget1() {
 	global
 	return ((MG_Exe="iexplore.exe") || (MG_Exe="chrome.exe") || (MG_Exe="firefox.exe") || (MG_Exe="Biscuit.exe"))
 }
 
-MG_IsTarget5(){
+MG_IsTarget2() {
+	global
+	return ((MG_WClass="CabinetWClass") || (MG_WClass="ExploreWClass") || (MG_WClass="Progman") || (MG_WClass="WorkerW"))
+}
+
+MG_IsTarget3() {
+	global
+	return (MG_IsTarget2() && ((MG_WClass="WorkerW")))
+}
+
+MG_IsTarget4() {
+	global
+	return (MG_IsTarget2() && ((MG_TreeListHitTest())))
+}
+
+MG_IsTarget5() {
 	global
 	return (1)
 }
 
-MG_IsTarget6(){
+MG_IsTarget6() {
 	global
 	return (MG_IsTarget5() && ((MG_Exe="Code.exe")))
 }
 
-MG_IsTarget7(){
+MG_IsTarget7() {
 	global
 	return (MG_IsTarget5() && ((MG_Exe="EXCEL.EXE")))
 }
 
-MG_IsTarget8(){
+MG_IsTarget8() {
 	global
 	return (MG_IsTarget5() && ((MG_WClass="gdkWindowToplevel")))
 }
 
-MG_IsTarget9(){
+MG_IsTarget9() {
 	global
 	return (MG_IsTarget5() && ((MG_WClass="AviUtl")))
 }
 
-MG_IsTarget10(){
+MG_IsTarget10() {
 	global
 	return (MG_IsTarget5() && ((MG_WClass="PPTFrameClass")))
 }
 
-MG_IsTarget11(){
+MG_IsTarget11() {
 	global
 	return (MG_IsTarget5() && ((MG_WClass="CatMemoNoteMainFrame")))
 }
 
-MG_IsTarget12(){
+MG_IsTarget12() {
 	global
 	return (MG_IsTarget5() && ((MG_Exe="ONENOTE.EXE")))
 }
@@ -357,42 +361,42 @@ MG_GetAction_MB_WD_:
 return
 
 MG_Gesture_RB_U_:
-	if(MG_IsTarget9()){
+	if (MG_IsTarget9()) {
 		;中間点を追加
 		
 		Send, p
 	}else{
 		;上スクロール
 		
-		Send, {Blind}{PgUp}{PgUp}
+		Send, {Blind}{PgUp}{PgUp} 
 	}
 return
 
 MG_GetAction_RB_U_:
-	if(MG_IsTarget9()){
+	if (MG_IsTarget9()) {
 		MG_ActionStr := "中間点を追加"
 	}else{
-		MG_ActionStr := "上スクロール"
+		MG_ActionStr := "上スクロール" 
 	}
 return
 
 MG_Gesture_RB_D_:
-	if(MG_IsTarget9()){
+	if (MG_IsTarget9()) {
 		;分割
 		
 		Send, s
 	}else{
 		;下スクロール
 		
-		Send, {Blind}{PgDn}{PgDn}
+		Send, {Blind}{PgDn}{PgDn} 
 	}
 return
 
 MG_GetAction_RB_D_:
-	if(MG_IsTarget9()){
+	if (MG_IsTarget9()) {
 		MG_ActionStr := "分割"
 	}else{
-		MG_ActionStr := "下スクロール"
+		MG_ActionStr := "下スクロール" 
 	}
 return
 
@@ -417,120 +421,120 @@ MG_GetAction_RB_RD_:
 return
 
 MG_Gesture_RB_L_:
-	if(MG_IsTarget8()){
+	if (MG_IsTarget8()) {
 		;アンドゥ
 		
 		Send, ^z
-	}else if(MG_IsTarget9()){
+	} else if (MG_IsTarget9()) {
 		;アンドゥ
 		
 		Send, ^z
 	}else{
 		;戻る
 		
-		Send, !{Left}
+		Send, !{Left} 
 	}
 return
 
 MG_GetAction_RB_L_:
-	if(MG_IsTarget8()){
+	if (MG_IsTarget8()) {
 		MG_ActionStr := "アンドゥ"
-	}else if(MG_IsTarget9()){
+	} else if (MG_IsTarget9()) {
 		MG_ActionStr := "アンドゥ"
 	}else{
-		MG_ActionStr := "戻る"
+		MG_ActionStr := "戻る" 
 	}
 return
 
 MG_Gesture_RB_R_:
-	if(MG_IsTarget8()){
+	if (MG_IsTarget8()) {
 		;リドゥ
 		
 		Send, ^y
 	}else{
 		;進む
 		
-		Send, !{Right}
+		Send, !{Right} 
 	}
 return
 
 MG_GetAction_RB_R_:
-	if(MG_IsTarget8()){
+	if (MG_IsTarget8()) {
 		MG_ActionStr := "リドゥ"
 	}else{
-		MG_ActionStr := "進む"
+		MG_ActionStr := "進む" 
 	}
 return
 
 MG_Gesture_RB_UD_:
-	if(MG_IsTarget12()){
+	if (MG_IsTarget12()) {
 		;更新
 		
 		Send, +{F9}
 	}else{
 		;更新
 		
-		Send, {F5}
+		Send, {F5} 
 	}
 return
 
 MG_GetAction_RB_UD_:
-	if(MG_IsTarget12()){
+	if (MG_IsTarget12()) {
 		MG_ActionStr := "更新"
 	}else{
-		MG_ActionStr := "更新"
+		MG_ActionStr := "更新" 
 	}
 return
 
 MG_Gesture_RB_UR_:
-	if(MG_IsTarget12()){
+	if (MG_IsTarget12()) {
 		;下のページ
 		
 		Send, ^{PgDn}
-	}else if(MG_IsTarget11()){
+	} else if (MG_IsTarget11()) {
 		;右のタブ
 		
 		Send, ^!+{Right}
 	}else{
 		;次のタブ
 		
-		Send, ^{Tab}
+		Send, ^{Tab} 
 	}
 return
 
 MG_GetAction_RB_UR_:
-	if(MG_IsTarget12()){
+	if (MG_IsTarget12()) {
 		MG_ActionStr := "下のページ"
-	}else if(MG_IsTarget11()){
+	} else if (MG_IsTarget11()) {
 		MG_ActionStr := "右のタブ"
 	}else{
-		MG_ActionStr := "次のタブ"
+		MG_ActionStr := "次のタブ" 
 	}
 return
 
 MG_Gesture_RB_UL_:
-	if(MG_IsTarget12()){
+	if (MG_IsTarget12()) {
 		;上のページ
 		
 		Send, ^{PgUp}
-	}else if(MG_IsTarget11()){
+	} else if (MG_IsTarget11()) {
 		;左のタブ
 		
 		Send, ^!+{Left}
 	}else{
 		;前のタブ
 		
-		Send, ^+{Tab}
+		Send, ^+{Tab} 
 	}
 return
 
 MG_GetAction_RB_UL_:
-	if(MG_IsTarget12()){
+	if (MG_IsTarget12()) {
 		MG_ActionStr := "上のページ"
-	}else if(MG_IsTarget11()){
+	} else if (MG_IsTarget11()) {
 		MG_ActionStr := "左のタブ"
 	}else{
-		MG_ActionStr := "前のタブ"
+		MG_ActionStr := "前のタブ" 
 	}
 return
 
@@ -545,69 +549,72 @@ MG_GetAction_RB_DL_:
 return
 
 MG_Gesture_RB_DR_:
-	if(MG_IsTarget4()){
+	if (MG_IsTarget1()) {
 		;タブを閉じる
 		
 		Send, ^w
-	}else if(MG_IsTarget6()){
+	} else if (MG_IsTarget6()) {
 		;タブを閉じる
 		
 		Send, ^w
-	}else if(MG_IsTarget11()){
+	} else if (MG_IsTarget11()) {
 		;Ctrl+W
+		
 		Send, ^w
 	}else{
 		;タブ・ウィンドウを閉じる
 		
-		Send, !{F4}
+		Send, !{F4} 
 	}
 return
 
 MG_GetAction_RB_DR_:
-	if(MG_IsTarget4()){
+	if (MG_IsTarget1()) {
 		MG_ActionStr := "タブを閉じる"
-	}else if(MG_IsTarget6()){
+	} else if (MG_IsTarget6()) {
 		MG_ActionStr := "タブを閉じる"
-	}else if(MG_IsTarget11()){
+	} else if (MG_IsTarget11()) {
 		MG_ActionStr := "Ctrl+W"
 	}else{
-		MG_ActionStr := "タブ・ウィンドウを閉じる"
+		MG_ActionStr := "タブ・ウィンドウを閉じる" 
 	}
 return
 
 MG_Gesture_MB_DR_:
-	if(MG_IsTarget4()){
+	if (MG_IsTarget1()) {
 		;タブを閉じる
 		
 		Send, ^w
-	}else if(MG_IsTarget6()){
+	} else if (MG_IsTarget6()) {
 		;タブを閉じる
 		
 		Send, ^w
-	}else if(MG_IsTarget11()){
+	} else if (MG_IsTarget11()) {
 		;Ctrl+W
+		
 		Send, ^w
 	}else{
 		;タブ・ウィンドウを閉じる
 		
-		Send, !{F4}
+		Send, !{F4} 
 	}
 return
 
 MG_GetAction_MB_DR_:
-	if(MG_IsTarget4()){
+	if (MG_IsTarget1()) {
 		MG_ActionStr := "タブを閉じる"
-	}else if(MG_IsTarget6()){
+	} else if (MG_IsTarget6()) {
 		MG_ActionStr := "タブを閉じる"
-	}else if(MG_IsTarget11()){
+	} else if (MG_IsTarget11()) {
 		MG_ActionStr := "Ctrl+W"
 	}else{
-		MG_ActionStr := "タブ・ウィンドウを閉じる"
+		MG_ActionStr := "タブ・ウィンドウを閉じる" 
 	}
 return
 
 MG_Gesture_RB_UDR_:
 	;ウィンドウを閉じる
+	
 	Send, !{F4}
 return
 
@@ -616,47 +623,48 @@ MG_GetAction_RB_UDR_:
 return
 
 MG_Gesture_RB_LU_:
-	if(MG_IsTarget4()){
+	if (MG_IsTarget1()) {
 		;Ctrl+L
 		
 		Send, ^l
-	}else if(MG_IsTarget12()){
-		; ウィンドウを複製
+	} else if (MG_IsTarget12()) {
+		;ウィンドウを複製
+		
 		Send, ^m
 	}else{
 		;ウィンドウを複製
 		
-		Send, ^n
+		Send, ^n 
 	}
 return
 
 MG_GetAction_RB_LU_:
-	if(MG_IsTarget4()){
+	if (MG_IsTarget1()) {
 		MG_ActionStr := "Ctrl+L"
-	}else if(MG_IsTarget12()){
-		MG_ActionStr := " ウィンドウを複製"
-	}else{
+	} else if (MG_IsTarget12()) {
 		MG_ActionStr := "ウィンドウを複製"
+	}else{
+		MG_ActionStr := "ウィンドウを複製" 
 	}
 return
 
 MG_Gesture_RB_LD_:
-	if(MG_IsTarget4()){
+	if (MG_IsTarget1()) {
 		;ページ内検索
 		
 		Send, ^f
 	}else{
 		;新規フォルダ作成
 		
-		Send, ^+N
+		Send, ^+N 
 	}
 return
 
 MG_GetAction_RB_LD_:
-	if(MG_IsTarget4()){
+	if (MG_IsTarget1()) {
 		MG_ActionStr := "ページ内検索"
 	}else{
-		MG_ActionStr := "新規フォルダ作成"
+		MG_ActionStr := "新規フォルダ作成" 
 	}
 return
 
@@ -842,45 +850,46 @@ MG_GetAction_RB_LDR_:
 return
 
 MG_Gesture_RB_RUL_:
-	if(MG_IsTarget9()){
+	if (MG_IsTarget9()) {
 		;複製
+		
 		Send, ^d
 	}else{
-		MG_Cancel()
+		MG_Cancel() 
 	}
 return
 
 MG_GetAction_RB_RUL_:
-	if(MG_IsTarget9()){
+	if (MG_IsTarget9()) {
 		MG_ActionStr := "複製"
 	}else{
-		MG_ActionStr := ""
+		MG_ActionStr := "" 
 	}
 return
 
 MG_Gesture_RB_RLD_:
-	if(MG_IsTarget10()){
+	if (MG_IsTarget10()) {
 		;新しいスライド
 		
 		Send, ^m
-	}else if(MG_IsTarget12()){
+	} else if (MG_IsTarget12()) {
 		;OneNoteテキストモード
 		
 		Send, {Alt}dt
 	}else{
 		;新しいタブ
 		
-		Send, ^t
+		Send, ^t 
 	}
 return
 
 MG_GetAction_RB_RLD_:
-	if(MG_IsTarget10()){
+	if (MG_IsTarget10()) {
 		MG_ActionStr := "新しいスライド"
-	}else if(MG_IsTarget12()){
+	} else if (MG_IsTarget12()) {
 		MG_ActionStr := "OneNoteテキストモード"
 	}else{
-		MG_ActionStr := "新しいタブ"
+		MG_ActionStr := "新しいタブ" 
 	}
 return
 
@@ -919,8 +928,8 @@ return
 
 MG_Gesture_RB_WU_:
 	;←
-	Send, {Blind}{Left}
 	
+	Send, {Blind}{Left}
 	If (WinActive("Netflix")) {
 		Send, {Space 2}
 	}
@@ -932,8 +941,8 @@ return
 
 MG_Gesture_RB_WD_:
 	;→
-	Send, {Blind}{Right}
 	
+	Send, {Blind}{Right}
 	If (WinActive("Netflix")) {
 		Send, {Space 2}
 	}
@@ -947,48 +956,34 @@ return
 MG_Gesture_RB_RDLD:
 	;音量変更
 	
-	step := 2
+	step_vol := 2
 	
 	MG_StopNavi()
-	Hotkey, WheelUp, nPlus_vol, Off
-	Hotkey, WheelDown, nMinus_vol, Off
-	Hotkey, WheelUp, On
-	Hotkey, WheelDown, On
 	Sleep, 500
 	KeyWait, RButton, Up
 	SetTimer, RemoveToolTip, -500
-	n = 
-	vol =
-	Hotkey, WheelUp, Off
-	Hotkey, WheelDown, Off
+	n := ""
+	vol := ""
+	step_vol := ""
 	Return
 	
-	nPlus_vol:
-		n := 0
-		n += %step%
-		myTempFunction_Vol(n) 
-	Return
-	nMinus_vol:
-		n := 0
-		n -= %step%
-		myTempFunction_Vol(n) 
-	Return
 	
-	myTempFunction_Vol(n)
-	{
-		SoundGet, vol
-		Setformat, Float, 1.0	
-		vol += n	;まずボリューム変更
-		If (vol < 0)
-		{
-			vol := 0
+	#If, step_vol!=""
+		WheelUp::volume_change(step_vol)
+		WheelDown::volume_change(-step_vol)
+	#If
+	
+	volume_change(step) {
+		SoundGet, vol_now
+		Setformat, Float, 1.0
+		vol_now += step
+		If (vol_now < 0) {
+			vol_now := 0
+		} Else If (vol_now > 100) {
+			vol_now := 100
 		}
-		If (vol > 100)
-		{
-			vol := 100
-		}
-		SoundSet, vol
-		ToolTip, 音量  :  %vol%
+		SoundSet, vol_now
+		ToolTip, 音量  :  %vol_now%
 		Return
 	}
 return
@@ -1002,7 +997,6 @@ MG_Gesture_RB_UDLR_:
 	;(AudioSwitcher)
 	
 	Send, ^+{F8}
-	
 	myToolTipFunction("Ctrl+Shift+F8", 750)
 return
 
@@ -1015,7 +1009,6 @@ MG_Gesture_RB_UDLD_:
 	;(AudioSwitcher)
 	
 	Send, ^+{F7}
-	
 	myToolTipFunction("Ctrl+Shift+F7", 750)
 return
 
@@ -1074,13 +1067,13 @@ MG_GetAction_MB_RLRLR_:
 	MG_ActionStr := "Win + 5"
 return
 
-MG_Gesture_MB_L_:
+MG_Gesture_MB_L__:
 	;Win + 6
 	
 	Send, #{6}
 return
 
-MG_GetAction_MB_L_:
+MG_GetAction_MB_L__:
 	MG_ActionStr := "Win + 6"
 return
 
@@ -1126,7 +1119,7 @@ return
 
 
 MG_Gesture_RB_DRD_:
-	if(MG_IsTarget11()){
+	if (MG_IsTarget11()) {
 		;非表示モード切り替え
 		
 		Send, ^!h
@@ -1134,15 +1127,15 @@ MG_Gesture_RB_DRD_:
 		;CatMemoNote表示
 		
 		Send, ^+!m
-		
+		 
 	}
 return
 
 MG_GetAction_RB_DRD_:
-	if(MG_IsTarget11()){
+	if (MG_IsTarget11()) {
 		MG_ActionStr := "非表示モード切り替え"
 	}else{
-		MG_ActionStr := "CatMemoNote表示"
+		MG_ActionStr := "CatMemoNote表示" 
 	}
 return
 
@@ -1157,20 +1150,20 @@ MG_GetAction_RB_LDRUD_:
 return
 
 MG_Gesture_RB_URDL_:
-	if(MG_IsTarget12()){
+	if (MG_IsTarget12()) {
 		;OneNoteペンモード
 		
 		Send, {Alt}dp{Right 5}{Enter}
 	}else{
-		MG_Cancel()
+		MG_Cancel() 
 	}
 return
 
 MG_GetAction_RB_URDL_:
-	if(MG_IsTarget12()){
+	if (MG_IsTarget12()) {
 		MG_ActionStr := "OneNoteペンモード"
 	}else{
-		MG_ActionStr := ""
+		MG_ActionStr := "" 
 	}
 return
 
@@ -1178,8 +1171,7 @@ MG_Gesture_RB_RULD_:
 	;OneNote 画面の領域
 	
 	Target := "ahk_exe ONENOTE.EXE"
-	If (WinExist(ahk_exe ONENOTE.EXE))
-	{
+	If (WinExist(Target)) {
 		WinActivate, %Target%
 		Send, {Alt}nr
 	}
@@ -1210,18 +1202,11 @@ MG_GetAction_RB_LDLD_:
 return
 
 MG_Gesture_RB_LDRDL_:
-	;選択文字列でGoogle検索
 	
-	ClipSaved := ClipboardAll
-	Send, ^c
-	ClipWait, 2
-	Run,https://www.google.co.jp/search?q=%Clipboard%
-	Clipboard := ClipSaved
-	ClipSaved =
 return
 
 MG_GetAction_RB_LDRDL_:
-	MG_ActionStr := "選択文字列でGoogle検索"
+	
 return
 
 MG_Gesture_MB_UD_:
@@ -1267,7 +1252,7 @@ return
 MG_Gesture_RB_RDLDR_:
 	;自動ログイン(Ctrl+Alt+Space)
 	
-	Send, {vkF2}{vkF3} ;英字入力モードにする
+	Send, {vkF2}{vkF3}
 	Send, ^!{Space}
 return
 
@@ -1352,39 +1337,30 @@ MG_GetAction_RB_DUL_:
 return
 
 MG_Gesture_MB_DU_:
-	;隣のモニタにカーソル移動
-	
-	MouseGetPos, oldMouseX, oldMouseY
-	MouseMove, (oldMouseX < 0 ? A_ScreenWidth : -A_ScreenWidth), 0, 0, R
 	
 return
 
 MG_GetAction_MB_DU_:
-	MG_ActionStr := "隣のモニタにカーソル移動"
+	
 return
 
 MG_Gesture_RB_RDLU:
-	;BlockInput
 	
-	BlockInput, MouseMove
-	KeyWait, RButton, U
-	BlockInput, MouseMoveOff
 return
 
 MG_GetAction_RB_RDLU:
-	MG_ActionStr := "BlockInput"
+	
 return
-
 
 MG_Gesture_RB_:
 	;アクティブ化処理
-	
 	;指定サイズ未満でアクティブ化しない
+	
 	minWidth := 500
 	minHeight := 200
+	
 	WinGetPos, , , width, height, A
-	If ((width > minWidth) OR (height > minHeight))
-	{
+	If ((width>minWidth) || (height>minHeight)) {
 		MouseGetPos, , , underMouseID1
 		WinActivate, ahk_id %underMouseID1%
 	}
@@ -1403,6 +1379,35 @@ return
 MG_GetAction_RB_LB_:
 	MG_ActionStr := "空でもこのジェスチャが登録されていないと"
 return
+
+
+MG_IsHookEnabled_RB() {
+	global
+	MG_TriggerCount ? : MG_GetMousePosInfo()
+	return (MG_RB_Enabled && (MG_TriggerCount || (!MG_IsDisable())))
+}
+
+MG_IsHookEnabled_MB() {
+	global
+	MG_TriggerCount ? : MG_GetMousePosInfo()
+	return (MG_MB_Enabled && (MG_TriggerCount || (!MG_IsDisable())))
+}
+
+MG_IsHookEnabled_LB() {
+	global
+	return (MG_LB_Enabled && MG_TriggerCount)
+}
+
+MG_IsHookEnabled_WU() {
+	global
+	return (MG_WU_Enabled && MG_TriggerCount)
+}
+
+MG_IsHookEnabled_WD() {
+	global
+	return (MG_WD_Enabled && MG_TriggerCount)
+}
+
 
 
 MG_Config_end:

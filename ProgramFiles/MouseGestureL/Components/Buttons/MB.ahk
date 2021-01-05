@@ -1,13 +1,20 @@
-﻿Goto,MG_MB_End
+﻿Goto, MG_MB_End
 
 MG_MB_Enable:
-	Hotkey,*MButton,MG_MB_DownHotkey,On
-	Hotkey,*MButton up,MG_MB_UpHotkey,On
+	if (!MG_AlwaysHook) {
+		MG_MB_HookEnabled := Func("MG_IsHookEnabled_MB")
+		Hotkey, If, % MG_MB_HookEnabled
+	}
+	Hotkey, *MButton, MG_MB_DownHotkey, On
+	Hotkey, *MButton up, MG_MB_UpHotkey, On
+	Hotkey, If
+	MG_MB_Enabled := 1
 return
 
 MG_MB_Disable:
-	Hotkey,*MButton,MG_MB_DownHotkey,Off
-	Hotkey,*MButton up,MG_MB_UpHotkey,Off
+	Hotkey, *MButton, MG_MB_DownHotkey, Off
+	Hotkey, *MButton up, MG_MB_UpHotkey, Off
+	MG_MB_Enabled := 0
 return
 
 MG_MB_DownHotkey:
@@ -20,29 +27,18 @@ return
 
 MG_MB_Down:
 	if (!MG_DisableDefMB) {
-		SetMouseDelay,-1
-		Send,{Blind}{MButton Down}
+		MG_SendButton("MB", "MButton", "Down")
 	}
 return
 
 MG_MB_Up:
 	if (!MG_DisableDefMB) {
-		SetMouseDelay,-1
-		Send,{Blind}{MButton Up}
+		MG_SendButton("MB", "MButton", "Up")
 	}
 return
 
 MG_MB_Check:
-	if (!GetKeyState("MButton", "P")) {
-		MG_UnpressCntMB++
-		if (MG_UnpressCntMB > 3) {
-			MG_TriggerUp("MB")
-			SetMouseDelay,-1
-			Send,{Blind}{MButton}
-		}
-	} else {
-		MG_UnpressCntMB := 0
-	}
+	MG_CheckButton("MB", "MButton")
 return
 
 MG_MB_End:

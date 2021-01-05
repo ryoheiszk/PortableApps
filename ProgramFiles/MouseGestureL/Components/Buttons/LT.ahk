@@ -1,13 +1,20 @@
-﻿Goto,MG_LT_End
+﻿Goto, MG_LT_End
 
 MG_LT_Enable:
-	Hotkey,*WheelLeft,MG_LT_DownHotkey,On
-	Hotkey,*WheelLeft up,MG_LT_UpHotkey,On
+	if (!MG_AlwaysHook) {
+		MG_LT_HookEnabled := Func("MG_IsHookEnabled_LT")
+		Hotkey, If, % MG_LT_HookEnabled
+	}
+	Hotkey, *WheelLeft, MG_LT_DownHotkey, On
+	Hotkey, *WheelLeft up, MG_LT_UpHotkey, On
+	Hotkey, If
+	MG_LT_Enabled := 1
 return
 
 MG_LT_Disable:
-	Hotkey,*WheelLeft,MG_LT_DownHotkey,Off
-	Hotkey,*WheelLeft up,MG_LT_UpHotkey,Off
+	Hotkey, *WheelLeft, MG_LT_DownHotkey, Off
+	Hotkey, *WheelLeft up, MG_LT_UpHotkey, Off
+	MG_LT_Enabled := 0
 return
 
 MG_LT_DownHotkey:
@@ -19,26 +26,15 @@ MG_LT_UpHotkey:
 return
 
 MG_LT_Down:
-	SetMouseDelay,-1
-	Send,{Blind}{WheelLeft Down}
+	MG_SendButton("LT", "WheelLeft", "Down")
 return
 
 MG_LT_Up:
-	SetMouseDelay,-1
-	Send,{Blind}{WheelLeft Up}
+	MG_SendButton("LT", "WheelLeft", "Up")
 return
 
 MG_LT_Check:
-	if (!GetKeyState("WheelLeft", "P")) {
-		MG_UnpressCntLT++
-		if (MG_UnpressCntLT > 3) {
-			MG_TriggerUp("LT")
-			SetMouseDelay,-1
-			Send,{Blind}{WheelLeft}
-		}
-	} else {
-		MG_UnpressCntLT := 0
-	}
+	MG_CheckButton("LT", "WheelLeft")
 return
 
 MG_LT_End:

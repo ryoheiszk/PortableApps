@@ -1,13 +1,20 @@
-﻿Goto,MG_RB_End
+﻿Goto, MG_RB_End
 
 MG_RB_Enable:
-	Hotkey,*RButton,MG_RB_DownHotkey,On
-	Hotkey,*RButton up,MG_RB_UpHotkey,On
+	if (!MG_AlwaysHook) {
+		MG_RB_HookEnabled := Func("MG_IsHookEnabled_RB")
+		Hotkey, If, % MG_RB_HookEnabled
+	}
+	Hotkey, *RButton, MG_RB_DownHotkey, On
+	Hotkey, *RButton up, MG_RB_UpHotkey, On
+	Hotkey, If
+	MG_RB_Enabled := 1
 return
 
 MG_RB_Disable:
-	Hotkey,*RButton,MG_RB_DownHotkey,Off
-	Hotkey,*RButton up,MG_RB_UpHotkey,Off
+	Hotkey, *RButton, MG_RB_DownHotkey, Off
+	Hotkey, *RButton up, MG_RB_UpHotkey, Off
+	MG_RB_Enabled := 0
 return
 
 MG_RB_DownHotkey:
@@ -19,26 +26,15 @@ MG_RB_UpHotkey:
 return
 
 MG_RB_Down:
-	SetMouseDelay,-1
-	Send,{Blind}{RButton Down}
+	MG_SendButton("RB", "RButton", "Down")
 return
 
 MG_RB_Up:
-	SetMouseDelay,-1
-	Send,{Blind}{RButton Up}
+	MG_SendButton("RB", "RButton", "Up")
 return
 
 MG_RB_Check:
-	if (!GetKeyState("RButton", "P")) {
-		MG_UnpressCntRB++
-		if (MG_UnpressCntRB > 3) {
-			MG_TriggerUp("RB")
-			SetMouseDelay,-1
-			Send,{Blind}{RButton}
-		}
-	} else {
-		MG_UnpressCntRB := 0
-	}
+	MG_CheckButton("RB", "RButton")
 return
 
 MG_RB_End:

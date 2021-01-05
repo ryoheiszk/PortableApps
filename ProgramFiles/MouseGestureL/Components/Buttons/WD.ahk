@@ -1,11 +1,18 @@
-﻿Goto,MG_WD_End
+﻿Goto, MG_WD_End
 
 MG_WD_Enable:
-	Hotkey,*WheelDown,MG_WD_Hotkey,On
+	if (!MG_AlwaysHook) {
+		MG_WD_HookEnabled := Func("MG_IsHookEnabled_WD")
+		Hotkey, If, % MG_WD_HookEnabled
+	}
+	Hotkey, *WheelDown, MG_WD_Hotkey, On
+	Hotkey, If
+	MG_WD_Enabled := 1
 return
 
 MG_WD_Disable:
-	Hotkey,*WheelDown,MG_WD_Hotkey,Off
+	Hotkey, *WheelDown, MG_WD_Hotkey, Off
+	MG_WD_Enabled := 0
 return
 
 MG_WD_Hotkey:
@@ -13,8 +20,7 @@ MG_WD_Hotkey:
 return
 
 MG_WD_Press:
-	SetMouseDelay,-1
-	Send,{Blind}{WheelDown}
+	MG_SendButton("WD", "WheelDown")
 return
 
 MG_WD_End:
