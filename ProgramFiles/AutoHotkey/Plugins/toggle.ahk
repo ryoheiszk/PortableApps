@@ -45,11 +45,6 @@ vk1C::Send, {vk1C}
   x::
   y::
   z::
-    ; keybdmouseが有効の場合toggleしない
-    If (toggle_keybd_mouse) {
-      Return
-    }
-
     toggle := A_ThisHotkey
     toggle_activation(toggle)
     SetTimer, watch_hotkey_done, 50
@@ -74,6 +69,12 @@ vk1C::Send, {vk1C}
 
   ;KeyList
   k::Run, http://ahkwiki.net/KeyList
+
+  ; keybd_mouse.ahk
+  m::
+    Gosub, toggle_deactivation
+    Gosub, keybd_mouse
+  Return
 
   ; リロード
   r::Reload
@@ -287,6 +288,8 @@ toggle_deactivation:
   toggle := false
   my_tooltip_function("toggle == false", 1000)
   hotkeys_define(keys_all, "disable_keys", "Off")
+  SetTimer, toggle_deactivation, Off
+  SetTimer, watch_hotkey_done, Off
 Return
 
 ; セカンダリキーの入力があった場合、toggleをfalseにし、SetTimerしたタイムアウト設定を解除する
@@ -295,9 +298,6 @@ watch_hotkey_done:
 
   ; toggleにはプライマリキー送信時のA_ThisHotkeyが格納されている
   ; 何らかのホットキー(つまりセカンダリキー)が実行されたとき、A_ThisHotkeyが書き換わることを利用する
-  If (new_ThisHotkey != toggle) {
-    SetTimer, toggle_deactivation, Off
-    SetTimer, watch_hotkey_done, Off
+  If (new_ThisHotkey != toggle)
     Goto, toggle_deactivation
-  }
 Return

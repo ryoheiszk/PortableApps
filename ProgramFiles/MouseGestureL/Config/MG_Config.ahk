@@ -557,10 +557,6 @@ MG_Gesture_RB_DR_:
 		;タブを閉じる
 		
 		Send, ^w
-	} else if (MG_IsTarget11()) {
-		;Ctrl+W
-		
-		Send, ^w
 	}else{
 		;タブ・ウィンドウを閉じる
 		
@@ -573,8 +569,6 @@ MG_GetAction_RB_DR_:
 		MG_ActionStr := "タブを閉じる"
 	} else if (MG_IsTarget6()) {
 		MG_ActionStr := "タブを閉じる"
-	} else if (MG_IsTarget11()) {
-		MG_ActionStr := "Ctrl+W"
 	}else{
 		MG_ActionStr := "タブ・ウィンドウを閉じる" 
 	}
@@ -589,10 +583,6 @@ MG_Gesture_MB_DR_:
 		;タブを閉じる
 		
 		Send, ^w
-	} else if (MG_IsTarget11()) {
-		;Ctrl+W
-		
-		Send, ^w
 	}else{
 		;タブ・ウィンドウを閉じる
 		
@@ -605,8 +595,6 @@ MG_GetAction_MB_DR_:
 		MG_ActionStr := "タブを閉じる"
 	} else if (MG_IsTarget6()) {
 		MG_ActionStr := "タブを閉じる"
-	} else if (MG_IsTarget11()) {
-		MG_ActionStr := "Ctrl+W"
 	}else{
 		MG_ActionStr := "タブ・ウィンドウを閉じる" 
 	}

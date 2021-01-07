@@ -1,31 +1,31 @@
-;===============================================================================
+ï»¿;===============================================================================
 ;
-;		MouseGestureL.ahkƒvƒ‰ƒOƒCƒ“ TaskVolume Ver.1.2 (’P‘Ì“®ì‰Â”\)
+;		MouseGestureL.ahkãƒ—ãƒ©ã‚°ã‚¤ãƒ³ TaskVolume Ver.1.2 (å˜ä½“å‹•ä½œå¯èƒ½)
 ;
-;		Eƒ^ƒXƒNƒo[ã‚ÌƒzƒC[ƒ‹‰ñ“]‚Åƒ{ƒŠƒ…[ƒ€•ÏX
-;		Eƒ^ƒXƒNƒo[ã‚Ì’†‰›ƒNƒŠƒbƒN‚Åƒ~ƒ…[ƒgON/OFF
-;		EƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚²‚Æ‚ÉŽ©“®‚Åƒ{ƒŠƒ…[ƒ€•ÏX
+;		ãƒ»ã‚¿ã‚¹ã‚¯ãƒãƒ¼ä¸Šã®ãƒ›ã‚¤ãƒ¼ãƒ«å›žè»¢ã§ãƒœãƒªãƒ¥ãƒ¼ãƒ å¤‰æ›´
+;		ãƒ»ã‚¿ã‚¹ã‚¯ãƒãƒ¼ä¸Šã®ä¸­å¤®ã‚¯ãƒªãƒƒã‚¯ã§ãƒŸãƒ¥ãƒ¼ãƒˆON/OFF
+;		ãƒ»ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã”ã¨ã«è‡ªå‹•ã§ãƒœãƒªãƒ¥ãƒ¼ãƒ å¤‰æ›´
 ;
 ;===============================================================================
 
 ;-------------------------------------------------------------------------------
-; ŠeŽíÝ’è’l (‚¨D‚Ý‚Å•ÏX‚µ‚Ä‚­‚¾‚³‚¢)
-TV_VolumeStep	:= 1			; ‚P‰ñ‚Ìƒ{ƒŠƒ…[ƒ€‚Ì•Ï‰»—Ê
-TV_VolColor	:= 0x00ff00		; ƒ{ƒŠƒ…[ƒ€•\Ž¦F (0xRRGGBB)
-TV_MuteColor	:= 0xff0000		; ƒ~ƒ…[ƒgŽž‚Ìƒ{ƒŠƒ…[ƒ€•\Ž¦F (0xRRGGBB)
-TV_VolTrans	:= 200			; ƒ{ƒŠƒ…[ƒ€•\Ž¦‚Ì•s“§–¾“x (“§–¾:0`•s“§–¾:255)
-TV_BarBaseColor	:= 0x00ff00		; ƒ{ƒŠƒ…[ƒ€ƒo[‚Ì”wŒiF (0xRRGGBB)
-TV_MuteBaseColor:= 0xff0000		; ƒ~ƒ…[ƒgŽž‚Ìƒ{ƒŠƒ…[ƒ€ƒo[”wŒiF (0xRRGGBB)
-TV_BarBaseTrans	:= 80			; ƒ{ƒŠƒ…[ƒ€ƒo[”wŒi‚Ì•s“§–¾“x (“§–¾:0`•s“§–¾:255)
-TV_BarSizeW	:= 250			; ƒ{ƒŠƒ…[ƒ€ƒo[‚Ì‰¡•
-TV_BarSizeH	:= 30			; ƒ{ƒŠƒ…[ƒ€ƒo[‚Ì‚‚³
-TV_BarMarginX	:= 10			; ƒXƒNƒŠ[ƒ“‰E’[‚©‚çƒ{ƒŠƒ…[ƒ€ƒo[‰E’[‚Ü‚Å‚Ì‹——£
-TV_BarMarginY	:= 50			; ƒXƒNƒŠ[ƒ“‰º’[‚©‚çƒ{ƒŠƒ…[ƒ€ƒo[‰º’[‚Ü‚Å‚Ì‹——£
-TV_VolFont	:= "ƒƒCƒŠƒI"		; ƒ{ƒŠƒ…[ƒ€•\Ž¦‚ÌƒtƒHƒ“ƒg–¼
-TV_VolFontSize	:= 24			; ƒ{ƒŠƒ…[ƒ€•\Ž¦‚ÌƒtƒHƒ“ƒgƒTƒCƒY
-TV_NameFont	:= "ƒƒCƒŠƒI"		; ’è‹`–¼‚ÌƒtƒHƒ“ƒg–¼
-TV_NameFontSize	:= 18			; ’è‹`–¼‚ÌƒtƒHƒ“ƒgƒTƒCƒY
-TV_VolDispTime	:= 2000			; ƒ{ƒŠƒ…[ƒ€•\Ž¦ŽžŠÔ (ƒ~ƒŠ•b)
+; å„ç¨®è¨­å®šå€¤ (ãŠå¥½ã¿ã§å¤‰æ›´ã—ã¦ãã ã•ã„)
+TV_VolumeStep	:= 1			; ï¼‘å›žã®ãƒœãƒªãƒ¥ãƒ¼ãƒ ã®å¤‰åŒ–é‡
+TV_VolColor	:= 0x00ff00		; ãƒœãƒªãƒ¥ãƒ¼ãƒ è¡¨ç¤ºè‰² (0xRRGGBB)
+TV_MuteColor	:= 0xff0000		; ãƒŸãƒ¥ãƒ¼ãƒˆæ™‚ã®ãƒœãƒªãƒ¥ãƒ¼ãƒ è¡¨ç¤ºè‰² (0xRRGGBB)
+TV_VolTrans	:= 200			; ãƒœãƒªãƒ¥ãƒ¼ãƒ è¡¨ç¤ºã®ä¸é€æ˜Žåº¦ (é€æ˜Ž:0ï½žä¸é€æ˜Ž:255)
+TV_BarBaseColor	:= 0x00ff00		; ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒãƒ¼ã®èƒŒæ™¯è‰² (0xRRGGBB)
+TV_MuteBaseColor:= 0xff0000		; ãƒŸãƒ¥ãƒ¼ãƒˆæ™‚ã®ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒãƒ¼èƒŒæ™¯è‰² (0xRRGGBB)
+TV_BarBaseTrans	:= 80			; ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒãƒ¼èƒŒæ™¯ã®ä¸é€æ˜Žåº¦ (é€æ˜Ž:0ï½žä¸é€æ˜Ž:255)
+TV_BarSizeW	:= 250			; ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒãƒ¼ã®æ¨ªå¹…
+TV_BarSizeH	:= 30			; ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒãƒ¼ã®é«˜ã•
+TV_BarMarginX	:= 10			; ã‚¹ã‚¯ãƒªãƒ¼ãƒ³å³ç«¯ã‹ã‚‰ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒãƒ¼å³ç«¯ã¾ã§ã®è·é›¢
+TV_BarMarginY	:= 50			; ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä¸‹ç«¯ã‹ã‚‰ãƒœãƒªãƒ¥ãƒ¼ãƒ ãƒãƒ¼ä¸‹ç«¯ã¾ã§ã®è·é›¢
+TV_VolFont	:= "ãƒ¡ã‚¤ãƒªã‚ª"		; ãƒœãƒªãƒ¥ãƒ¼ãƒ è¡¨ç¤ºã®ãƒ•ã‚©ãƒ³ãƒˆå
+TV_VolFontSize	:= 24			; ãƒœãƒªãƒ¥ãƒ¼ãƒ è¡¨ç¤ºã®ãƒ•ã‚©ãƒ³ãƒˆã‚µã‚¤ã‚º
+TV_NameFont	:= "ãƒ¡ã‚¤ãƒªã‚ª"		; å®šç¾©åã®ãƒ•ã‚©ãƒ³ãƒˆå
+TV_NameFontSize	:= 18			; å®šç¾©åã®ãƒ•ã‚©ãƒ³ãƒˆã‚µã‚¤ã‚º
+TV_VolDispTime	:= 2000			; ãƒœãƒªãƒ¥ãƒ¼ãƒ è¡¨ç¤ºæ™‚é–“ (ãƒŸãƒªç§’)
 ;-------------------------------------------------------------------------------
 
 TV_SelIndex := 1
@@ -38,8 +38,8 @@ Goto, TV_End
 
 
 ;-------------------------------------------------------------------------------
-; MouseGestureL.ahk‘¤‚ÅƒWƒFƒXƒ`ƒƒ[‚Ì“®ì‚ÉŠ„‚è“–‚Ä‚éê‡‚Í
-;š‚±‚±‚©‚çš
+; MouseGestureL.ahkå´ã§ã‚¸ã‚§ã‚¹ãƒãƒ£ãƒ¼ã®å‹•ä½œã«å‰²ã‚Šå½“ã¦ã‚‹å ´åˆã¯
+;â˜…ã“ã“ã‹ã‚‰â˜…
 #If TV_MouseIsOver("ahk_class Shell_TrayWnd")
 WheelUp::
 	TV_Change("+" . TV_VolumeStep)
@@ -53,9 +53,9 @@ MButton::
 	TV_Mute()
 return
 #If
-;š‚±‚±‚Ü‚Åš
-; ‚ðíœ‚µ‚ÄATV_Change()ATV_Mute()‚ðŠ„‚è“–‚ÄƒAƒNƒVƒ‡ƒ“‚©‚çŒÄ‚Ño‚µ‚Ä‚­‚¾‚³‚¢B
-; ‚»‚Ìê‡‚ÌðŒ’è‹`‚ÍAƒEƒBƒ“ƒhƒEƒNƒ‰ƒXuShell_TrayWndv‚Å‚·B
+;â˜…ã“ã“ã¾ã§â˜…
+; ã‚’å‰Šé™¤ã—ã¦ã€TV_Change()ã€TV_Mute()ã‚’å‰²ã‚Šå½“ã¦ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‹ã‚‰å‘¼ã³å‡ºã—ã¦ãã ã•ã„ã€‚
+; ãã®å ´åˆã®æ¡ä»¶å®šç¾©ã¯ã€ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¯ãƒ©ã‚¹ã€ŒShell_TrayWndã€ã§ã™ã€‚
 ;-------------------------------------------------------------------------------
 
 
@@ -135,7 +135,7 @@ TV_CreateNumberWindow(color)
 	WinSet, TransColor, % clrT . " " . TV_VolTrans
 	Gui, TV_NumWin:Color, %clrT%
 	Gui, TV_NumWin:Font, c%color% s%TV_VolFontSize% w600 q5, %TV_VolFont%
-	Gui, TV_NumWin:Add, Text, vTV_VolVal Right, ƒ~ƒ…[ƒgOFF
+	Gui, TV_NumWin:Add, Text, vTV_VolVal Right, ãƒŸãƒ¥ãƒ¼ãƒˆOFF
 	Gui, TV_NumWin:Show, AutoSize Hide
 
 	local x, y, w, h
@@ -219,7 +219,7 @@ TV_DispVolume(fMute=false, szName="")
 	}
 
 	if (fMute){
-		GuiControl, TV_NumWin:, TV_VolVal, ƒ~ƒ…[ƒg%szMute%
+		GuiControl, TV_NumWin:, TV_VolVal, ãƒŸãƒ¥ãƒ¼ãƒˆ%szMute%
 	} else {
 		GuiControl, TV_NumWin:, TV_VolVal, %vol%
 	}

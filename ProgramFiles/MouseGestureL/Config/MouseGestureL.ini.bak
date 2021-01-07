@@ -420,7 +420,7 @@ G=RB_URDL_
 
 [RB_→↑←↓_]
 G=RB_RULD_
-Default=;OneNote 画面の領域<MG_CR><MG_CR>Target := "ahk_exe ONENOTE.EXE"<MG_CR>If (WinExist(Target))<MG_CR>{<MG_CR>	WinActivate, %Target%<MG_CR>	Send, {Alt}nr<MG_CR>}
+Default=;OneNote 画面の領域<MG_CR><MG_CR>Target := "ahk_exe ONENOTE.EXE"<MG_CR>If (WinExist(Target)) {<MG_CR>	WinActivate, %Target%<MG_CR>	Send, {Alt}nr<MG_CR>}
 
 [RB_←→↑_]
 G=RB_LRU_
@@ -477,7 +477,7 @@ G=RB_RDLU
 
 [RB_]
 G=RB_
-Default=;アクティブ化処理<MG_CR><MG_CR>;指定サイズ未満でアクティブ化しない<MG_CR>minWidth := 500<MG_CR>minHeight := 200<MG_CR>WinGetPos, , , width, height, A<MG_CR>If ((width > minWidth) OR (height > minHeight))<MG_CR>{<MG_CR>	MouseGetPos, , , underMouseID1<MG_CR>	WinActivate, ahk_id %underMouseID1%<MG_CR>}<MG_CR>
+Default=;アクティブ化処理<MG_CR>;指定サイズ未満でアクティブ化しない<MG_CR><MG_CR>minWidth := 500<MG_CR>minHeight := 200<MG_CR><MG_CR>WinGetPos, , , width, height, A<MG_CR>If ((width>minWidth) || (height>minHeight)) {<MG_CR>	MouseGetPos, , , underMouseID1<MG_CR>	WinActivate, ahk_id %underMouseID1%<MG_CR>}<MG_CR>
 
 [RB_LB_]
 G=RB_LB_
