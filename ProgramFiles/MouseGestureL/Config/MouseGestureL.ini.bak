@@ -215,14 +215,12 @@ G=RB_DR_
 Default=;タブ・ウィンドウを閉じる<MG_CR><MG_CR>Send, !{F4}
 ブラウザ=;タブを閉じる<MG_CR><MG_CR>Send, ^w
 個別/VSCode=;タブを閉じる<MG_CR><MG_CR>Send, ^w
-個別/CatMemoNote=;Ctrl+W<MG_CR><MG_CR>Send, ^w
 
 [MB_↓→_]
 G=MB_DR_
 Default=;タブ・ウィンドウを閉じる<MG_CR><MG_CR>Send, !{F4}
 ブラウザ=;タブを閉じる<MG_CR><MG_CR>Send, ^w
 個別/VSCode=;タブを閉じる<MG_CR><MG_CR>Send, ^w
-個別/CatMemoNote=;Ctrl+W<MG_CR><MG_CR>Send, ^w
 
 [RB_↑↓→_]
 G=RB_UDR_
@@ -482,3 +480,11 @@ Default=;アクティブ化処理<MG_CR>;指定サイズ未満でアクティブ
 [RB_LB_]
 G=RB_LB_
 Default=;空でもこのジェスチャが登録されていないと<MG_CR>;ContinuousActivationがバグる
+
+[W↑_]
+G=WU_
+Default=WheelRedirect(1)
+
+[W↓_]
+G=WD_
+Default=WheelRedirect(1)
