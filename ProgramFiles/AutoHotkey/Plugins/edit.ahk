@@ -29,7 +29,7 @@ vk1D & .::Send, {Blind}{Right 4}
 vk1D & m::Send, {Blind}{Left 4}
 
 ; Enter
-vk1D & Space::Send, {Blind}{Enter}
+; vk1D & Space::Send, {Blind}{Enter}
 
 ; Backspace
 vk1D & n::Send, {Blind}{Backspace}

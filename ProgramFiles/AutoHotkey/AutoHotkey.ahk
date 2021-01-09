@@ -1,11 +1,14 @@
 ﻿#Persistent
 #NoEnv
 #UseHook
+#InstallKeybdHook
+#InstallMouseHook
 #MaxHotkeysPerInterval, 100
 Process, Priority,, High
 SendMode, Input
+SetWorkingDir %A_ScriptDir%
 SetTitleMatchMode, 2
-SetKeyDelay, , 10
+; SetKeyDelay, , 10
 
 ; 変数の初期化
 #Include, %A_ScriptDir%\Variables.ahk
