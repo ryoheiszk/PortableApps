@@ -16,14 +16,6 @@
 ::gicon::git config --global{Space}
 ::gist::git stash save --include-untracked ""{Left}
 ::gistl::git stash list
-; ::gistp::
-;   tmp := ClipboardAll
-;   Clipboard = git stash pop stash@{}
-;   Send, %Clipboard%
-;   ; Send, {Left}
-;   Clipboard := tmp
-;   tmp =
-;   Return
 :R:gistp::git stash pop stash@{}
 ::gists::git stash show
 ::gireb::git rebase{Space}
@@ -33,8 +25,6 @@
 ::gireshh::git reset --hard HEAD^
 ::gil::git log --oneline -5
 ::gim::git merge --no-ff{Space}
-::gips::git push origin master
-; ::gipl::
 ::gis::git status{Space}
 
 ; 応用
