@@ -3,7 +3,7 @@
 #UseHook
 #InstallKeybdHook
 #InstallMouseHook
-#MaxHotkeysPerInterval, 100
+#MaxHotkeysPerInterval, 200
 Process, Priority,, High
 SendMode, Input
 SetWorkingDir %A_ScriptDir%

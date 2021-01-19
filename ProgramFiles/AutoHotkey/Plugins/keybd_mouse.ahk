@@ -27,7 +27,7 @@
 
   Gosub, toggle_keybd_mouse
 
-  SetTimer, mouse_click_checker, 100
+  SetTimer, mouse_button_checker, 100
 
   While (toggle_keybd_mouse == true) {
     ; 速度設定///////////////////////////
@@ -57,7 +57,7 @@
     ; ///////////////////////////////////
   }
 
-  SetTimer, mouse_click_checker, Off
+  SetTimer, mouse_button_checker, Off
 
   hotkeys_define(keys_all, "disable_keys", "Off")
   Hotkey, %exit_this%, toggle_keybd_mouse, Off
@@ -91,7 +91,7 @@ Return
 
 
 ; マウス/////////////////////////////////////
-mouse_click_checker:
+mouse_button_checker:
   ; マウス/////////////////////////////
   keybd_mouse_click(mouse_LB, "L")
   keybd_mouse_click(mouse_MB, "M")

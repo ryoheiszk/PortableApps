@@ -8,7 +8,7 @@
       "type": "ahk",
       "request": "launch",
       "name": "AutoHotkey Debugger",
-      "program": "${file}",
+      "program": "${workspaceRoot}\\AutoHotkey.ahk",
       "stopOnEntry": true
     }
   ]
