@@ -34,4 +34,4 @@
 ::gigr::git log --graph --date=short --decorate=short --pretty=format:'%Cgreen%h %Creset%cd %Cblue%cn %Cred%d %Creset%s'
 
 ; Hugo(一時保存場所)
-::hugoserver::hugo server -D --ignoreCache
+::hsv::hugo server -D --ignoreCache
