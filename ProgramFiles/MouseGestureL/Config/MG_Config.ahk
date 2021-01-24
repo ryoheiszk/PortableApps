@@ -3,7 +3,7 @@ MG_8Dir=0
 MG_ActiveAsTarget=0
 MG_Interval=20
 MG_AlwaysHook=0
-MG_PrvntCtxtMenu=0
+MG_PrvntCtxtMenu=1
 MG_Threshold=20
 MG_LongThresholdX=9999
 MG_LongThresholdY=9999
@@ -276,7 +276,7 @@ Goto, MG_Config_End
 
 MG_IsDisable() {
 	global
-	return ((MG_WClass="Chrome_WidgetWin_2") || (MG_WClass="GHOST_WindowClass"))
+	return ((MG_WClass="GHOST_WindowClass") || (MG_WClass="Chrome_WidgetWin_2"))
 }
 
 MG_IsTarget1() {

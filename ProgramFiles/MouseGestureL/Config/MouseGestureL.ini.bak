@@ -4,7 +4,7 @@ IniFileVersion=1.38
 ActiveAsTarget=0
 Interval=20
 AlwaysHook=0
-PrvntCtxtMenu=0
+PrvntCtxtMenu=1
 Threshold=20
 LongThresholdX=9999
 LongThresholdY=9999
@@ -84,7 +84,6 @@ DisableWarning=0
 [ActivationExcluded]
 
 [ジェスチャー無効]
-WClass=Chrome_WidgetWin_2
 WClass=GHOST_WindowClass
 
 [ブラウザ]
@@ -480,11 +479,3 @@ Default=;アクティブ化処理<MG_CR>;指定サイズ未満でアクティブ
 [RB_LB_]
 G=RB_LB_
 Default=;空でもこのジェスチャが登録されていないと<MG_CR>;ContinuousActivationがバグる
-
-[W↑_]
-G=WU_
-Default=WheelRedirect(1)
-
-[W↓_]
-G=WD_
-Default=WheelRedirect(1)

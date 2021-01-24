@@ -21,12 +21,12 @@ If (search_plugins()) {
 }
 
 search_plugins() {
-  ; Pluginsフォルダ内のAHKスクリプト名を整形してpluginsに格納
-  plugins := ""
+  ; Pluginsフォルダ内のAHKスクリプト名を整形してplugin_filesに格納
+  plugin_files := ""
   Loop, %A_ScriptDir%\Plugins\*.ahk {
-    plugins .= "#" . "Include *i %A_ScriptDir%\Plugins\" . A_LoopFileName . "`n"
+    plugin_files .= "#" . "Include *i %A_ScriptDir%\Plugins\" . A_LoopFileName . "`n"
   }
-  If (plugins == "") {
+  If (plugin_files == "") {
     Return 0
   }
   ; Pluginsの変更点を認識
@@ -34,16 +34,16 @@ search_plugins() {
   If (file) {
     plugin_list_old := file.Read(file.Length)
     file.Close
-    If (plugin_list_old == plugins) {
+    If (plugin_list_old == plugin_files) {
       Return 0
     }
   }
-  ; plugin_list_oldをpluginsに書き換える
+  ; plugin_list_oldをplugin_filesに書き換える
   file := FileOpen(A_ScriptDir . "\PluginList.ahk", "w `n", "utf-8")
   If (!file) {
     Return 0
   }
-  file.Write(plugins)
+  file.Write(plugin_files)
   file.Close
   Return 1
 }
