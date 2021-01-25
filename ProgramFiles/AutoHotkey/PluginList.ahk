@@ -2,7 +2,7 @@
 #Include *i %A_ScriptDir%\Plugins\edit.ahk
 #Include *i %A_ScriptDir%\Plugins\fn.ahk
 #Include *i %A_ScriptDir%\Plugins\git_alias.ahk
-#Include *i %A_ScriptDir%\Plugins\hotString.ahk
+#Include *i %A_ScriptDir%\Plugins\hotstring.ahk
 #Include *i %A_ScriptDir%\Plugins\IME.ahk
 #Include *i %A_ScriptDir%\Plugins\keybd_mouse.ahk
 #Include *i %A_ScriptDir%\Plugins\main.ahk

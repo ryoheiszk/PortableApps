@@ -5,6 +5,6 @@
 ; R : 特殊キーをそのまま入力する(個別設定)
 
 ; 一般
-::hsuzuki::
-  Send, 鈴木涼平
+::teststring::
+  Send, It's test.
 Return
