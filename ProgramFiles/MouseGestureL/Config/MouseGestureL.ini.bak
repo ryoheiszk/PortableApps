@@ -3,7 +3,7 @@ IniFileVersion=1.38
 8Dir=0
 ActiveAsTarget=0
 Interval=20
-AlwaysHook=0
+AlwaysHook=1
 PrvntCtxtMenu=1
 Threshold=20
 LongThresholdX=9999
@@ -85,6 +85,8 @@ DisableWarning=0
 
 [ジェスチャー無効]
 WClass=GHOST_WindowClass
+WClass=Chrome_WidgetWin_2
+Custom=compareClassNN("SWT_Window021")
 
 [ブラウザ]
 Icon=%A_WinDir%\system32\inetcpl.cpl,6

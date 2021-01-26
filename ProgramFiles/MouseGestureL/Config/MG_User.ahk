@@ -13,20 +13,33 @@
 if (!MG_IsEdit) {
 ; MouseGestureL.ahk用
 
-#WinActivateForce
+	#WinActivateForce
+	#InstallKeybdHook
+	#InstallMouseHook
 
-ControlGetText, mouseToolTip, , ahk_class tooltips_class32
-
-
-
+	ControlGetText, mouseToolTip, , ahk_class tooltips_class32
 
 } else {
 ; MG_Edit.ahk用
 
+	; ClassNNが一致したときにジェスチャーを無効化するための関数
+	; 無変換押下時は作動しない
+	; 「無効にする」=「Return 1」
+	; ジェスチェー無効→カスタム条件式→compareClassNN("class_nn")で指定する
+	; 例えばXMindのマッピングエリアではジェスチャーを基本無効にする
+	compareClassNN(set_class_nn) {
+		MouseGetPos, , , , got_class_nn
 
+		If (GetKeyState("vk1D", "P")) {
+			Return 0
+		}
 
+		If (set_class_nn==got_class_nn) {
+			Return 1
+		}
 
-
+		Return 0
+	}
 
 }
 ; MouseGestureL.ahk、MG_Edit.ahk共通
