@@ -47,8 +47,8 @@ Return
 #If, WinActive("ahk_exe chrome.exe")
   ^+u::
     ; ホールド対策
-    KeyWait, Ctrl, Up
-    KeyWait, Shift, Up
+    KeyWait, Ctrl
+    KeyWait, Shift
     stash := ClipBoardAll
     ClipBoard := "const element=document.querySelector(""input[type='text'],input[type='search']"");element.select();element.scrollIntoView();"
     ClipWait, 1
