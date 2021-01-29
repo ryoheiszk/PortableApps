@@ -2,4 +2,7 @@
 
 keys_practice :=
 
-; toggle := false
+; toggle.ahkで使用する
+; toggle != falseで条件分岐しようとしたが、
+; 起動時のnullに引っ張られて都合が悪いことがあった(GUIを初めて起動するまでESCが効かないなど)
+toggle := false
