@@ -15,6 +15,9 @@ SetTitleMatchMode, 2
 ; 変数の初期化
 #Include, %A_ScriptDir%\Variables.ahk
 
+; メニューアイコン設定
+Menu, Tray, Icon, icon.ico
+
 ; プラグインの検出・取り込み
 If (search_plugins()) {
   Reload
