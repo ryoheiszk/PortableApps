@@ -1,6 +1,6 @@
 ﻿keybd_mouse:
   ; キー設定///////////////////////////////////
-  exit_this       := "r"      ; keybd_mouse終了
+  exit_this       := "m"      ; keybd_mouse終了
 
   mouse_up        := "e"      ; ↑
   mouse_down      := "d"      ; ↓
