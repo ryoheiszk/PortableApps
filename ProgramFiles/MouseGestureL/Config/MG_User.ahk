@@ -13,10 +13,6 @@
 if (!MG_IsEdit) {
 ; MouseGestureL.ahk用
 
-	#WinActivateForce
-	#InstallKeybdHook
-	#InstallMouseHook
-
 	ControlGetText, mouseToolTip, , ahk_class tooltips_class32
 
 } else {

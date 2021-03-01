@@ -1340,6 +1340,7 @@ MG_GetAction_RB_RDLU:
 	
 return
 
+
 MG_Gesture_RB_:
 	;アクティブ化処理
 	;指定サイズ未満でアクティブ化しない
@@ -1366,6 +1367,27 @@ return
 
 MG_GetAction_RB_LB_:
 	MG_ActionStr := "空でもこのジェスチャが登録されていないと"
+return
+
+MG_Gesture_MB__:
+	if (MG_IsTarget2()) {
+		; 新しいウィンドウでフォルダを開く
+		; Send, {LButton} →動作しない
+		Send, {Ctrl Down}
+		Send, {Enter}
+		Sleep, 150
+		Send, {Ctrl Up}
+	}else{
+		MG_Cancel() 
+	}
+return
+
+MG_GetAction_MB__:
+	if (MG_IsTarget2()) {
+		MG_ActionStr := " 新しいウィンドウでフォルダを開く"
+	}else{
+		MG_ActionStr := "" 
+	}
 return
 
 
