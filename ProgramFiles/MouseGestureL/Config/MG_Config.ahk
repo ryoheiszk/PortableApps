@@ -1372,11 +1372,8 @@ return
 MG_Gesture_MB__:
 	if (MG_IsTarget2()) {
 		; 新しいウィンドウでフォルダを開く
-		; Send, {LButton} →動作しない
-		Send, {Ctrl Down}
-		Send, {Enter}
-		Sleep, 150
-		Send, {Ctrl Up}
+		
+		Send, {RButton}e
 	}else{
 		MG_Cancel() 
 	}
