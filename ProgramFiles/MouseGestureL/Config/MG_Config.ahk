@@ -1370,7 +1370,7 @@ MG_GetAction_RB_LB_:
 return
 
 MG_Gesture_MB__:
-	if (MG_IsTarget2()) {
+	if (MG_IsTarget4()) {
 		; 新しいウィンドウでフォルダを開く
 		
 		Send, {RButton}e
@@ -1380,7 +1380,7 @@ MG_Gesture_MB__:
 return
 
 MG_GetAction_MB__:
-	if (MG_IsTarget2()) {
+	if (MG_IsTarget4()) {
 		MG_ActionStr := " 新しいウィンドウでフォルダを開く"
 	}else{
 		MG_ActionStr := "" 
