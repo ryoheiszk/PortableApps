@@ -348,7 +348,7 @@ G=
 
 [RB_→↓←↓]
 G=RB_RDLD
-Default=;音量変更<MG_CR><MG_CR>step_vol := 2<MG_CR><MG_CR>MG_StopNavi()<MG_CR>Sleep, 500<MG_CR>KeyWait, RButton, Up<MG_CR>SetTimer, RemoveToolTip, -500<MG_CR>n := ""<MG_CR>vol := ""<MG_CR>step_vol := ""<MG_CR>Return<MG_CR><MG_CR><MG_CR>#If, step_vol!=""<MG_CR>	WheelUp::volume_change(step_vol)<MG_CR>	WheelDown::volume_change(-step_vol)<MG_CR>#If<MG_CR><MG_CR>volume_change(step) {<MG_CR>	SoundGet, vol_now<MG_CR>	Setformat, Float, 1.0<MG_CR>	vol_now += step<MG_CR>	If (vol_now < 0) {<MG_CR>		vol_now := 0<MG_CR>	} Else If (vol_now > 100) {<MG_CR>		vol_now := 100<MG_CR>	}<MG_CR>	SoundSet, vol_now<MG_CR>	ToolTip, 音量  :  %vol_now%<MG_CR>	Return<MG_CR>}
+Default=;音量調整<MG_CR><MG_CR>step_vol := 2<MG_CR>MG_StopNavi()<MG_CR>Sleep, 500<MG_CR>KeyWait, RButton, Up<MG_CR>SetTimer, RemoveToolTip, -500<MG_CR>step_vol := 0<MG_CR>Return<MG_CR><MG_CR>#If, !step_vol<MG_CR>	WheelUp::volume_change(step_vol)<MG_CR>	WheelDown::volume_change(-step_vol)<MG_CR>#If<MG_CR><MG_CR>volume_change(step) {<MG_CR>	SoundGet, vol_now<MG_CR>	Setformat, Float, 1.0<MG_CR>	vol_now += step<MG_CR>	If (vol_now < 0) {<MG_CR>		vol_now := 0<MG_CR>	} Else If (vol_now > 100) {<MG_CR>		vol_now := 100<MG_CR>	}<MG_CR>	SoundSet, vol_now<MG_CR>	ToolTip, 音量  :  %vol_now%<MG_CR>	Return<MG_CR>}<MG_CR>
 
 [RB_↑↓←→_]
 G=RB_UDLR_
@@ -487,4 +487,4 @@ Default=;空でもこのジェスチャが登録されていないと<MG_CR>;Con
 
 [MB__]
 G=MB__
-エクスプローラー=; 新しいウィンドウでフォルダを開く<MG_CR><MG_CR>Send, {RButton}e
+エクスプローラー/アイコン=; 新しいウィンドウでフォルダを開く<MG_CR><MG_CR>Send, {RButton}e

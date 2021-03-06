@@ -942,19 +942,15 @@ return
 
 
 MG_Gesture_RB_RDLD:
-	;音量変更
+	;音量調整
 	
 	step_vol := 2
-	
 	MG_StopNavi()
 	Sleep, 500
 	KeyWait, RButton, Up
 	SetTimer, RemoveToolTip, -500
-	n := ""
-	vol := ""
 	step_vol := ""
 	Return
-	
 	
 	#If, step_vol!=""
 		WheelUp::volume_change(step_vol)
@@ -974,10 +970,11 @@ MG_Gesture_RB_RDLD:
 		ToolTip, 音量  :  %vol_now%
 		Return
 	}
+	
 return
 
 MG_GetAction_RB_RDLD:
-	MG_ActionStr := "音量変更"
+	MG_ActionStr := "音量調整"
 return
 
 MG_Gesture_RB_UDLR_:
