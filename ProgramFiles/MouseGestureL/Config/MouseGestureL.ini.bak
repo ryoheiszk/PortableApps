@@ -341,14 +341,14 @@ Default=;←<MG_CR><MG_CR>Send, {Blind}{Left}<MG_CR>If (WinActive("Netflix")) {<
 
 [RB_W↓_]
 G=RB_WD_
-Default=;→<MG_CR><MG_CR>Send, {Blind}{Right}<MG_CR>If (WinActive("Netflix")) {<MG_CR>	Send, {Space 2}<MG_CR>}
+Default=;→<MG_CR><MG_CR>Send, {Blind}{Right}<MG_CR>If (WinActive("Netflix") OR WinActive("netflix")) {<MG_CR>	Send, {Space 2}<MG_CR>}
 
 [***音***]
 G=
 
 [RB_→↓←↓]
 G=RB_RDLD
-Default=;音量調整<MG_CR><MG_CR>step_vol := 2<MG_CR>MG_StopNavi()<MG_CR>Sleep, 500<MG_CR>KeyWait, RButton, Up<MG_CR>SetTimer, RemoveToolTip, -500<MG_CR>step_vol := 0<MG_CR>Return<MG_CR><MG_CR>#If, !step_vol<MG_CR>	WheelUp::volume_change(step_vol)<MG_CR>	WheelDown::volume_change(-step_vol)<MG_CR>#If<MG_CR><MG_CR>volume_change(step) {<MG_CR>	SoundGet, vol_now<MG_CR>	Setformat, Float, 1.0<MG_CR>	vol_now += step<MG_CR>	If (vol_now < 0) {<MG_CR>		vol_now := 0<MG_CR>	} Else If (vol_now > 100) {<MG_CR>		vol_now := 100<MG_CR>	}<MG_CR>	SoundSet, vol_now<MG_CR>	ToolTip, 音量  :  %vol_now%<MG_CR>	Return<MG_CR>}<MG_CR>
+Default=;音量調整<MG_CR><MG_CR>step_vol := 2<MG_CR>MG_StopNavi()<MG_CR>Sleep, 500<MG_CR>KeyWait, RButton, Up<MG_CR>SetTimer, RemoveToolTip, -500<MG_CR>step_vol := ""<MG_CR>Return<MG_CR><MG_CR>#If, step_vol!=""<MG_CR>	WheelUp::volume_change(step_vol)<MG_CR>	WheelDown::volume_change(-step_vol)<MG_CR>#If<MG_CR><MG_CR>volume_change(step) {<MG_CR>	SoundGet, vol_now<MG_CR>	Setformat, Float, 1.0<MG_CR>	vol_now += step<MG_CR>	If (vol_now < 0) {<MG_CR>		vol_now := 0<MG_CR>	} Else If (vol_now > 100) {<MG_CR>		vol_now := 100<MG_CR>	}<MG_CR>	SoundSet, vol_now<MG_CR>	ToolTip, 音量  :  %vol_now%<MG_CR>	Return<MG_CR>}<MG_CR>
 
 [RB_↑↓←→_]
 G=RB_UDLR_

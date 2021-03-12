@@ -39,7 +39,7 @@ if (!MG_IsEdit) {
 
 }
 ; MouseGestureL.ahk、MG_Edit.ahk共通
-
+SetTitleMatchMode, 2
 
 
 

@@ -918,7 +918,7 @@ MG_Gesture_RB_WU_:
 	;←
 	
 	Send, {Blind}{Left}
-	If (WinActive("Netflix")) {
+	If (WinActive("Netflix") OR WinActive("netflix")) {
 		Send, {Space 2}
 	}
 return
@@ -931,7 +931,7 @@ MG_Gesture_RB_WD_:
 	;→
 	
 	Send, {Blind}{Right}
-	If (WinActive("Netflix")) {
+	If (WinActive("Netflix") OR WinActive("netflix")) {
 		Send, {Space 2}
 	}
 return
