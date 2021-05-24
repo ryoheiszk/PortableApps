@@ -253,6 +253,13 @@ vk1C::Return
   ; Javaコンパイル
   j::Send, {vkF2}{vkF3}javac -encoding utf-8 .java{Left 5}
 
+  ; カレントディレクトリ(フォルダ)でVSCode起動
+  v::
+    Send, ^l
+    Send, code{Space}.
+    Send, {Enter}
+  Return
+
 ; (空き)
 #If, toggle == "q"
 ; (空き)

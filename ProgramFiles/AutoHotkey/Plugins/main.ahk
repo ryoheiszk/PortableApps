@@ -29,10 +29,10 @@ Return
 Return
 
 ; タイムシフト録画したら保存フォルダを開く
-~!F10::Goto, ^!F9
+~!F10::Goto, ^!F10
 
 ; 録画の保存フォルダを開く
-^!F9::Run, F:\Videos\GeforceExperience
+^!F10::Run, D:\Videos\GeforceExperience
 
 ; カレントディレクトリのパスを取得
 ^+!p::Clipboard := get_current_dir()
@@ -42,25 +42,3 @@ Return
   FormatTime, dateStr, , yyyy-MM-dd
   Send, {vkF2}{vkF3}%dateStr%
 Return
-
-; 最初のテキストフィールドに移動[Chromium]
-#If, WinActive("ahk_exe chrome.exe")
-  ^+u::
-    ; ホールド対策
-    KeyWait, Ctrl
-    KeyWait, Shift
-    stash := ClipBoardAll
-    ClipBoard := "const element=document.querySelector(""input[type='text'],input[type='search']"");element.select();element.scrollIntoView();"
-    ClipWait, 1
-    Send, ^l
-    ; "javascript:"は貼り付けできない
-    Send, {vkF2}{vkF3}javascript:
-    Sleep, 100
-    Send, ^v
-    Sleep, 100
-    Send, {Enter}
-    Sleep, 10
-    ClipBoard := stash
-    stash := ""
-  Return
-#If

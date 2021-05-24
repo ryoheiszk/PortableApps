@@ -1,14 +1,14 @@
-﻿; 出先PCで半角数字を入力する
-1::Send, {Numpad1}
-2::Send, {Numpad2}
-3::Send, {Numpad3}
-4::Send, {Numpad4}
-5::Send, {Numpad5}
-6::Send, {Numpad6}
-7::Send, {Numpad7}
-8::Send, {Numpad8}
-9::Send, {Numpad9}
-0::Send, {Numpad0}
+﻿; ; 出先PCで半角数字を入力する
+; 1::Send, {Numpad1}
+; 2::Send, {Numpad2}
+; 3::Send, {Numpad3}
+; 4::Send, {Numpad4}
+; 5::Send, {Numpad5}
+; 6::Send, {Numpad6}
+; 7::Send, {Numpad7}
+; 8::Send, {Numpad8}
+; 9::Send, {Numpad9}
+; 0::Send, {Numpad0}
 
 
 ; 左手テンキー

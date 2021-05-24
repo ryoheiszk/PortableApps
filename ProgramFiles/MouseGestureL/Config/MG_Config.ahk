@@ -891,6 +891,26 @@ MG_GetAction_RB_URDR_:
 	MG_ActionStr := "1行選択"
 return
 
+MG_Gesture_MB_LRL_:
+	; Win + Left
+	
+	Send, #{Left}
+return
+
+MG_GetAction_MB_LRL_:
+	MG_ActionStr := " Win + Left"
+return
+
+MG_Gesture_MB_RLR_:
+	; Win + Right
+	
+	Send, #{Right}
+return
+
+MG_GetAction_MB_RLR_:
+	MG_ActionStr := " Win + Right"
+return
+
 
 MG_Gesture_RB_MB_WU_:
 	;↑
@@ -1002,104 +1022,44 @@ MG_GetAction_RB_UDLD_:
 return
 
 
-MG_Gesture_MB_R_:
+MG_Gesture_MB_UR_:
 	;Win + 1
 	
 	Send, #{1}
 return
 
-MG_GetAction_MB_R_:
+MG_GetAction_MB_UR_:
 	MG_ActionStr := "Win + 1"
 return
 
-MG_Gesture_MB_RL_:
+MG_Gesture_MB_URL_:
 	;Win + 2
 	
 	Send, #{2}
 return
 
-MG_GetAction_MB_RL_:
+MG_GetAction_MB_URL_:
 	MG_ActionStr := "Win + 2"
 return
 
-MG_Gesture_MB_RLR_:
+MG_Gesture_MB_URLR_:
 	;Win + 3
 	
 	Send, #{3}
 return
 
-MG_GetAction_MB_RLR_:
+MG_GetAction_MB_URLR_:
 	MG_ActionStr := "Win + 3"
 return
 
-MG_Gesture_MB_RLRL_:
+MG_Gesture_MB_URLRL_:
 	;Win + 4
 	
 	Send, #{4}
 return
 
-MG_GetAction_MB_RLRL_:
+MG_GetAction_MB_URLRL_:
 	MG_ActionStr := "Win + 4"
-return
-
-MG_Gesture_MB_RLRLR_:
-	;Win + 5
-	
-	Send, #{5}
-return
-
-MG_GetAction_MB_RLRLR_:
-	MG_ActionStr := "Win + 5"
-return
-
-MG_Gesture_MB_L__:
-	;Win + 6
-	
-	Send, #{6}
-return
-
-MG_GetAction_MB_L__:
-	MG_ActionStr := "Win + 6"
-return
-
-MG_Gesture_MB_LR_:
-	;Win + 7
-	
-	Send, #{7}
-return
-
-MG_GetAction_MB_LR_:
-	MG_ActionStr := "Win + 7"
-return
-
-MG_Gesture_MB_LRL_:
-	;Win + 8
-	
-	Send, #{8}
-return
-
-MG_GetAction_MB_LRL_:
-	MG_ActionStr := "Win + 8"
-return
-
-MG_Gesture_MB_LRLR_:
-	;Win + 9
-	
-	Send, #{9}
-return
-
-MG_GetAction_MB_LRLR_:
-	MG_ActionStr := "Win + 9"
-return
-
-MG_Gesture_MB_LRLRL_:
-	;Win + 0
-	
-	Send, #{0}
-return
-
-MG_GetAction_MB_LRLRL_:
-	MG_ActionStr := "Win + 0"
 return
 
 
@@ -1204,24 +1164,24 @@ MG_GetAction_MB_UD_:
 	MG_ActionStr := "ウィンドウを左のモニターへ"
 return
 
-MG_Gesture_MB_UL_:
-	;左の仮想デスクトップ
-	
-	Send, ^#{Left}
-return
-
-MG_GetAction_MB_UL_:
-	MG_ActionStr := "左の仮想デスクトップ"
-return
-
-MG_Gesture_MB_UR_:
+MG_Gesture_MB_R_:
 	;右の仮想デスクトップ
 	
 	Send, ^#{Right}
 return
 
-MG_GetAction_MB_UR_:
+MG_GetAction_MB_R_:
 	MG_ActionStr := "右の仮想デスクトップ"
+return
+
+MG_Gesture_MB_L_:
+	;左の仮想デスクトップ
+	
+	Send, ^#{Left}
+return
+
+MG_GetAction_MB_L_:
+	MG_ActionStr := "左の仮想デスクトップ"
 return
 
 MG_Gesture_MB_RLD_:

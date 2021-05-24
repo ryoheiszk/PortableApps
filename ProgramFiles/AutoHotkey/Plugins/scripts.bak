@@ -1,52 +1,4 @@
-﻿; 選択文字列でGoogle検索
-vk1D & F1::
-  ClipSaved := ClipboardAll
-  Send, ^c
-  ClipWait, 2
-  Run,https://www.google.co.jp/search?q=%Clipboard%
-  Clipboard := ClipSaved
-  ClipSaved =
-Return
-
-
-;ScrollLockで電卓を開く
-  ScrollLock::Run, calc.exe
-  Return
-
-
-;無変換+cで1行コピー
-  vk1D & c::Send, {Home}{Shift Down}{End}{Shift Up}{Ctrl Down}c{Ctrl Up}{End}
-  Return
-
-
-;無変換+上下左右→ 上下左右の矢印入力(旧版:クリップボード経由)
-  Send_byClip(in_text)
-  {
-  bak_clipboard := Clipboard
-  Clipboard := in_text
-  Sleep, 200 ;クリップボード送信までのウェイト
-  send, ^{v}
-  Clipboard := bak_clipboard
-  }
-
-  vk1D & Up::
-    Send_byClip("↑")
-    Return
-
-  vk1D & Down::
-    Send_byClip("↓")
-    Return
-
-  vk1D & Left::
-    Send_byClip("←")
-    Return
-
-  vk1D & Right::
-    Send_byClip("→")
-    Return
-
-
-;無変換+Shift+R→現在のマウス座標を記録
+﻿;無変換+Shift+R→現在のマウス座標を記録
 ;無変換+Shift+C→記録したマウス座標を左クリック
   vk1D & r::
   If (GetKeyState("Shift", "P")) {
@@ -124,177 +76,6 @@ while (1) {
   ; ////////toggle.ahk
   vk1C::Send, {vk1C}
 
-;==============================
-#If toggle_KeyMouse != true
-
-
-vk1C & a::toggleChange(toggle_a, "AHK")
-vk1C & p::toggleChange(toggle_p, "プログラミング")
-vk1C & e::toggleChange(toggle_e, "Edit")
-
-
-#If
-
-
-toggleChange(ByRef toggle, name)
-{
-  toggle := !toggle
-  my_tooltip_function("カスタムモード(" . name . "): " . (toggle = true ? "ON" : "OFF"), 1000)
-
-  CoordMode, ToolTip, Screen
-  ToolTip, % (toggle = true ?  "カスタムモード(" . name . "): ON" : ""), 0, 0, 20
-  CoordMode, ToolTip, Relative
-}
-
-
-;==============================
-; AutoHotkey///////////////////
-
-#If, toggle_a = true
-
-
-; AHKを閉じる
-e::
-  Run, taskkill /F /IM MouseGestureL.exe, , Hide
-  ExitApp
-
-Return
-
-
-; AHKをリロード
-r::Reload
-
-
-; 実行ファイルのフォルダを開く
-o::
-  Run, %A_ScriptDir%
-  toggleChange(toggle_a, "AHK")
-Return
-
-
-; AHKWiki(日本語)を開く
-h::
-  Run, http://ahkwiki.net/Top
-  toggleChange(toggle_a, "AHK")
-Return
-
-
-; WindowSpyを開く
-w::
-  Run, %A_ScriptDir%\AutoHotkey.exe %A_ScriptDir%\WindowSpy.ahk
-  toggleChange(toggle_a, "AHK")
-Return
-
-
-#If
-
-;==============================
-
-; プログラミング///////////////
-
-#If, toggle_p = true
-
-
-; javaコンパイルの定型文
-j::
-  Send, {vkF2}{vkF3}javac -encoding utf-8 .java{Left 5}
-  toggleChange(toggle_p, "プログラミング")
-Return
-
-; C言語コンパイルの定型文
-c::
-  Send, {vkF2}{vkF3}gcc -o a .c{Left 2}
-  toggleChange(toggle_p, "プログラミング")
-Return
-
-
-#If
-
-;==============================
-; 編集/////////////////////////
-
-#If, toggle_e = true
-
-
-; 1行コピー
-c::
-  Send, {Home}+{End}^c{Right}
-  toggleChange(toggle_e, "Edit")
-Return
-
-
-; 1行挿入
-l::
-  Send, {Home}{Enter}{Up}
-  toggleChange(toggle_e, "Edit")
-Return
-
-
-; 1行削除
-e::
-  Send, {End}+{Home}{Delete}
-  toggleChange(toggle_e, "Edit")
-Return
-
-
-; キャレット以下1行削除
-Delete::
-  Send, +{End}{Delete}
-  toggleChange(toggle_e, "Edit")
-Return
-
-
-; キャレット以前1行削除
-Backspace::
-  Send, +{Home}{Backspace}
-  toggleChange(toggle_e, "Edit")
-Return
-
-
-#If
-
-;==============================
-
-;映像授業用Prsc
-Numpad0::
-  CoordMode, Screen
-
-  Send, {PrintScreen}
-
-  Sleep, 500
-
-  ; 初期座標記録
-  MouseGetPos, oldMouseX, oldMouseY
-
-  ; カーソルを隣のモニタへ
-  MouseMove, 100, 200, 0
-
-  While (1) {
-    If (GetKeyState("LButton", "P")) {
-      Send, {LButton Down}
-      MouseMove, 1100, 800, 0
-      While (1) {
-        If (!GetKeyState("LButton", "P")) {
-          Send, {LButton Up}
-          Goto, PrscEnd
-        }
-
-        Sleep, 50
-      }
-    }
-
-    If (GetKeyState("RButton", "P")) {
-      Goto, PrscEnd
-    }
-
-    Sleep, 50
-  }
-
-  PrscEnd:
-  ; (変更前)MouseMove, oldMouseX, oldMouseY
-  MouseMove, 3000, 850, 0
-Return
-
 /*OBS Ctrl + Numpad--------------------
 ---------------------------------------
 ---------------------------------------
@@ -366,3 +147,26 @@ tenkeyHotkey(appName ,sendKey)
   Sleep, 50
   WinActivate, %oldTitle%  ;記憶したウィンドウを再度アクティブ化
 }
+
+
+; 最初のテキストフィールドに移動[Chromium]
+#If, WinActive("ahk_exe chrome.exe")
+  ^+u::
+    ; ホールド対策
+    KeyWait, Ctrl
+    KeyWait, Shift
+    stash := ClipBoardAll
+    ClipBoard := "const element=document.querySelector(""input[type='text'],input[type='search']"");element.select();element.scrollIntoView();"
+    ClipWait, 1
+    Send, ^l
+    ; "javascript:"は貼り付けできない
+    Send, {vkF2}{vkF3}javascript:
+    Sleep, 100
+    Send, ^v
+    Sleep, 100
+    Send, {Enter}
+    Sleep, 10
+    ClipBoard := stash
+    stash := ""
+  Return
+#If
