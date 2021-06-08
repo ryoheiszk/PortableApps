@@ -37,18 +37,19 @@
 #If
 
 ; テンキー
-Numpad1::Return
-Numpad2::Return
-Numpad3::Return
-Numpad4::Return
-Numpad5::Return
-Numpad6::Return
-Numpad7::Return
-Numpad8::Return
-Numpad9::Return
-NumpadDot::Return
-NumpadAdd::Return
-NumpadSub::Return
-NumpadMult::Return
-NumpadDiv::Return
-NumpadEnter::Return
+; Numpad0::Return
+; Numpad1::Return
+; Numpad2::Return
+; Numpad3::Return
+; Numpad4::Return
+; Numpad5::Return
+; Numpad6::Return
+; Numpad7::Return
+; Numpad8::Return
+; Numpad9::Return
+; NumpadDot::Return
+; NumpadAdd::Return
+; NumpadSub::Return
+; NumpadMult::Return
+; NumpadDiv::Return
+; NumpadEnter::Return
