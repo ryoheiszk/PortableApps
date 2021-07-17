@@ -324,6 +324,14 @@ Default=;新しいタブ<MG_CR><MG_CR>Send, ^t
 G=RB_URDR_
 Default=;1行選択<MG_CR><MG_CR>Send, {Home}{Shift Down}{End}{Shift Up}
 
+[MB_←→←_]
+G=MB_LRL_
+Default=; Win + Left<MG_CR><MG_CR>Send, #{Left}
+
+[MB_→←→_]
+G=MB_RLR_
+Default=; Win + Right<MG_CR><MG_CR>Send, #{Right}
+
 [***カーソル***]
 G=
 
@@ -464,3 +472,7 @@ Default=;空でもこのジェスチャが登録されていないと<MG_CR>;Con
 [MB__]
 G=MB__
 エクスプローラー/アイコン=; 新しいウィンドウでフォルダを開く<MG_CR><MG_CR>Send, {RButton}e
+
+[Gesture_79]
+G=LB_R_
+ブラウザ=; test
