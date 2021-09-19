@@ -472,7 +472,3 @@ Default=;空でもこのジェスチャが登録されていないと<MG_CR>;Con
 [MB__]
 G=MB__
 エクスプローラー/アイコン=; 新しいウィンドウでフォルダを開く<MG_CR><MG_CR>Send, {RButton}e
-
-[Gesture_79]
-G=LB_R_
-ブラウザ=; test

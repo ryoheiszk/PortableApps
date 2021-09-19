@@ -40,9 +40,9 @@
 #If
 
 ; Netflix
-#If, WinActive("Netflix")
-  ~Right::
-  ~Left::
-    Send, {Space 2}
-  Return
-#If
+; #If, WinActive("Netflix")
+;   ~Right::
+;   ~Left::
+;     Send, {Space 2}
+;   Return
+; #If
