@@ -272,7 +272,7 @@ Default=;最小化<MG_CR><MG_CR>WinMinimize
 
 [RB_↓←↓_]
 G=RB_DLD_
-Default=;タスク切り替え<MG_CR><MG_CR>Send, !{Tab}
+Default=;タスク切り替え<MG_CR><MG_CR>Send, !{Tab}<MG_CR>
 
 [RB_↓←↓→_]
 G=RB_DLDR_
@@ -345,11 +345,11 @@ Default=;↓<MG_CR><MG_CR>MG_StopNavi()<MG_CR>Send, {Blind}{Down}
 
 [RB_W↑_]
 G=RB_WU_
-Default=;←<MG_CR><MG_CR>Send, {Blind}{Left}<MG_CR>If (WinActive("Netflix") OR WinActive("netflix")) {<MG_CR>	Send, {Space 2}<MG_CR>}
+Default=;←<MG_CR><MG_CR>Send, {Blind}{Left}<MG_CR>;If (WinActive("Netflix") OR WinActive("netflix")) {<MG_CR>;	Send, {Space 2}<MG_CR>;}
 
 [RB_W↓_]
 G=RB_WD_
-Default=;→<MG_CR><MG_CR>Send, {Blind}{Right}<MG_CR>If (WinActive("Netflix") OR WinActive("netflix")) {<MG_CR>	Send, {Space 2}<MG_CR>}
+Default=;→<MG_CR><MG_CR>Send, {Blind}{Right}<MG_CR>;If (WinActive("Netflix") OR WinActive("netflix")) {<MG_CR>;	Send, {Space 2}<MG_CR>;}
 
 [***音***]
 G=
@@ -472,3 +472,7 @@ Default=;空でもこのジェスチャが登録されていないと<MG_CR>;Con
 [MB__]
 G=MB__
 エクスプローラー/アイコン=; 新しいウィンドウでフォルダを開く<MG_CR><MG_CR>Send, {RButton}e
+
+[RB_↓←↓W↓]
+G=RB_DLDWD_
+Default=Send, AltTab

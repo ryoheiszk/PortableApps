@@ -13,7 +13,7 @@
 if (!MG_IsEdit) {
 ; MouseGestureL.ahk用
 
-	ControlGetText, mouseToolTip, , ahk_class tooltips_class32
+	ControlGetText, mouseToolTip, , ahk_class tooltips_class3
 
 } else {
 ; MG_Edit.ahk用

@@ -740,6 +740,7 @@ MG_Gesture_RB_DLD_:
 	;タスク切り替え
 	
 	Send, !{Tab}
+	
 return
 
 MG_GetAction_RB_DLD_:
