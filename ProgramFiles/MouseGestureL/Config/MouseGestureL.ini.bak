@@ -87,6 +87,7 @@ DisableWarning=0
 WClass=GHOST_WindowClass
 WClass=Chrome_WidgetWin_2
 Custom=compareClassNN("SWT_Window021")
+Title=miro.com
 
 [ブラウザ]
 Icon=%A_WinDir%\system32\inetcpl.cpl,6
@@ -472,7 +473,3 @@ Default=;空でもこのジェスチャが登録されていないと<MG_CR>;Con
 [MB__]
 G=MB__
 エクスプローラー/アイコン=; 新しいウィンドウでフォルダを開く<MG_CR><MG_CR>Send, {RButton}e
-
-[RB_↓←↓W↓]
-G=RB_DLDWD_
-Default=Send, AltTab
