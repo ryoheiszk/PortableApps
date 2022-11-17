@@ -276,7 +276,7 @@ Goto, MG_Config_End
 
 MG_IsDisable() {
 	global
-	return ((MG_WClass="GHOST_WindowClass") || (MG_WClass="Chrome_WidgetWin_2") || (compareClassNN("SWT_Window021")))
+	return ((MG_WClass="GHOST_WindowClass") || (MG_WClass="Chrome_WidgetWin_2") || (compareClassNN("SWT_Window021")) || (MG_StrComp(MG_Title, ".+, Online Whiteboard for Visual Collaboration", 5)))
 }
 
 MG_IsTarget1() {
