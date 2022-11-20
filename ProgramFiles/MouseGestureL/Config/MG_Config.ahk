@@ -9,7 +9,7 @@ MG_LongThresholdX=9999
 MG_LongThresholdY=9999
 MG_LongThreshold=700
 MG_TimeoutThreshold=2
-MG_Timeout=180
+MG_Timeout=130
 MG_DGInterval=0
 MG_TmReleaseTrigger=2
 MG_ORangeDefault=3
@@ -276,7 +276,7 @@ Goto, MG_Config_End
 
 MG_IsDisable() {
 	global
-	return ((MG_WClass="GHOST_WindowClass") || (MG_WClass="Chrome_WidgetWin_2") || (compareClassNN("SWT_Window021")) || (MG_StrComp(MG_Title, ".+, Online Whiteboard for Visual Collaboration", 5)))
+	return ((MG_WClass="GHOST_WindowClass") || (MG_WClass="Chrome_WidgetWin_2") || (compareClassNN("SWT_Window021")))
 }
 
 MG_IsTarget1() {
