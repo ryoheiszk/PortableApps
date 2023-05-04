@@ -1283,11 +1283,13 @@ MG_GetAction_RB_DUL_:
 return
 
 MG_Gesture_MB_DU_:
+	;ウィンドウを右のモニターへ
 	
+	Send, #+{Right}
 return
 
 MG_GetAction_MB_DU_:
-	
+	MG_ActionStr := "ウィンドウを右のモニターへ"
 return
 
 MG_Gesture_RB_RDLU:
