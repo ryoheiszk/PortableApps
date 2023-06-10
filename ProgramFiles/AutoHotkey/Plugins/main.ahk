@@ -39,6 +39,6 @@ Return
 
 ; 日付入力
 ^vkBB::
-  FormatTime, dateStr, , yyyy-MM-dd
+  FormatTime, dateStr, , yyyyMMdd
   Send, {vkF2}{vkF3}%dateStr%
 Return
