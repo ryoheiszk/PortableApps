@@ -16,6 +16,12 @@ vk1D & h::Send, {Blind}{Home}
 ; End
 vk1D & vkBB::Send, {Blind}{End}
 
+; PgUp
+vk1D & o::Send, {Blind}{PgUp}
+
+; PgDn
+vk1D & p::Send, {Blind}{PgDn}
+
 ; ↑↑↑↑
 vk1D & u::Send, {Blind}{Up 4}
 
