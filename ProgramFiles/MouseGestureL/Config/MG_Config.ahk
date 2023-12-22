@@ -1064,6 +1064,50 @@ MG_GetAction_MB_URLRL_:
 return
 
 
+MG_Gesture_RB_LDRD:
+	;透明度調整
+	
+	step := 20
+	MG_StopNavi()
+	Sleep, 500
+	KeyWait, RButton, Up
+	SetTimer, RemoveToolTip, -500
+	step := ""
+	Return
+	
+	#If, step!=""
+		WheelUp::transparency_change(step)
+		WheelDown::transparency_change(-step)
+	#If
+	
+	transparency_change(step) {
+		WinGet, vT, Transparent, A
+		If (vT == "") {
+			vT := 255
+		} Else {
+			vT += step
+			If (vT > 255) {
+				vT := 255
+			}
+			If (vT < 0) {
+				vT := 0
+			}
+		}
+		WinSet, Transparent, %vT%, A
+	
+		;255段階を100段階に変換
+		vT_label := Round(vT / 2.55)
+	
+		ToolTip, 透明度  :  %vT_label%
+		Return
+	}
+	
+return
+
+MG_GetAction_RB_LDRD:
+	MG_ActionStr := "透明度調整"
+return
+
 MG_Gesture_RB_DRD_:
 	if (MG_IsTarget11()) {
 		;非表示モード切り替え
