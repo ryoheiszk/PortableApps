@@ -1,0 +1,101 @@
+0000000000000000000000000000000000000000 8437ecad34e16c1a573a8cb717fe9df4609b39ca ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609261933 +0900	commit (initial): init
+8437ecad34e16c1a573a8cb717fe9df4609b39ca 8875f703255a0865a22cfb6d71033b75585ba3ac ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609262256 +0900	commit: utf-8 BOM
+8875f703255a0865a22cfb6d71033b75585ba3ac f320d5d6176722744676cba54038bc20fc7cd99c ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609263247 +0900	commit: fix
+f320d5d6176722744676cba54038bc20fc7cd99c eb2a8d05dac4d017be82f30339c3ece21d8ee32d ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609263408 +0900	commit: fix
+eb2a8d05dac4d017be82f30339c3ece21d8ee32d 870ecdc8eea19a83124e3897b0aff6498ae1491d ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609263468 +0900	rebase (finish): refs/heads/master onto 8437ecad34e16c1a573a8cb717fe9df4609b39ca
+870ecdc8eea19a83124e3897b0aff6498ae1491d c1250b3b84c6b33c5aee2d986b4f74719cb08f6e ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609268145 +0900	commit: toggle リファクタリング
+c1250b3b84c6b33c5aee2d986b4f74719cb08f6e 0f741d50168679408eb30c7577f34a2caae1bd75 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609269926 +0900	commit: tmp
+0f741d50168679408eb30c7577f34a2caae1bd75 1b67b801a349a1050d290913ea30610e5242d248 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609274226 +0900	commit: fix
+1b67b801a349a1050d290913ea30610e5242d248 fa7a79bad5d6487d1e0d54cd33480518e6ac8ed5 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609274248 +0900	rebase (finish): refs/heads/master onto 8875f703255a0865a22cfb6d71033b75585ba3ac
+fa7a79bad5d6487d1e0d54cd33480518e6ac8ed5 7e0e473acfe896b0e41af13f9a18bff0f40838d5 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609277002 +0900	commit (amend): fix toggle keybdmouse
+7e0e473acfe896b0e41af13f9a18bff0f40838d5 21a53f93a6e3d276552f02007cfd93e983406126 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609309095 +0900	commit: GUI系統合
+21a53f93a6e3d276552f02007cfd93e983406126 b6f603ea35a6ee4be5c89c82fe5117428c72e3e3 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609332031 +0900	commit: BS DEL
+b6f603ea35a6ee4be5c89c82fe5117428c72e3e3 a1c442ad60a3252304db5c2c2453e4ad7fdd4d8e ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609352665 +0900	commit: rename
+a1c442ad60a3252304db5c2c2453e4ad7fdd4d8e 777518eeef2e354954009177d6a4149f6445d819 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609365901 +0900	commit: google検索削除
+777518eeef2e354954009177d6a4149f6445d819 cf120a0add199c67825493dad0a030768c28b8c9 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609368611 +0900	commit: 改行コード除去関数 追加
+cf120a0add199c67825493dad0a030768c28b8c9 eebee87a57460427d4a141b9b1663861594f3772 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609368671 +0900	commit: GUI関係 リファクタリング
+eebee87a57460427d4a141b9b1663861594f3772 3083571210340155c9f2f7e48fddc1d680b2b5e5 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609369064 +0900	commit: ahk documentation toggle
+3083571210340155c9f2f7e48fddc1d680b2b5e5 2acc7dd1123cbc07376f12cfa197c98e5ccd5f3a ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609406045 +0900	commit: 最初のテキストフィールドに移動
+2acc7dd1123cbc07376f12cfa197c98e5ccd5f3a 6d9c606cb46e96d11018a46c09a01f2231435012 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609406828 +0900	commit: batch_launcher -> bat
+6d9c606cb46e96d11018a46c09a01f2231435012 77931c8c4f29cb46c28d6ea57e2b03be474162e9 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609409273 +0900	commit: 最初のテキストフィールドに移動
+77931c8c4f29cb46c28d6ea57e2b03be474162e9 b1d960a25a92571718b730a54e0db14f086590e4 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609409304 +0900	rebase (finish): refs/heads/master onto 3083571210340155c9f2f7e48fddc1d680b2b5e5
+b1d960a25a92571718b730a54e0db14f086590e4 fcc26deda58d56d50e70e7154d918328fd8dff9a ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609418112 +0900	commit (amend): 最初のテキストフィールドに移動/batch_launcher -> bat
+fcc26deda58d56d50e70e7154d918328fd8dff9a 21df7253c12966967ac1ddd4686166935b75aaab ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609425089 +0900	commit: ignore .vscode
+21df7253c12966967ac1ddd4686166935b75aaab 1c3c4329d17a2947972a7e3e6d6437281e71e57f ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609440490 +0900	commit: numpad リファクタリング
+1c3c4329d17a2947972a7e3e6d6437281e71e57f 8d03aba5859bb66a29407f0efa0c5a571f2692c6 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609440570 +0900	commit (amend): numpad リファクタリング
+8d03aba5859bb66a29407f0efa0c5a571f2692c6 a6a594af31ff25da28247edf9706f4abdb4aa6dd ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609442757 +0900	commit: bracket
+a6a594af31ff25da28247edf9706f4abdb4aa6dd 90bad561854e16db8f53de6e55d42ebb68f659b6 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609443121 +0900	commit: edit 矯正
+90bad561854e16db8f53de6e55d42ebb68f659b6 0ed259f0918f6a61c6245e3e3ae093f262ab9156 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609443645 +0900	commit: launcher.ini
+0ed259f0918f6a61c6245e3e3ae093f262ab9156 cdd1688b7eed29cf0f3949e5d9943f8246062c68 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609444122 +0900	commit: 追跡ツールチップ
+cdd1688b7eed29cf0f3949e5d9943f8246062c68 6c5f82612b05f2b983152b339605b8125c1ae729 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609445087 +0900	commit: GUI
+6c5f82612b05f2b983152b339605b8125c1ae729 8f519e2cd9af830c1b084ba2033e698d1eb6beea ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609445146 +0900	commit: 関数名変更
+8f519e2cd9af830c1b084ba2033e698d1eb6beea da1d2c60746763c2a0de56ccf9314d2178f9645e ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609446372 +0900	commit: 表記ゆれの修正
+da1d2c60746763c2a0de56ccf9314d2178f9645e 8e4f68d29d405e952f94723c2c7bfd7e4dc494fb ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609446510 +0900	commit (amend): 表記ゆれの修正
+8e4f68d29d405e952f94723c2c7bfd7e4dc494fb c99547e1c9876981348883455a57acc1a80d933e ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609458303 +0900	commit: chaseToolTip false
+c99547e1c9876981348883455a57acc1a80d933e 3af83055e605f2b059e79ffa11a3691475f53c66 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609462601 +0900	commit: not hidden -> text or search
+3af83055e605f2b059e79ffa11a3691475f53c66 d419dd8c7a8cec480652c45cb587259a05f8217a ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609462678 +0900	commit (amend): not hidden -> text or search
+d419dd8c7a8cec480652c45cb587259a05f8217a 107b1a54fcb2400095b84124544efcfe20720978 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609464997 +0900	commit: いろいろ
+107b1a54fcb2400095b84124544efcfe20720978 3603dbccaed635051fd6aa4da462abafd5251098 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609571485 +0900	commit: 命名規則変更
+3603dbccaed635051fd6aa4da462abafd5251098 0ba8fd0e3418a8c92ea595ec9e1df2532b35a874 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609571564 +0900	commit (amend): 命名規則変更
+0ba8fd0e3418a8c92ea595ec9e1df2532b35a874 468a65e4dfdd16d1c90d074917a9aad3765257e2 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609572321 +0900	commit (amend): 命名規則変更
+468a65e4dfdd16d1c90d074917a9aad3765257e2 7637ebb913402bec1ad82d578002cc5804d685fa ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609572407 +0900	commit (amend): 命名規則変更
+7637ebb913402bec1ad82d578002cc5804d685fa 03c04b141e7d8f6ced1d6a642723bd67695ebad6 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609575022 +0900	commit (amend): 命名規則変更
+03c04b141e7d8f6ced1d6a642723bd67695ebad6 e3bb34d53ab9d05e5c3c1261160be4738498f510 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609578160 +0900	commit (amend): 命名規則変更
+e3bb34d53ab9d05e5c3c1261160be4738498f510 8675c5600bc059ccab0f0f60bafb92c3b50bba6f ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609578177 +0900	commit (amend): 命名規則変更
+8675c5600bc059ccab0f0f60bafb92c3b50bba6f 116290f57e1db5eb9a79617316b422d40e3eadb4 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609724578 +0900	commit: hotkeyLoop定義関数/keys_practice
+116290f57e1db5eb9a79617316b422d40e3eadb4 500895cc9d1b167ce559cf8fb75633ced027bce2 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609724666 +0900	commit (amend): hotkeyLoop定義関数/keys_practice
+500895cc9d1b167ce559cf8fb75633ced027bce2 121ece5e809b0a5107ccd18439405b207090b41f ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609726021 +0900	commit (amend): hotkeyLoop定義関数/keys_practice
+121ece5e809b0a5107ccd18439405b207090b41f 7871b9ba9292cc947c27f5ac4affb6a0118e3ee1 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609726184 +0900	commit: keybd_mouse 修正
+7871b9ba9292cc947c27f5ac4affb6a0118e3ee1 5ad2b02a1c598cb3e375606794a7b232baace7d6 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609726735 +0900	commit: 練習用キー MsgBox->ToolTip
+5ad2b02a1c598cb3e375606794a7b232baace7d6 50fdfc3d883304e610668198601925130359b1dd ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609738909 +0900	commit (amend): 練習用キー MsgBox->ToolTip
+50fdfc3d883304e610668198601925130359b1dd ded14bdfcb1fb59d37a915f0d5adf0da4dab138d ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609746253 +0900	commit: toggle ahk compiler
+ded14bdfcb1fb59d37a915f0d5adf0da4dab138d 7ca4c9205055153d9719c7be81e693754ffc65d7 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609752979 +0900	commit: toggle G 改良 DeepLの追加
+7ca4c9205055153d9719c7be81e693754ffc65d7 90433d223976479a05254dade7ea0043799f2cfc ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609934320 +0900	commit: launch_data
+90433d223976479a05254dade7ea0043799f2cfc 0d36ca919debf9bafbb6b0601021d0ab67a7c2cd ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609947379 +0900	commit: keybdmouse リファクタリング
+0d36ca919debf9bafbb6b0601021d0ab67a7c2cd d321177a666625fb08588f0c5088a5cfb23cd3f7 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609949101 +0900	commit: fix bug
+d321177a666625fb08588f0c5088a5cfb23cd3f7 42e7e683a655a586db14a246c478b067c6667fbc ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1609949402 +0900	commit (amend): fix bug
+42e7e683a655a586db14a246c478b067c6667fbc 21cd1a73a80e4f5302be366f26bc0c2ee74b6b79 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1610128396 +0900	commit: launcher 文字コード変更
+21cd1a73a80e4f5302be366f26bc0c2ee74b6b79 13c96016edb59b5e44e545071e8a31c5f199e663 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1610128436 +0900	commit: 初期設定変更
+13c96016edb59b5e44e545071e8a31c5f199e663 9a59cc4caf1b64f533385031014288ae94cb3b57 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1610128498 +0900	commit: Enter 無変換+Spaceを取り消し
+9a59cc4caf1b64f533385031014288ae94cb3b57 dcb55ed34c09cfb3aa0abe3ab6794baa1408d401 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1610195168 +0900	commit: vk1C disable
+dcb55ed34c09cfb3aa0abe3ab6794baa1408d401 b693c25cdc48f7507c37f6994e37fab8794eacef ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1610264809 +0900	commit: git pushをエイリアスから削除(ミス防止)
+b693c25cdc48f7507c37f6994e37fab8794eacef 51fd41bc29e4424687eaeb92b12c731368072de5 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1610730285 +0900	commit: 練習キー削除(練習完了)
+51fd41bc29e4424687eaeb92b12c731368072de5 464f3b29d449fadb6e65fbe905ef365d12ba2225 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1610816414 +0900	commit: Enter復活
+464f3b29d449fadb6e65fbe905ef365d12ba2225 68cf487ad3df6b5982a6b4e6e5203e48ccaa2e4d ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611015135 +0900	commit: Esc
+68cf487ad3df6b5982a6b4e6e5203e48ccaa2e4d 62e2cebcd441d4b6b96bb1125427f666f016152d ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611027800 +0900	commit: hugo alias
+62e2cebcd441d4b6b96bb1125427f666f016152d 933608bc245f46732a40a25993530f94f9d7279d ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611027832 +0900	commit: keybd_mouse
+933608bc245f46732a40a25993530f94f9d7279d 495572b27587fada8f13d4a4b9a8ccb43f2866e3 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611027953 +0900	commit: alias
+495572b27587fada8f13d4a4b9a8ccb43f2866e3 ea8462705f7a06bfd402c2ab307f4a2bfed19c47 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611028023 +0900	commit: git alias
+ea8462705f7a06bfd402c2ab307f4a2bfed19c47 495572b27587fada8f13d4a4b9a8ccb43f2866e3 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611028044 +0900	reset: moving to HEAD~
+495572b27587fada8f13d4a4b9a8ccb43f2866e3 ea8462705f7a06bfd402c2ab307f4a2bfed19c47 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611028111 +0900	reset: moving to HEAD@{2}
+ea8462705f7a06bfd402c2ab307f4a2bfed19c47 efe14af7f1c154dbce13d94b0b2f38859134ea8b ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611028136 +0900	commit (amend): git alias
+efe14af7f1c154dbce13d94b0b2f38859134ea8b 96f9d4a5fc5fbeee289b05b337a3c898d9f0b2b4 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611028152 +0900	commit (amend): git alias
+96f9d4a5fc5fbeee289b05b337a3c898d9f0b2b4 4e28c771832c8edb6d216ff470a56df26bef4751 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611028240 +0900	commit: git alias
+4e28c771832c8edb6d216ff470a56df26bef4751 dbbbe7043ac902aebf645b949c26d84379019abe ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611028259 +0900	rebase (finish): refs/heads/master onto 933608bc245f46732a40a25993530f94f9d7279d
+dbbbe7043ac902aebf645b949c26d84379019abe a46143e22f9fe2be2471fc3128f8cb5997595375 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611290013 +0900	commit: hugo server alias
+a46143e22f9fe2be2471fc3128f8cb5997595375 b3c37eb560ac0094a1ead05e66948f0e33d9a626 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611291971 +0900	commit: single instance force
+b3c37eb560ac0094a1ead05e66948f0e33d9a626 07b219f7039ed3e28a951479aea9b68148f77668 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611294540 +0900	commit: hotkey interval
+07b219f7039ed3e28a951479aea9b68148f77668 a11ef0739b9188fcd1780b74aa52d2f0c3fcba33 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611295370 +0900	commit: process priority realtime
+a11ef0739b9188fcd1780b74aa52d2f0c3fcba33 259cc40d26d4d32c3b288422390b64af4c144961 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611410519 +0900	commit: 関数名変更
+259cc40d26d4d32c3b288422390b64af4c144961 2c05649329e8bafd6f4205f64f2e1aaf2f13e712 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611498475 +0900	commit: launcher_dataのignore
+2c05649329e8bafd6f4205f64f2e1aaf2f13e712 6f34bf4593c926dacb14ae3fb851851815e5e51a ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611499519 +0900	commit: scriptバックアップをrm
+6f34bf4593c926dacb14ae3fb851851815e5e51a 845bc2663923b718d59d406bfbef65cc121b270a ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611499696 +0900	commit: rename file
+845bc2663923b718d59d406bfbef65cc121b270a f1506e49e7e1fcb013696e27c2ec7ee5a0ac62e3 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611500047 +0900	commit: launch.jsonの公開
+f1506e49e7e1fcb013696e27c2ec7ee5a0ac62e3 2feebf1a5b68f1f4c3181df04ce4b917fdb83f65 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611503211 +0900	commit: fix
+2feebf1a5b68f1f4c3181df04ce4b917fdb83f65 d94a535a0d6063ffe75963fe6279a6b808d556f2 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611724132 +0900	commit: keywait fix
+d94a535a0d6063ffe75963fe6279a6b808d556f2 6300a1fdd82dadf8e01c8978000515520bc35326 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611761681 +0900	commit: toggleの初期化を廃止
+6300a1fdd82dadf8e01c8978000515520bc35326 4f49a172a9070c718da272f2b484e679b6ffc812 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1611869171 +0900	commit: variables
+4f49a172a9070c718da272f2b484e679b6ffc812 eb30676d3a821249888775fc49238709dff01b4d ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1613448512 +0900	commit: トレイアイコン設定
+eb30676d3a821249888775fc49238709dff01b4d 0d5d3cd97876be33f3508d5b981785378d894ca6 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1613820174 +0900	commit: keybd_mouse exit_this
+0d5d3cd97876be33f3508d5b981785378d894ca6 d944ae06962d18e9a356fd2bbc5e7ab76645af65 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1616160721 +0900	commit: 1. F:\ -> D:\
+d944ae06962d18e9a356fd2bbc5e7ab76645af65 35e6c804a49721d12456210d5d47208ec50755cd ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1616160816 +0900	commit (amend): 1. F:\ -> D:\
+35e6c804a49721d12456210d5d47208ec50755cd 0b42721c55d0d8a284cf96681da29c9a977818f9 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1616684412 +0900	commit: タイムシフト録画
+0b42721c55d0d8a284cf96681da29c9a977818f9 038d5ea4e68203d581bd1855b8a1680a05c00c9e ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1616684463 +0900	commit (amend): タイムシフト録画
+038d5ea4e68203d581bd1855b8a1680a05c00c9e ea005693d5b2d69d7cd68ca47e2beb0c2f400e0e ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1617496745 +0900	commit: launcher_data.ini
+ea005693d5b2d69d7cd68ca47e2beb0c2f400e0e 69b6073d69ce910e6a961ebecd3dc20b1f5fea7c ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1617844522 +0900	commit: num to numpad disabled
+69b6073d69ce910e6a961ebecd3dc20b1f5fea7c 2eaa9b51a97d1daadb1709fab955e375c9dedb94 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1621698312 +0900	commit: VSCode起動
+2eaa9b51a97d1daadb1709fab955e375c9dedb94 8e9f302421aa8816305cb83ebed810804854111c ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1623175986 +0900	commit: Numpad制限解除
+8e9f302421aa8816305cb83ebed810804854111c ca6a619cbf7cd23744edcede45b04a2509ec1873 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1633591760 +0900	commit: Update: Netflix 無効化
+ca6a619cbf7cd23744edcede45b04a2509ec1873 6c616b219019e24aeb12ef40648680c16c9685a0 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1633591771 +0900	commit: Update: 192.168.1 hotstring
+6c616b219019e24aeb12ef40648680c16c9685a0 a6023d5201834c0f8ac17c80f32f6cb91fd6b98a ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1685797459 +0900	commit: 変更: 日付入力
+a6023d5201834c0f8ac17c80f32f6cb91fd6b98a 9229005c74d817a4528e252481ba06f40450e228 ryoheiszk <63033551+ryoheiszk@users.noreply.github.com> 1690736641 +0900	commit: PgUp, PgDn
